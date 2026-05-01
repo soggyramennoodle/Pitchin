@@ -6,24 +6,25 @@
     <title>Pitchin | Volunteer Opportunities</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2D6A4F;
-            --primary-hover: #1B4332;
-            --bg-color: #FAFAFA;
+            --primary: #35635c;
+            --primary-hover: #294d47;
+            --bg-color: #f7f5f1;
             --card-bg: #FFFFFF;
-            --text-main: #1F2937;
-            --text-muted: #6B7280;
-            --border-color: #E5E7EB;
-            --tag-bg: #DEF7EC;
-            --tag-text: #03543F;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --radius-md: 12px;
-            --radius-sm: 8px;
+            --text-main: #1f2426;
+            --text-muted: #6f7674;
+            --border-color: #e8e3db;
+            --tag-bg: #dfece7;
+            --tag-text: #274740;
+            --shadow-sm: 0 1px 2px 0 rgba(31, 36, 38, 0.04);
+            --shadow-md: 0 10px 28px rgba(31, 36, 38, 0.08);
+            --shadow-lg: 0 24px 60px rgba(31, 36, 38, 0.12);
+            --radius-md: 20px;
+            --radius-sm: 12px;
             --radius-full: 9999px;
+            --serif: 'Hedvig Letters Serif', Georgia, serif;
         }
 
         * {
@@ -34,6 +35,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-optical-sizing: auto;
             background-color: var(--bg-color);
             color: var(--text-main);
             line-height: 1.5;
@@ -41,132 +43,186 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
 
         /* Header */
         header {
             background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 0;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            padding: 18px 0 12px;
         }
 
         .header-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 24px;
         }
 
         .logo {
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
         .logo-icon {
-            background-color: var(--primary);
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+            background: radial-gradient(circle at 30% 25%, #4d7f76 0%, #35635c 55%, #244640 100%);
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 10px 18px rgba(53, 99, 92, 0.18);
+            flex-shrink: 0;
         }
 
         .logo-text {
-            font-size: 24px;
-            font-weight: 500;
+            font-size: 29px;
+            font-weight: 400;
             color: var(--text-main);
-            letter-spacing: -0.5px;
-            font-family: 'Playfair Display', serif;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            font-family: var(--serif);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-left: auto;
+            margin-right: 24px;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: -0.03em;
+        }
+
+        .header-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-full);
+            padding: 7px 8px 7px 18px;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-cta-icon,
+        .hero-btn-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: white;
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
         /* Hero Section */
         .hero-container {
-            padding: 20px 20px 0;
-            margin-bottom: 20px;
+            padding: 10px 24px 0;
+            margin-bottom: 24px;
         }
+
         .hero {
             background-color: var(--primary);
-            border-radius: 20px;
+            border-radius: 32px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            overflow: hidden;
-            min-height: 480px;
-            align-items: center;
+            grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+            gap: 28px;
+            padding: 20px;
+            min-height: 610px;
+            align-items: stretch;
+            box-shadow: var(--shadow-md);
         }
+
         .hero-content {
-            padding: 60px;
+            padding: 34px 16px 34px 16px;
             color: white;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
+
         .hero-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 500;
-            margin-bottom: 24px;
-            opacity: 0.9;
+            margin-bottom: 34px;
+            opacity: 0.92;
         }
+
+        .hero-copy {
+            max-width: 620px;
+        }
+
         .hero-title {
-            font-size: 54px;
-            font-family: 'Playfair Display', serif;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            font-weight: 500;
+            font-size: clamp(4rem, 7vw, 4.9rem);
+            font-family: var(--serif);
+            line-height: 0.94;
+            letter-spacing: -0.06em;
+            margin-bottom: 28px;
+            font-weight: 400;
+            max-width: 10ch;
         }
+
         .hero-desc {
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 40px;
+            font-size: 17px;
+            line-height: 1.55;
+            margin-bottom: 32px;
             opacity: 0.9;
-            max-width: 90%;
+            max-width: 26ch;
         }
+
         .hero-btn {
             display: inline-flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             background-color: white;
             color: var(--text-main);
-            padding: 10px 10px 10px 20px;
+            padding: 7px 7px 7px 18px;
             border-radius: var(--radius-full);
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
+            line-height: 1;
+            letter-spacing: -0.03em;
             text-decoration: none;
             width: fit-content;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 24px rgba(20, 36, 32, 0.12);
         }
+
         .hero-btn:hover {
-            transform: scale(1.02);
+            transform: translateY(-1px);
+            box-shadow: 0 16px 36px rgba(20, 36, 32, 0.18);
         }
-        .hero-btn-icon {
-            background-color: var(--primary);
-            color: white;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+
         .hero-image {
-            padding: 20px;
             height: 100%;
         }
+
         .hero-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 16px;
+            border-radius: 24px;
+            display: block;
         }
 
         /* Filters Section */
@@ -292,23 +348,24 @@
         .card-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
             margin-bottom: 16px;
         }
 
         .tag {
-            padding: 4px 10px;
+            padding: 8px 18px;
             border-radius: var(--radius-full);
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 500;
+            letter-spacing: -0.03em;
             background-color: var(--tag-bg);
             color: var(--tag-text);
             display: inline-block;
         }
 
         .tag.format {
-            background-color: #F3F4F6;
-            color: #4B5563;
+            background-color: #eef0f3;
+            color: #505968;
         }
 
         .card-footer {
@@ -479,20 +536,62 @@
             .filters-grid {
                 grid-template-columns: 1fr 1fr;
             }
+            .nav-links {
+                display: none;
+            }
             .hero {
                 grid-template-columns: 1fr;
+                min-height: auto;
             }
             .hero-image {
-                padding: 0 20px 20px 20px;
+                min-height: 360px;
+            }
+            .hero-content {
+                padding: 24px 10px 8px;
+            }
+            .hero-title {
+                max-width: none;
+            }
+            .hero-desc {
+                max-width: 36ch;
             }
         }
 
         @media (max-width: 640px) {
+            .container {
+                padding: 0 16px;
+            }
+            header {
+                padding-top: 14px;
+            }
+            .header-content {
+                flex-wrap: wrap;
+            }
+            .logo-text {
+                font-size: 24px;
+            }
+            .header-cta {
+                margin-left: auto;
+            }
+            .hero-container {
+                padding: 6px 16px 0;
+            }
+            .hero {
+                padding: 14px;
+                border-radius: 24px;
+            }
             .opportunities-grid {
                 grid-template-columns: 1fr;
             }
             .filters-grid {
                 grid-template-columns: 1fr;
+            }
+            .hero-title {
+                font-size: clamp(3rem, 14vw, 4.1rem);
+            }
+            .hero-desc {
+                font-size: 16px;
+                max-width: none;
             }
             .modal-content {
                 padding: 24px;
@@ -516,6 +615,18 @@
                 </div>
                 <span class="logo-text">Pitchin</span>
             </a>
+            <nav class="nav-links" aria-label="Primary">
+                <a href="#grid">Services</a>
+                <a href="#grid">Features</a>
+                <a href="#grid">Pricing</a>
+                <a href="#grid">How it work</a>
+            </nav>
+            <a href="#grid" class="header-cta">
+                Get in touch
+                <span class="header-cta-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                </span>
+            </a>
         </div>
     </header>
 
@@ -523,20 +634,22 @@
         <div class="hero">
             <div class="hero-content">
                 <div class="hero-badge">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><path d="M8 12h.01"></path><path d="M12 12h.01"></path><path d="M16 12h.01"></path></svg>
                     Directory is in early stages of development.
                 </div>
-                <h1 class="hero-title">Find volunteer<br>opportunities across<br>Canada.</h1>
-                <p class="hero-desc">Pitchin is a free, searchable directory of verified, available volunteer opportunities for students and community members, without the noise.</p>
+                <div class="hero-copy">
+                    <h1 class="hero-title">Find volunteer opportunities across Canada.</h1>
+                    <p class="hero-desc">Pitchin is a free, searchable directory of verified, available volunteer opportunities for students and community members, without the noise.</p>
+                </div>
                 <a href="#grid" class="hero-btn">
                     Browse Opportunities
-                    <div class="hero-btn-icon">
+                    <span class="hero-btn-icon">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-                    </div>
+                    </span>
                 </a>
             </div>
             <div class="hero-image">
-                <img src="https://images.pexels.com/photos/6995201/pexels-photo-6995201.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Volunteers packing groceries" onerror="this.src='https://placehold.co/600x400/2D6A4F/FFF?text=Volunteer'">
+                <img src="https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Volunteers packing groceries" onerror="this.src='https://placehold.co/900x1200/35635c/FFF?text=Volunteer'">
             </div>
         </div>
     </div>
@@ -801,6 +914,27 @@
             renderCards(filteredOpportunities);
         }
 
+        function getCategoryTagStyle(category) {
+            const normalized = (category || '').trim().toLowerCase();
+            const categoryStyles = {
+                youth: { bg: '#d7f4ea', text: '#0f5a48' },
+                education: { bg: '#dceeff', text: '#24568b' },
+                tutoring: { bg: '#dceeff', text: '#24568b' },
+                healthcare: { bg: '#ffe0e3', text: '#9f2f46' },
+                seniors: { bg: '#efe4ff', text: '#6942a5' },
+                environment: { bg: '#d9f3d8', text: '#2f6a35' },
+                'food bank': { bg: '#ffe9c8', text: '#915c11' },
+                'community service': { bg: '#dff3ed', text: '#1f6655' },
+                admin: { bg: '#eceff3', text: '#586273' },
+                arts: { bg: '#ffe0f1', text: '#8e2c69' },
+                sports: { bg: '#ffe1d4', text: '#a4491d' },
+                animal: { bg: '#fbe1cc', text: '#8d4e1d' },
+                other: { bg: '#eceff3', text: '#586273' }
+            };
+
+            return categoryStyles[normalized] || { bg: '#dfece7', text: '#274740' };
+        }
+
         // --- RENDERING ---
         function renderCards(opportunities) {
             gridEl.innerHTML = '';
@@ -831,6 +965,7 @@
                 const format = fields["Format"] || '';
                 const commitment = fields["Commitment Type"] || 'N/A';
                 const age = fields["Age Requirement"] || 'N/A';
+                const categoryStyle = getCategoryTagStyle(category);
 
                 card.innerHTML = `
                     <div class="card-header">
@@ -845,7 +980,7 @@
                         </div>
                     </div>
                     <div class="card-tags">
-                        ${category ? `<span class="tag">${category}</span>` : ''}
+                        ${category ? `<span class="tag" style="background-color: ${categoryStyle.bg}; color: ${categoryStyle.text};">${category}</span>` : ''}
                         ${format ? `<span class="tag format">${format}</span>` : ''}
                     </div>
                     <div class="card-footer">
