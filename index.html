@@ -6,7 +6,7 @@
     <title>Pitchin | Volunteer Opportunities</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #2D6A4F;
@@ -84,7 +84,7 @@
             font-weight: 500;
             color: var(--text-main);
             letter-spacing: -0.5px;
-            font-family: serif;
+            font-family: 'Playfair Display', serif;
         }
 
         /* Hero Section */
@@ -119,10 +119,10 @@
         }
         .hero-title {
             font-size: 54px;
-            font-family: serif;
+            font-family: 'Playfair Display', serif;
             line-height: 1.1;
             margin-bottom: 24px;
-            font-weight: 400;
+            font-weight: 500;
         }
         .hero-desc {
             font-size: 16px;
@@ -536,7 +536,7 @@
                 </a>
             </div>
             <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1593113563332-e14b035b8719?q=80&w=800&auto=format&fit=crop" alt="Volunteers packing groceries">
+                <img src="https://images.pexels.com/photos/6995201/pexels-photo-6995201.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Volunteers packing groceries" onerror="this.src='https://placehold.co/600x400/2D6A4F/FFF?text=Volunteer'">
             </div>
         </div>
     </div>
@@ -717,8 +717,8 @@
             gridEl.innerHTML = '<div class="loading">Loading opportunities from Airtable...</div>';
 
             try {
-                const url = new URL(\`https://api.airtable.com/v0/\${AIRTABLE_BASE_ID}/\${encodeURIComponent(TABLE_NAME)}\`);
-                url.searchParams.append('filterByFormula', "Status = 'Published'");
+                const targetUrl = \`https://api.airtable.com/v0/\${AIRTABLE_BASE_ID}/\${encodeURIComponent(TABLE_NAME)}?filterByFormula=Status%3D'Published'\`;
+                const url = new URL(\`https://corsproxy.io/?\${encodeURIComponent(targetUrl)}\`);
                 
                 // Note: Airtable paginates responses. For a full app, you'd handle the 'offset' token.
                 // This fetches the first 100 records.
