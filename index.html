@@ -140,59 +140,47 @@
 
         /* Hero Section */
         .hero-container {
-            padding: 10px 24px 0;
-            margin-bottom: 24px;
+            padding: 8px 24px 0;
+            margin-bottom: 16px;
         }
 
         .hero {
             background-color: var(--primary);
-            border-radius: 32px;
-            display: grid;
-            grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
-            gap: 28px;
-            padding: 20px;
-            min-height: 500px;
-            align-items: stretch;
+            border-radius: 28px;
+            display: block;
+            padding: 24px 28px;
+            min-height: 0;
             box-shadow: var(--shadow-md);
         }
 
         .hero-content {
-            padding: 28px 20px 28px 20px;
+            padding: 0;
             color: white;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 30px;
-            opacity: 0.92;
+            justify-content: flex-start;
+            gap: 14px;
         }
 
         .hero-copy {
-            max-width: 590px;
-            margin-bottom: 24px;
+            max-width: 780px;
         }
 
         .hero-title {
             display: flex;
             flex-wrap: wrap;
-            gap: 0 0.22em;
+            gap: 0 0.18em;
         }
 
         .hero-title {
-            font-size: clamp(3.15rem, 5.4vw, 4rem);
+            font-size: clamp(1.85rem, 3vw, 2.15rem);
             font-family: var(--serif);
-            line-height: 0.96;
-            letter-spacing: -0.06em;
-            margin-bottom: 14px;
+            line-height: 1;
+            letter-spacing: -0.05em;
+            margin-bottom: 8px;
             font-weight: 400;
-            max-width: 11ch;
+            max-width: none;
+            white-space: nowrap;
         }
 
         .hero-title .word {
@@ -206,92 +194,53 @@
         }
 
         .hero-desc {
-            font-size: 16px;
-            line-height: 1.58;
-            opacity: 0.9;
-            max-width: 34ch;
+            font-size: 14px;
+            line-height: 1.45;
+            opacity: 0.76;
+            max-width: 58ch;
         }
 
         .hero-stats {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-bottom: 28px;
-            max-width: 420px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .hero-stat {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            padding: 14px 16px;
+            border-radius: 999px;
+            padding: 8px 12px;
             backdrop-filter: blur(8px);
         }
 
         .hero-stat-value {
-            display: block;
-            font-size: 20px;
+            display: inline-block;
+            font-size: 14px;
             font-weight: 600;
             letter-spacing: -0.04em;
-            margin-bottom: 2px;
+            margin-bottom: 0;
         }
 
         .hero-stat-label {
-            display: block;
+            display: inline-block;
             font-size: 13px;
-            line-height: 1.35;
+            line-height: 1.3;
             opacity: 0.78;
         }
 
-        .hero-actions {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-
-        .hero-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 14px;
-            background-color: white;
-            color: var(--text-main);
-            padding: 7px 7px 7px 18px;
-            border-radius: var(--radius-full);
-            font-weight: 600;
-            font-size: 14px;
-            line-height: 1;
-            letter-spacing: -0.03em;
-            text-decoration: none;
-            width: fit-content;
-            transition: transform 0.15s var(--snappy-ease), opacity 0.15s var(--snappy-ease);
-            box-shadow: 0 10px 24px rgba(20, 36, 32, 0.12);
-            will-change: transform, opacity;
-            backface-visibility: hidden;
-        }
-
-        .hero-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        body:not(.page-ready) .hero-badge,
         body:not(.page-ready) .hero-desc,
-        body:not(.page-ready) .hero-stats,
-        body:not(.page-ready) .hero-image {
+        body:not(.page-ready) .hero-stats {
             opacity: 0;
             transform: translateY(18px);
         }
 
-        body:not(.page-ready) .hero-actions {
-            opacity: 0;
-            transform: translateY(10px) scale(0.9);
-        }
-
-        .hero-badge,
         .hero-desc,
-        .hero-stats,
-        .hero-actions,
-        .hero-image {
+        .hero-stats {
             transition: opacity 0.4s var(--snappy-ease), transform 0.4s var(--snappy-ease);
             will-change: transform, opacity;
             backface-visibility: hidden;
@@ -302,32 +251,12 @@
         }
 
         .hero-stats {
-            transition-delay: 0.36s;
-        }
-
-        .hero-actions {
-            transition-delay: 0.3s;
-        }
-
-        .hero-image {
-            transition-delay: 0.1s;
+            transition-delay: 0.2s;
         }
 
         body.page-ready .hero-title .word {
             opacity: 1;
             transform: translateY(0);
-        }
-
-        .hero-image {
-            height: 100%;
-        }
-
-        .hero-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 24px;
-            display: block;
         }
 
         .filters-shell {
@@ -1003,24 +932,16 @@
                 grid-template-columns: 1fr 1fr;
             }
             .hero {
-                grid-template-columns: 1fr;
-                min-height: auto;
-            }
-            .hero-image {
-                min-height: 360px;
+                padding: 22px 24px;
             }
             .hero-content {
-                padding: 24px 10px 8px;
+                gap: 12px;
             }
             .hero-title {
-                max-width: none;
+                white-space: normal;
             }
             .hero-desc {
-                max-width: 36ch;
-            }
-            .hero-stats {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                max-width: none;
+                max-width: 50ch;
             }
             .filters-heading {
                 flex-direction: column;
@@ -1058,10 +979,10 @@
                 margin-left: auto;
             }
             .hero-container {
-                padding: 6px 16px 0;
+                padding: 4px 16px 0;
             }
             .hero {
-                padding: 14px;
+                padding: 18px 18px 16px;
                 border-radius: 24px;
             }
             .opportunities-grid {
@@ -1071,17 +992,15 @@
                 grid-template-columns: 1fr;
             }
             .hero-title {
-                font-size: clamp(2.75rem, 13vw, 3.6rem);
+                font-size: 1.8rem;
+                white-space: normal;
             }
             .hero-desc {
-                font-size: 16px;
-                max-width: none;
-            }
-            .hero-actions {
-                align-items: stretch;
+                font-size: 13px;
+                max-width: 28ch;
             }
             .hero-stats {
-                grid-template-columns: 1fr;
+                display: none;
             }
             .modal-content {
                 padding: 24px;
@@ -1139,13 +1058,9 @@
     <div class="container hero-container">
         <div class="hero">
             <div class="hero-content">
-                <div class="hero-badge">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><path d="M8 12h.01"></path><path d="M12 12h.01"></path><path d="M16 12h.01"></path></svg>
-                    Directory is in early stages of development.
-                </div>
                 <div class="hero-copy">
-                    <h1 class="hero-title">Browse live volunteer opportunities across Canada.</h1>
-                    <p class="hero-desc">One place for verified volunteer opportunities across Canada. No dead links, no outdated listings, no noise.</p>
+                    <h1 class="hero-title">Volunteer Opportunities</h1>
+                    <p class="hero-desc">Verified opportunities across Canada with cleaner filters, fewer dead links, and less noise.</p>
                 </div>
                 <div class="hero-stats" aria-label="Directory summary">
                     <div class="hero-stat">
@@ -1154,20 +1069,9 @@
                     </div>
                     <div class="hero-stat">
                         <span class="hero-stat-value">Student-first</span>
-                        <span class="hero-stat-label">clearer filters, fewer dead links, less noise</span>
+                        <span class="hero-stat-label">clear filters, student-friendly</span>
                     </div>
                 </div>
-                <div class="hero-actions">
-                    <a href="#grid" class="hero-btn">
-                        Browse Opportunities
-                        <span class="hero-btn-icon">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-                        </span>
-                    </a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <img src="https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Volunteers packing groceries" onerror="this.src='https://placehold.co/900x1200/35635c/FFF?text=Volunteer'">
             </div>
         </div>
     </div>
