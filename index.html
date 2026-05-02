@@ -1531,14 +1531,31 @@
             selectEl.appendChild(option);
         }
 
+        function normalizeStudentFriendlyValue(value) {
+            if (value === true || value === false) return value;
+            if (typeof value === 'number') {
+                if (value === 1) return true;
+                if (value === 0) return false;
+            }
+            if (typeof value === 'string') {
+                const normalized = value.trim().toLowerCase();
+                if (['yes', 'true', 'y', '1'].includes(normalized)) return true;
+                if (['no', 'false', 'n', '0'].includes(normalized)) return false;
+            }
+            return null;
+        }
+
         function getStudentFriendlyLabel(value) {
-            if (value === true) return 'Yes';
-            if (value === false) return 'No';
+            const normalized = normalizeStudentFriendlyValue(value);
+            if (normalized === true) return 'Yes';
+            if (normalized === false) return 'No';
             return 'Unknown';
         }
 
         function getStudentFriendlyCardMarkup(value) {
-            if (value === true) {
+            const normalized = normalizeStudentFriendlyValue(value);
+
+            if (normalized === true) {
                 return `
                     <span class="student-status" aria-label="Student suitable: yes">
                         <span class="student-status-icon yes" aria-hidden="true">
@@ -1550,7 +1567,7 @@
                 `;
             }
 
-            if (value === false) {
+            if (normalized === false) {
                 return `
                     <span class="student-status" aria-label="Student suitable: no">
                         <span class="student-status-icon no" aria-hidden="true">
