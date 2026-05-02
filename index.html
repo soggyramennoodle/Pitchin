@@ -914,10 +914,6 @@
             gap: 10px;
         }
 
-        .ai-overview.started .ai-overview-trigger {
-            display: none;
-        }
-
         .ai-overview-trigger {
             display: inline-flex;
             align-items: center;
@@ -1690,29 +1686,17 @@
             const box = modalContent.querySelector('[data-ai-box]');
             const text = modalContent.querySelector('[data-ai-text]');
 
-            if (!root || !state || !box || !text) return;
-
-            root.classList.add('started');
-            state.classList.add('active');
-
+            if (!root || !trigger || !state || !box || !text || !currentModalOpportunityFields) return;
             if (root.dataset.loading === 'true' || root.dataset.loaded === 'true') return;
 
             root.dataset.loading = 'true';
+            trigger.style.display = 'none';
+            state.classList.add('active');
             box.classList.remove('complete', 'error');
             box.classList.add('loading');
             box.style.removeProperty('--ai-solid-bg');
             text.classList.add('loading-text');
             text.classList.remove('error-text');
-
-            if (!currentModalOpportunityFields) {
-                box.classList.remove('loading', 'complete');
-                box.classList.add('error');
-                text.classList.remove('loading-text');
-                text.classList.add('error-text');
-                text.textContent = 'Overview unavailable right now';
-                delete root.dataset.loading;
-                return;
-            }
 
             const loadingInterval = startAiOverviewLoadingCycle(text);
 
@@ -2316,7 +2300,7 @@
                     ` : getApplyDisclosureMarkup(contactInfo)}
 
                     <div class="ai-overview" data-ai-overview>
-                        <button type="button" class="ai-overview-trigger" data-ai-trigger onclick="window.handleAiOverviewRequest(this)">
+                        <button type="button" class="ai-overview-trigger" data-ai-trigger>
                             <span aria-hidden="true">✨</span>
                             <span>Get AI Overview</span>
                         </button>
