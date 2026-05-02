@@ -786,6 +786,89 @@
             transform: translateY(0);
         }
 
+        /* Footer */
+        .site-footer {
+            padding: 56px 0 24px;
+        }
+
+        .footer-shell {
+            border-top: 1px solid rgba(232, 227, 219, 0.88);
+            padding-top: 34px;
+        }
+
+        .footer-main {
+            display: grid;
+            grid-template-columns: minmax(280px, 1.3fr) minmax(160px, 0.75fr) minmax(180px, 0.85fr);
+            gap: 56px;
+            align-items: start;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .footer-brand .logo {
+            width: fit-content;
+        }
+
+        .footer-copy {
+            max-width: 18ch;
+            color: #5f6664;
+            font-size: 17px;
+            line-height: 1.45;
+            letter-spacing: -0.03em;
+        }
+
+        .footer-column-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 16px;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a,
+        .footer-links span {
+            color: #818785;
+            text-decoration: none;
+            font-size: 15px;
+            line-height: 1.45;
+            transition: color 0.15s var(--snappy-ease), transform 0.15s var(--snappy-ease);
+            display: inline-block;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            transform: translateX(2px);
+        }
+
+        .footer-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 78px;
+            color: #767d7b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .footer-meta-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 999px;
+            background: rgba(31, 81, 76, 0.72);
+            flex-shrink: 0;
+        }
+
         .modal-header {
             margin-bottom: 24px;
             padding-right: 24px;
@@ -943,6 +1026,16 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+            .footer-main {
+                grid-template-columns: 1fr 1fr;
+                gap: 32px;
+            }
+            .footer-brand {
+                grid-column: 1 / -1;
+            }
+            .footer-meta {
+                margin-top: 44px;
+            }
         }
 
         @media (max-width: 640px) {
@@ -998,6 +1091,25 @@
             }
             .modal-meta-grid {
                 grid-template-columns: 1fr;
+            }
+            .site-footer {
+                padding: 44px 0 20px;
+            }
+            .footer-shell {
+                padding-top: 28px;
+            }
+            .footer-main {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+            .footer-copy {
+                max-width: 24ch;
+                font-size: 16px;
+            }
+            .footer-meta {
+                gap: 10px;
+                margin-top: 34px;
+                font-size: 13px;
             }
         }
     </style>
@@ -1109,6 +1221,47 @@
             <div class="loading">Loading opportunities...</div>
         </div>
     </main>
+
+    <footer class="site-footer">
+        <div class="container footer-shell">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <a href="https://pitchin.framer.website" class="logo">
+                        <div class="logo-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </div>
+                        <span class="logo-text">Pitchin</span>
+                    </a>
+                    <p class="footer-copy">Connecting Canadians to meaningful volunteer opportunities.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h3 class="footer-column-title">Follow us:</h3>
+                    <ul class="footer-links">
+                        <li><span>Instagram (soon!)</span></li>
+                        <li><span>LinkedIn (soon 👀)</span></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3 class="footer-column-title">Contact</h3>
+                    <ul class="footer-links">
+                        <li><a href="mailto:pitchin.live@proton.me">pitchin.live@proton.me</a></li>
+                        <li><span>Saskatchewan, CA</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-meta">
+                <span>All Rights Reserved, 2026</span>
+                <span class="footer-meta-dot" aria-hidden="true"></span>
+                <span>Made with love in The Prairies 🌾</span>
+            </div>
+        </div>
+    </footer>
 
     <!-- Modal -->
     <div class="modal-overlay" id="modalOverlay">
