@@ -806,6 +806,21 @@
             text-decoration-color: rgba(31, 81, 76, 0.35);
         }
 
+        .modal-verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            font-size: 13px;
+            line-height: 1.35;
+            color: #2D5A45;
+            opacity: 0.92;
+        }
+
+        .modal-verified svg {
+            flex-shrink: 0;
+        }
+
         .modal-meta-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -1475,6 +1490,13 @@
             return fields["Website"] || fields["Organization Website"] || fields["Website URL"] || '';
         }
 
+        function formatVerifiedDate(value) {
+            if (!value) return '';
+            const date = new Date(value);
+            if (isNaN(date.getTime())) return String(value);
+            return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
         function getCardCenterRect(card) {
             if (!card || !document.body.contains(card)) return null;
             const rect = card.getBoundingClientRect();
@@ -1978,6 +2000,7 @@
             const hours = fields["Hours Per Week"] ? `${fields["Hours Per Week"]} hrs/week` : 'N/A';
             const categoryStyle = getCategoryTagStyle(category);
             const orgWebsite = getOrganizationWebsite(fields);
+            const verifiedDate = formatVerifiedDate(fields["Date Last Checked"]);
             
             let deadlineStr = 'No deadline';
             if (fields["Application Deadline"]) {
@@ -2004,6 +2027,14 @@
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                         ${location}
                     </div>
+                    ${verifiedDate ? `
+                        <div class="modal-verified">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M20 6 9 17l-5-5"></path>
+                            </svg>
+                            <span>Last verified: ${verifiedDate}</span>
+                        </div>
+                    ` : ''}
                     <div class="card-tags" style="margin-top: 16px;">
                         ${category ? `<span class="tag" style="background-color: ${categoryStyle.bg}; color: ${categoryStyle.text};">${category}</span>` : ''}
                         ${format ? `<span class="tag format">${format}</span>` : ''}
