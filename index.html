@@ -1415,71 +1415,70 @@
             applyFilters();
         }
 
-        function initializeCardTiltEffects() {
-            if (!supportsCardTilt) return;
+        function attachCardTiltEffect(card) {
+            if (!supportsCardTilt || !card || card.dataset.tiltBound === 'true') return;
 
-            const cards = gridEl.querySelectorAll('.card');
+            let rafId = null;
+            let lastEvent = null;
+            let resetTimeout = null;
 
-            cards.forEach(card => {
-                let rafId = null;
-                let lastEvent = null;
-                let resetTimeout = null;
+            const updateTilt = () => {
+                rafId = null;
+                if (!lastEvent) return;
 
-                const updateTilt = () => {
-                    rafId = null;
-                    if (!lastEvent) return;
+                const rect = card.getBoundingClientRect();
+                const x = lastEvent.clientX - rect.left;
+                const y = lastEvent.clientY - rect.top;
+                const relX = x / rect.width - 0.5;
+                const relY = y / rect.height - 0.5;
+                const rotateY = relX * 24;
+                const rotateX = relY * -24;
 
-                    const rect = card.getBoundingClientRect();
-                    const x = lastEvent.clientX - rect.left;
-                    const y = lastEvent.clientY - rect.top;
-                    const relX = x / rect.width - 0.5;
-                    const relY = y / rect.height - 0.5;
-                    const rotateY = relX * 24;
-                    const rotateX = relY * -24;
+                card.style.setProperty('--card-tilt-x', `${rotateX.toFixed(2)}deg`);
+                card.style.setProperty('--card-tilt-y', `${rotateY.toFixed(2)}deg`);
+                card.style.setProperty('--glare-x', `${x.toFixed(1)}px`);
+                card.style.setProperty('--glare-y', `${y.toFixed(1)}px`);
+                card.style.setProperty('--glare-opacity', '0.08');
+            };
 
-                    card.style.setProperty('--card-tilt-x', `${rotateX.toFixed(2)}deg`);
-                    card.style.setProperty('--card-tilt-y', `${rotateY.toFixed(2)}deg`);
-                    card.style.setProperty('--glare-x', `${x.toFixed(1)}px`);
-                    card.style.setProperty('--glare-y', `${y.toFixed(1)}px`);
-                    card.style.setProperty('--glare-opacity', '0.08');
-                };
+            card.addEventListener('mousemove', (event) => {
+                clearTimeout(resetTimeout);
+                card.style.transition = 'none';
+                lastEvent = event;
 
-                card.addEventListener('mousemove', (event) => {
-                    clearTimeout(resetTimeout);
-                    card.style.transition = 'none';
-                    lastEvent = event;
-
-                    if (rafId === null) {
-                        rafId = requestAnimationFrame(updateTilt);
-                    }
-                });
-
-                card.addEventListener('mouseenter', (event) => {
-                    clearTimeout(resetTimeout);
-                    card.style.transition = 'none';
-                    lastEvent = event;
-                    if (rafId === null) {
-                        rafId = requestAnimationFrame(updateTilt);
-                    }
-                });
-
-                card.addEventListener('mouseleave', () => {
-                    if (rafId !== null) {
-                        cancelAnimationFrame(rafId);
-                        rafId = null;
-                    }
-
-                    lastEvent = null;
-                    card.style.transition = 'transform 0.4s var(--snappy-ease)';
-                    card.style.setProperty('--card-tilt-x', '0deg');
-                    card.style.setProperty('--card-tilt-y', '0deg');
-                    card.style.setProperty('--glare-opacity', '0');
-
-                    resetTimeout = window.setTimeout(() => {
-                        card.style.transition = '';
-                    }, 400);
-                });
+                if (rafId === null) {
+                    rafId = requestAnimationFrame(updateTilt);
+                }
             });
+
+            card.addEventListener('mouseenter', (event) => {
+                clearTimeout(resetTimeout);
+                card.style.transition = 'none';
+                lastEvent = event;
+
+                if (rafId === null) {
+                    rafId = requestAnimationFrame(updateTilt);
+                }
+            });
+
+            card.addEventListener('mouseleave', () => {
+                if (rafId !== null) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+
+                lastEvent = null;
+                card.style.transition = 'transform 0.4s var(--snappy-ease)';
+                card.style.setProperty('--card-tilt-x', '0deg');
+                card.style.setProperty('--card-tilt-y', '0deg');
+                card.style.setProperty('--glare-opacity', '0');
+
+                resetTimeout = window.setTimeout(() => {
+                    card.style.transition = '';
+                }, 400);
+            });
+
+            card.dataset.tiltBound = 'true';
         }
 
         // --- RENDERING ---
@@ -1547,9 +1546,8 @@
                     </div>
                 `;
                 gridEl.appendChild(card);
+                attachCardTiltEffect(card);
             });
-
-            initializeCardTiltEffects();
         }
 
         // --- MODAL LOGIC ---
