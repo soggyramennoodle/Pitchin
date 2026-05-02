@@ -741,9 +741,15 @@
             backface-visibility: hidden;
         }
 
-        .modal-overlay.active .modal-stagger {
+        .modal-overlay.content-ready .modal-stagger {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        .modal.shared-transition {
+            transition: none !important;
+            transform: none !important;
+            opacity: 1 !important;
         }
 
         .modal-header {
@@ -1095,6 +1101,9 @@
         let filteredOpportunities = [];
         let filterTransitionTimeout;
         const supportsCardTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        let currentOpenCard = null;
+        let isModalTransitioning = false;
+        let activeSharedClone = null;
 
         const CANADIAN_REGIONS = ['AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'];
         const FORMAT_ORDER = ['In Person', 'Remote', 'Hybrid'];
@@ -1236,6 +1245,40 @@
 
         function getOrganizationWebsite(fields) {
             return fields["Website"] || fields["Organization Website"] || fields["Website URL"] || '';
+        }
+
+        function shouldUseSimpleModalTransition() {
+            return window.innerWidth < 768;
+        }
+
+        function createSharedCardClone(sourceRect, sourceCard) {
+            const clone = document.createElement('div');
+            const computedStyle = sourceCard ? window.getComputedStyle(sourceCard) : null;
+
+            clone.style.position = 'fixed';
+            clone.style.top = `${sourceRect.top}px`;
+            clone.style.left = `${sourceRect.left}px`;
+            clone.style.width = `${sourceRect.width}px`;
+            clone.style.height = `${sourceRect.height}px`;
+            clone.style.borderRadius = computedStyle?.borderRadius || '22px';
+            clone.style.background = computedStyle?.backgroundColor || 'rgb(255, 255, 255)';
+            clone.style.border = computedStyle?.border || '1px solid rgba(232, 227, 219, 1)';
+            clone.style.boxShadow = computedStyle?.boxShadow || '0 18px 42px rgba(18, 27, 24, 0.075)';
+            clone.style.zIndex = '110';
+            clone.style.pointerEvents = 'none';
+            clone.style.willChange = 'top, left, width, height, border-radius, opacity, transform';
+            clone.style.backfaceVisibility = 'hidden';
+            clone.style.transform = 'translateZ(0)';
+            document.body.appendChild(clone);
+            return clone;
+        }
+
+        function showModalContent() {
+            modalOverlay.classList.add('content-ready');
+        }
+
+        function hideModalContent() {
+            modalOverlay.classList.remove('content-ready');
         }
 
         function resetSelect(selectEl, placeholder) {
@@ -1503,7 +1546,7 @@
                 const fields = opp.fields;
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.onclick = () => openModal(opp);
+                card.onclick = () => openModal(opp, card);
                 card.style.setProperty('--card-delay', `${index * 55}ms`);
                 card.addEventListener('animationend', () => {
                     card.style.animation = 'none';
@@ -1555,7 +1598,9 @@
         }
 
         // --- MODAL LOGIC ---
-        function openModal(opportunity) {
+        function openModal(opportunity, sourceCard = null) {
+            if (isModalTransitioning) return;
+
             const fields = opportunity.fields;
             
             const title = fields["Opportunity Title"] || 'Untitled Opportunity';
@@ -1632,14 +1677,144 @@
                 `}
                 <a href="${reportHref}" class="report-link modal-stagger" style="--stagger-index: 4;">Report this listing</a>
             `;
+            currentOpenCard = sourceCard;
+            document.body.style.overflow = 'hidden';
 
+            if (shouldUseSimpleModalTransition() || !sourceCard) {
+                modalOverlay.classList.add('active');
+                requestAnimationFrame(showModalContent);
+                return;
+            }
+
+            isModalTransitioning = true;
+            hideModalContent();
+            modal.classList.add('shared-transition');
             modalOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+
+            const sourceRect = sourceCard.getBoundingClientRect();
+            const targetRect = modal.getBoundingClientRect();
+            const targetRadius = window.getComputedStyle(modal).borderRadius;
+
+            sourceCard.style.opacity = '0';
+
+            const clone = createSharedCardClone(sourceRect, sourceCard);
+            activeSharedClone = clone;
+
+            modalOverlay.animate(
+                [{ opacity: 0 }, { opacity: 1 }],
+                { duration: 350, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+            );
+
+            const cloneAnimation = clone.animate(
+                [
+                    {
+                        top: `${sourceRect.top}px`,
+                        left: `${sourceRect.left}px`,
+                        width: `${sourceRect.width}px`,
+                        height: `${sourceRect.height}px`,
+                        borderRadius: window.getComputedStyle(sourceCard).borderRadius,
+                        opacity: 1
+                    },
+                    {
+                        top: `${targetRect.top}px`,
+                        left: `${targetRect.left}px`,
+                        width: `${targetRect.width}px`,
+                        height: `${targetRect.height}px`,
+                        borderRadius: targetRadius,
+                        opacity: 1
+                    }
+                ],
+                {
+                    duration: 350,
+                    easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                    fill: 'forwards'
+                }
+            );
+
+            cloneAnimation.finished.then(() => {
+                clone.remove();
+                activeSharedClone = null;
+                modal.classList.remove('shared-transition');
+                showModalContent();
+                isModalTransitioning = false;
+            }).catch(() => {
+                clone.remove();
+                activeSharedClone = null;
+                modal.classList.remove('shared-transition');
+                showModalContent();
+                isModalTransitioning = false;
+            });
         }
 
         function closeModal() {
-            modalOverlay.classList.remove('active');
-            document.body.style.overflow = '';
+            if (isModalTransitioning) return;
+
+            if (shouldUseSimpleModalTransition() || !currentOpenCard || !document.body.contains(currentOpenCard)) {
+                hideModalContent();
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                if (currentOpenCard) currentOpenCard.style.opacity = '1';
+                currentOpenCard = null;
+                return;
+            }
+
+            isModalTransitioning = true;
+            hideModalContent();
+            modal.classList.add('shared-transition');
+
+            const targetCard = currentOpenCard;
+            const sourceRect = modal.getBoundingClientRect();
+            const targetRect = targetCard.getBoundingClientRect();
+            const modalRadius = window.getComputedStyle(modal).borderRadius;
+            const cardRadius = window.getComputedStyle(targetCard).borderRadius;
+
+            const clone = createSharedCardClone(sourceRect, targetCard);
+            clone.style.borderRadius = modalRadius;
+            clone.style.boxShadow = window.getComputedStyle(modal).boxShadow;
+            activeSharedClone = clone;
+
+            const overlayAnimation = modalOverlay.animate(
+                [{ opacity: 1 }, { opacity: 0 }],
+                { duration: 350, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+            );
+
+            const cloneAnimation = clone.animate(
+                [
+                    {
+                        top: `${sourceRect.top}px`,
+                        left: `${sourceRect.left}px`,
+                        width: `${sourceRect.width}px`,
+                        height: `${sourceRect.height}px`,
+                        borderRadius: modalRadius,
+                        opacity: 1
+                    },
+                    {
+                        top: `${targetRect.top}px`,
+                        left: `${targetRect.left}px`,
+                        width: `${targetRect.width}px`,
+                        height: `${targetRect.height}px`,
+                        borderRadius: cardRadius,
+                        opacity: 1
+                    }
+                ],
+                {
+                    duration: 350,
+                    easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                    fill: 'forwards'
+                }
+            );
+
+            Promise.allSettled([overlayAnimation.finished, cloneAnimation.finished]).then(() => {
+                clone.remove();
+                activeSharedClone = null;
+                modal.classList.remove('shared-transition');
+                modalOverlay.classList.remove('active');
+                modalOverlay.getAnimations().forEach(animation => animation.cancel());
+                targetCard.style.opacity = '1';
+                currentOpenCard = null;
+                document.body.style.overflow = '';
+                isModalTransitioning = false;
+            });
         }
 
         // Start App
