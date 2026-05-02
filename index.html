@@ -1505,6 +1505,10 @@
                 card.className = 'card';
                 card.onclick = () => openModal(opp);
                 card.style.setProperty('--card-delay', `${index * 55}ms`);
+                card.addEventListener('animationend', () => {
+                    card.style.animation = 'none';
+                    card.style.opacity = '1';
+                }, { once: true });
 
                 // Safe field getters
                 const title = fields["Opportunity Title"] || 'Untitled Opportunity';
