@@ -702,6 +702,7 @@
             overscroll-behavior: contain;
             will-change: transform, opacity;
             backface-visibility: hidden;
+            transform-origin: center center;
         }
 
         .modal-overlay.active .modal {
@@ -1103,7 +1104,6 @@
         const supportsCardTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
         let currentOpenCard = null;
         let isModalTransitioning = false;
-        let activeSharedClone = null;
 
         const CANADIAN_REGIONS = ['AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'];
         const FORMAT_ORDER = ['In Person', 'Remote', 'Hybrid'];
@@ -1251,26 +1251,26 @@
             return window.innerWidth < 768;
         }
 
-        function createSharedCardClone(sourceRect, sourceCard) {
-            const clone = document.createElement('div');
-            const computedStyle = sourceCard ? window.getComputedStyle(sourceCard) : null;
+        function getFlipTransform(fromRect, toRect) {
+            const fromCenterX = fromRect.left + fromRect.width / 2;
+            const fromCenterY = fromRect.top + fromRect.height / 2;
+            const toCenterX = toRect.left + toRect.width / 2;
+            const toCenterY = toRect.top + toRect.height / 2;
 
-            clone.style.position = 'fixed';
-            clone.style.top = `${sourceRect.top}px`;
-            clone.style.left = `${sourceRect.left}px`;
-            clone.style.width = `${sourceRect.width}px`;
-            clone.style.height = `${sourceRect.height}px`;
-            clone.style.borderRadius = computedStyle?.borderRadius || '22px';
-            clone.style.background = computedStyle?.backgroundColor || 'rgb(255, 255, 255)';
-            clone.style.border = computedStyle?.border || '1px solid rgba(232, 227, 219, 1)';
-            clone.style.boxShadow = computedStyle?.boxShadow || '0 18px 42px rgba(18, 27, 24, 0.075)';
-            clone.style.zIndex = '110';
-            clone.style.pointerEvents = 'none';
-            clone.style.willChange = 'top, left, width, height, border-radius, opacity, transform';
-            clone.style.backfaceVisibility = 'hidden';
-            clone.style.transform = 'translateZ(0)';
-            document.body.appendChild(clone);
-            return clone;
+            return {
+                translateX: fromCenterX - toCenterX,
+                translateY: fromCenterY - toCenterY,
+                scaleX: fromRect.width / toRect.width,
+                scaleY: fromRect.height / toRect.height
+            };
+        }
+
+        function resetModalAnimationState() {
+            modal.getAnimations().forEach(animation => animation.cancel());
+            modalOverlay.getAnimations().forEach(animation => animation.cancel());
+            modal.classList.remove('shared-transition');
+            modal.style.transform = '';
+            modal.style.opacity = '';
         }
 
         function showModalContent() {
@@ -1688,61 +1688,45 @@
 
             isModalTransitioning = true;
             hideModalContent();
+            resetModalAnimationState();
             modal.classList.add('shared-transition');
             modalOverlay.classList.add('active');
 
             const sourceRect = sourceCard.getBoundingClientRect();
-            const targetRect = modal.getBoundingClientRect();
-            const targetRadius = window.getComputedStyle(modal).borderRadius;
-
             sourceCard.style.opacity = '0';
+            requestAnimationFrame(() => {
+                const targetRect = modal.getBoundingClientRect();
+                const { translateX, translateY, scaleX, scaleY } = getFlipTransform(sourceRect, targetRect);
 
-            const clone = createSharedCardClone(sourceRect, sourceCard);
-            activeSharedClone = clone;
+                const overlayAnimation = modalOverlay.animate(
+                    [{ opacity: 0 }, { opacity: 1 }],
+                    { duration: 400, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+                );
 
-            modalOverlay.animate(
-                [{ opacity: 0 }, { opacity: 1 }],
-                { duration: 350, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
-            );
-
-            const cloneAnimation = clone.animate(
-                [
+                const modalAnimation = modal.animate(
+                    [
+                        {
+                            transform: `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`,
+                            opacity: 0
+                        },
+                        {
+                            transform: 'translate(0px, 0px) scale(1, 1)',
+                            opacity: 1
+                        }
+                    ],
                     {
-                        top: `${sourceRect.top}px`,
-                        left: `${sourceRect.left}px`,
-                        width: `${sourceRect.width}px`,
-                        height: `${sourceRect.height}px`,
-                        borderRadius: window.getComputedStyle(sourceCard).borderRadius,
-                        opacity: 1
-                    },
-                    {
-                        top: `${targetRect.top}px`,
-                        left: `${targetRect.left}px`,
-                        width: `${targetRect.width}px`,
-                        height: `${targetRect.height}px`,
-                        borderRadius: targetRadius,
-                        opacity: 1
+                        duration: 400,
+                        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                        fill: 'both'
                     }
-                ],
-                {
-                    duration: 350,
-                    easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                    fill: 'forwards'
-                }
-            );
+                );
 
-            cloneAnimation.finished.then(() => {
-                clone.remove();
-                activeSharedClone = null;
-                modal.classList.remove('shared-transition');
-                showModalContent();
-                isModalTransitioning = false;
-            }).catch(() => {
-                clone.remove();
-                activeSharedClone = null;
-                modal.classList.remove('shared-transition');
-                showModalContent();
-                isModalTransitioning = false;
+                Promise.allSettled([overlayAnimation.finished, modalAnimation.finished]).then(() => {
+                    resetModalAnimationState();
+                    modal.classList.add('shared-transition');
+                    showModalContent();
+                    isModalTransitioning = false;
+                });
             });
         }
 
@@ -1760,56 +1744,40 @@
 
             isModalTransitioning = true;
             hideModalContent();
+            resetModalAnimationState();
             modal.classList.add('shared-transition');
 
             const targetCard = currentOpenCard;
             const sourceRect = modal.getBoundingClientRect();
             const targetRect = targetCard.getBoundingClientRect();
-            const modalRadius = window.getComputedStyle(modal).borderRadius;
-            const cardRadius = window.getComputedStyle(targetCard).borderRadius;
-
-            const clone = createSharedCardClone(sourceRect, targetCard);
-            clone.style.borderRadius = modalRadius;
-            clone.style.boxShadow = window.getComputedStyle(modal).boxShadow;
-            activeSharedClone = clone;
+            const { translateX, translateY, scaleX, scaleY } = getFlipTransform(targetRect, sourceRect);
 
             const overlayAnimation = modalOverlay.animate(
                 [{ opacity: 1 }, { opacity: 0 }],
-                { duration: 350, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+                { duration: 400, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
             );
 
-            const cloneAnimation = clone.animate(
+            const modalAnimation = modal.animate(
                 [
                     {
-                        top: `${sourceRect.top}px`,
-                        left: `${sourceRect.left}px`,
-                        width: `${sourceRect.width}px`,
-                        height: `${sourceRect.height}px`,
-                        borderRadius: modalRadius,
+                        transform: 'translate(0px, 0px) scale(1, 1)',
                         opacity: 1
                     },
                     {
-                        top: `${targetRect.top}px`,
-                        left: `${targetRect.left}px`,
-                        width: `${targetRect.width}px`,
-                        height: `${targetRect.height}px`,
-                        borderRadius: cardRadius,
-                        opacity: 1
+                        transform: `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`,
+                        opacity: 0
                     }
                 ],
                 {
-                    duration: 350,
+                    duration: 400,
                     easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                    fill: 'forwards'
+                    fill: 'both'
                 }
             );
 
-            Promise.allSettled([overlayAnimation.finished, cloneAnimation.finished]).then(() => {
-                clone.remove();
-                activeSharedClone = null;
-                modal.classList.remove('shared-transition');
+            Promise.allSettled([overlayAnimation.finished, modalAnimation.finished]).then(() => {
+                resetModalAnimationState();
                 modalOverlay.classList.remove('active');
-                modalOverlay.getAnimations().forEach(animation => animation.cancel());
                 targetCard.style.opacity = '1';
                 currentOpenCard = null;
                 document.body.style.overflow = '';
