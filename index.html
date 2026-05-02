@@ -1597,7 +1597,6 @@
         }
 
         function getApplyDisclosureMarkup(contactInfo) {
-            const organizationDetail = contactInfo.details.find((detail) => detail.label === 'Organization');
             const warningMarkup = `
                 <div class="apply-warning-row">
                     <span class="apply-warning-icon" aria-hidden="true">
@@ -1612,14 +1611,6 @@
                         <div class="apply-warning-note">Please use the report button below so we can review, update, or remove it.</div>
                     </div>
                 </div>
-                ${organizationDetail ? `
-                    <div class="apply-contact-list" style="margin-top: 14px;">
-                        <div class="apply-contact-item">
-                            <span class="apply-contact-label">${escapeHtml(organizationDetail.label)}</span>
-                            <span class="apply-contact-value">${escapeHtml(organizationDetail.value)}</span>
-                        </div>
-                    </div>
-                ` : ''}
             `;
 
             const detailItems = contactInfo.details.length > 0
