@@ -1556,6 +1556,13 @@
             modalOverlay.addEventListener('click', (e) => {
                 if (e.target === modalOverlay) closeModal();
             });
+            modalContent.addEventListener('click', (e) => {
+                const aiTrigger = e.target.closest('[data-ai-trigger]');
+                if (aiTrigger) {
+                    e.preventDefault();
+                    handleAiOverviewRequest(aiTrigger);
+                }
+            });
             modalCloseBtn.addEventListener('click', closeModal);
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
@@ -1672,9 +1679,9 @@
             }, 1400);
         }
 
-        async function handleAiOverviewRequest() {
-            const root = modalContent.querySelector('[data-ai-overview]');
-            const trigger = modalContent.querySelector('[data-ai-trigger]');
+        async function handleAiOverviewRequest(triggerEl = null) {
+            const trigger = triggerEl || modalContent.querySelector('[data-ai-trigger]');
+            const root = trigger?.closest('[data-ai-overview]') || modalContent.querySelector('[data-ai-overview]');
             const state = modalContent.querySelector('[data-ai-state]');
             const box = modalContent.querySelector('[data-ai-box]');
             const text = modalContent.querySelector('[data-ai-text]');
@@ -1714,6 +1721,8 @@
                 delete root.dataset.loading;
             }
         }
+
+        window.handleAiOverviewRequest = handleAiOverviewRequest;
 
         function getCardCenterRect(card) {
             if (!card || !document.body.contains(card)) return null;
@@ -2291,7 +2300,7 @@
                     ` : getApplyDisclosureMarkup(contactInfo)}
 
                     <div class="ai-overview" data-ai-overview>
-                        <button type="button" class="ai-overview-trigger" data-ai-trigger onclick="handleAiOverviewRequest()">
+                        <button type="button" class="ai-overview-trigger" data-ai-trigger>
                             <span aria-hidden="true">✨</span>
                             <span>Get AI Overview</span>
                         </button>
