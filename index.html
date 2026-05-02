@@ -9,8 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #35635c;
-            --primary-hover: #294d47;
+            --primary: #1f514c;
+            --primary-hover: #173f3a;
             --bg-color: #f7f5f1;
             --card-bg: #FFFFFF;
             --text-main: #1f2426;
@@ -19,9 +19,9 @@
             --tag-bg: #dfece7;
             --tag-text: #274740;
             --shadow-sm: 0 1px 2px 0 rgba(31, 36, 38, 0.04);
-            --shadow-md: 0 10px 28px rgba(31, 36, 38, 0.08);
-            --shadow-lg: 0 24px 60px rgba(31, 36, 38, 0.12);
-            --radius-md: 20px;
+            --shadow-md: 0 18px 40px rgba(31, 36, 38, 0.09);
+            --shadow-lg: 0 28px 72px rgba(31, 36, 38, 0.14);
+            --radius-md: 22px;
             --radius-sm: 12px;
             --radius-full: 9999px;
             --serif: 'Hedvig Letters Serif', Georgia, serif;
@@ -43,7 +43,7 @@
         }
 
         .container {
-            max-width: 1280px;
+            max-width: 1240px;
             margin: 0 auto;
             padding: 0 24px;
         }
@@ -69,14 +69,14 @@
         }
 
         .logo-icon {
-            background: radial-gradient(circle at 30% 25%, #4d7f76 0%, #35635c 55%, #244640 100%);
+            background: radial-gradient(circle at 30% 25%, #467069 0%, #1f514c 58%, #143935 100%);
             width: 42px;
             height: 42px;
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 18px rgba(53, 99, 92, 0.18);
+            box-shadow: 0 10px 18px rgba(31, 81, 76, 0.18);
             flex-shrink: 0;
         }
 
@@ -106,7 +106,7 @@
         .header-cta.ghost {
             background: transparent;
             color: var(--primary);
-            box-shadow: inset 0 0 0 1.5px rgba(53, 99, 92, 0.2);
+            box-shadow: inset 0 0 0 1.5px rgba(31, 81, 76, 0.2);
         }
 
         .header-cta.ghost .header-cta-icon {
@@ -140,7 +140,7 @@
             grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
             gap: 28px;
             padding: 20px;
-            min-height: 520px;
+            min-height: 500px;
             align-items: stretch;
             box-shadow: var(--shadow-md);
         }
@@ -157,40 +157,40 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
-            margin-bottom: 34px;
+            margin-bottom: 30px;
             opacity: 0.92;
         }
 
         .hero-copy {
             max-width: 590px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .hero-title {
-            font-size: clamp(3.5rem, 6vw, 4.5rem);
+            font-size: clamp(3.15rem, 5.4vw, 4rem);
             font-family: var(--serif);
             line-height: 0.96;
             letter-spacing: -0.06em;
-            margin-bottom: 18px;
+            margin-bottom: 14px;
             font-weight: 400;
             max-width: 11ch;
         }
 
         .hero-desc {
-            font-size: 17px;
-            line-height: 1.55;
+            font-size: 16px;
+            line-height: 1.58;
             opacity: 0.9;
             max-width: 34ch;
         }
 
         .hero-stats {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 12px;
             margin-bottom: 28px;
-            max-width: 560px;
+            max-width: 420px;
         }
 
         .hero-stat {
@@ -203,7 +203,7 @@
 
         .hero-stat-value {
             display: block;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 600;
             letter-spacing: -0.04em;
             margin-bottom: 2px;
@@ -226,7 +226,7 @@
         .hero-link {
             color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
             letter-spacing: -0.03em;
         }
@@ -244,7 +244,7 @@
             padding: 7px 7px 7px 18px;
             border-radius: var(--radius-full);
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14px;
             line-height: 1;
             letter-spacing: -0.03em;
             text-decoration: none;
@@ -256,6 +256,39 @@
         .hero-btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 16px 36px rgba(20, 36, 32, 0.18);
+        }
+
+        body:not(.page-ready) .hero-badge,
+        body:not(.page-ready) .hero-copy,
+        body:not(.page-ready) .hero-stats,
+        body:not(.page-ready) .hero-actions,
+        body:not(.page-ready) .hero-image {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+
+        .hero-badge,
+        .hero-copy,
+        .hero-stats,
+        .hero-actions,
+        .hero-image {
+            transition: opacity 0.55s ease, transform 0.55s ease;
+        }
+
+        .hero-copy {
+            transition-delay: 0.06s;
+        }
+
+        .hero-stats {
+            transition-delay: 0.12s;
+        }
+
+        .hero-actions {
+            transition-delay: 0.18s;
+        }
+
+        .hero-image {
+            transition-delay: 0.1s;
         }
 
         .hero-image {
@@ -296,7 +329,7 @@
             align-items: flex-end;
             justify-content: space-between;
             gap: 18px;
-            margin-bottom: 22px;
+            margin-bottom: 28px;
         }
 
         .section-kicker {
@@ -306,22 +339,23 @@
             font-weight: 600;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .filters-title {
             font-family: var(--serif);
-            font-size: clamp(2rem, 3vw, 2.6rem);
-            line-height: 0.98;
+            font-size: clamp(1.9rem, 2.7vw, 2.45rem);
+            line-height: 1.02;
             letter-spacing: -0.05em;
             font-weight: 400;
             color: var(--text-main);
+            margin-bottom: 14px;
         }
 
         .filters-subtitle {
             max-width: 44ch;
             font-size: 15px;
-            line-height: 1.55;
+            line-height: 1.62;
             color: var(--text-muted);
         }
 
@@ -354,20 +388,34 @@
         }
 
         .filter-control {
-            padding: 10px 14px;
+            min-height: 60px;
+            padding: 0 18px;
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
+            border-radius: 18px;
             font-family: inherit;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--text-main);
             background-color: var(--card-bg);
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
             outline: none;
+        }
+
+        select.filter-control {
+            appearance: none;
+            padding-right: 50px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236f7674' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 14px;
         }
 
         .filter-control:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
+            box-shadow: 0 0 0 4px rgba(31, 81, 76, 0.12);
+        }
+
+        .filter-control:hover {
+            transform: translateY(-1px);
         }
 
         /* Grid Layout */
@@ -376,6 +424,12 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 24px;
             margin-bottom: 60px;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+        }
+
+        .opportunities-grid.is-transitioning {
+            opacity: 0.42;
+            transform: translateY(6px);
         }
 
         /* Loading State */
@@ -398,39 +452,104 @@
             color: var(--text-muted);
         }
 
+        .no-results h3 {
+            font-family: var(--serif);
+            font-size: 30px;
+            font-weight: 400;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            letter-spacing: -0.04em;
+        }
+
+        .no-results p {
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .reset-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 46px;
+            padding: 0 18px;
+            border-radius: var(--radius-full);
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border: 0;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            box-shadow: 0 8px 18px rgba(31, 81, 76, 0.16);
+        }
+
+        .reset-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
         /* Card */
         .card {
             background-color: var(--card-bg);
             border-radius: var(--radius-md);
             border: 1px solid var(--border-color);
-            padding: 24px;
-            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            padding: 28px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             height: 100%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 28px rgba(18, 27, 24, 0.045);
+            opacity: 0;
+            transform: translateY(18px);
+            animation: cardIn 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: var(--card-delay, 0ms);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            right: 20px;
+            height: 3px;
+            border-radius: 999px;
+            background: var(--primary);
+            transform: scaleX(0.2);
+            transform-origin: center;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
         }
 
         .card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            border-color: #d1d5db;
+            transform: translateY(-4px);
+            box-shadow: 0 24px 44px rgba(18, 27, 24, 0.11);
+            border-color: #d6ddd7;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+            transform: scaleX(1);
         }
 
         .card-header {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .card-title {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 600;
             color: var(--text-main);
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             line-height: 1.3;
+            letter-spacing: -0.03em;
         }
 
         .card-org {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 500;
             color: var(--primary);
             display: flex;
@@ -439,9 +558,9 @@
         }
 
         .card-location {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--text-muted);
-            margin-top: 4px;
+            margin-top: 8px;
             display: flex;
             align-items: center;
             gap: 4px;
@@ -472,7 +591,7 @@
 
         .card-footer {
             margin-top: auto;
-            padding-top: 16px;
+            padding-top: 18px;
             border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
@@ -487,15 +606,16 @@
         }
 
         .footer-label {
-            font-size: 11px;
+            font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.08em;
             color: #9CA3AF;
         }
 
         .footer-val {
             font-weight: 500;
             color: var(--text-main);
+            font-size: 15px;
         }
 
         /* Modal */
@@ -514,7 +634,7 @@
             padding: 20px;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
         }
 
         .modal-overlay.active {
@@ -526,17 +646,20 @@
             background-color: var(--card-bg);
             border-radius: var(--radius-md);
             width: 100%;
-            max-width: 600px;
-            max-height: 90vh;
+            max-width: 620px;
+            max-height: min(90vh, 860px);
             overflow-y: auto;
             box-shadow: var(--shadow-lg);
             transform: scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transition: transform 0.2s ease, opacity 0.2s ease;
             position: relative;
+            overscroll-behavior: contain;
         }
 
         .modal-overlay.active .modal {
             transform: scale(1);
+            opacity: 1;
         }
 
         .modal-close {
@@ -568,11 +691,22 @@
         }
 
         .modal-title {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             line-height: 1.2;
+            letter-spacing: -0.03em;
+        }
+
+        .modal-org-link {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .modal-org-link:hover {
+            text-decoration: underline;
+            text-decoration-color: rgba(31, 81, 76, 0.35);
         }
 
         .modal-meta-grid {
@@ -621,13 +755,38 @@
             font-weight: 600;
             font-size: 16px;
             border-radius: var(--radius-sm);
-            transition: background-color 0.2s;
+            transition: background-color 0.2s ease, transform 0.2s ease;
             border: none;
             cursor: pointer;
         }
 
         .apply-btn:hover {
             background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .report-link {
+            display: inline-block;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .report-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Responsive */
@@ -655,7 +814,7 @@
                 max-width: 36ch;
             }
             .hero-stats {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
                 max-width: none;
             }
             .filters-heading {
@@ -697,7 +856,7 @@
                 grid-template-columns: 1fr;
             }
             .hero-title {
-                font-size: clamp(3rem, 14vw, 4.1rem);
+                font-size: clamp(2.75rem, 13vw, 3.6rem);
             }
             .hero-desc {
                 font-size: 16px;
@@ -706,8 +865,14 @@
             .hero-actions {
                 align-items: stretch;
             }
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
             .modal-content {
                 padding: 24px;
+            }
+            .modal {
+                max-height: 88dvh;
             }
             .modal-meta-grid {
                 grid-template-columns: 1fr;
@@ -751,11 +916,7 @@
                 <div class="hero-stats" aria-label="Directory summary">
                     <div class="hero-stat">
                         <span class="hero-stat-value" id="heroOpportunityCount">Loading</span>
-                        <span class="hero-stat-label">published opportunities</span>
-                    </div>
-                    <div class="hero-stat">
-                        <span class="hero-stat-value" id="heroProvinceCount">Across Canada</span>
-                        <span class="hero-stat-label">province coverage updates as listings grow</span>
+                        <span class="hero-stat-label">opportunities</span>
                     </div>
                     <div class="hero-stat">
                         <span class="hero-stat-value">Student-first</span>
@@ -813,9 +974,7 @@
                             <label for="format">Format</label>
                             <select id="format" class="filter-control">
                                 <option value="">All Formats</option>
-                                <option value="In-person">In-person</option>
-                                <option value="Remote">Remote</option>
-                                <option value="Hybrid">Hybrid</option>
+                                <!-- Options generated by JS -->
                             </select>
                         </div>
                     </div>
@@ -853,6 +1012,10 @@
         // --- STATE ---
         let allOpportunities = [];
         let filteredOpportunities = [];
+        let filterTransitionTimeout;
+
+        const CANADIAN_REGIONS = ['AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'];
+        const FORMAT_ORDER = ['In Person', 'Remote', 'Hybrid'];
 
         // DOM Elements
         const gridEl = document.getElementById('grid');
@@ -865,7 +1028,6 @@
         const modalContent = document.getElementById('modalContent');
         const resultsCountEl = document.getElementById('resultsCount');
         const heroOpportunityCountEl = document.getElementById('heroOpportunityCount');
-        const heroProvinceCountEl = document.getElementById('heroProvinceCount');
 
         // --- MOCK DATA FOR TESTING ---
         const mockData = [
@@ -927,6 +1089,8 @@
 
         // --- INITIALIZATION ---
         async function init() {
+            requestAnimationFrame(() => document.body.classList.add('page-ready'));
+
             if (USE_MOCK_DATA) {
                 allOpportunities = mockData;
                 setupFilters();
@@ -948,6 +1112,50 @@
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
             });
+        }
+
+        function normalizeFormat(format) {
+            const normalized = (format || '').trim().toLowerCase().replace('-', ' ');
+            if (normalized === 'in person' || normalized === 'inperson') return 'In Person';
+            if (normalized === 'remote') return 'Remote';
+            if (normalized === 'hybrid') return 'Hybrid';
+            return format || '';
+        }
+
+        function formatLocation(fields) {
+            const city = fields["City"] || '';
+            const province = fields["Province"] || '';
+            const format = normalizeFormat(fields["Format"]);
+
+            if (format === 'Remote') return 'Remote';
+            return [city, province].filter(Boolean).join(', ') || 'Location not specified';
+        }
+
+        function getOrganizationWebsite(fields) {
+            return fields["Website"] || fields["Organization Website"] || fields["Website URL"] || '';
+        }
+
+        function resetSelect(selectEl, placeholder) {
+            selectEl.innerHTML = '';
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = placeholder;
+            selectEl.appendChild(option);
+        }
+
+        function getStudentFriendlyLabel(value) {
+            if (value === true) return 'Yes';
+            if (value === false) return 'No';
+            return 'Unknown';
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
         }
 
         // --- DATA FETCHING ---
@@ -1005,21 +1213,21 @@
         // --- FILTERING LOGIC ---
         function setupFilters() {
             const categories = new Set();
-            const provinces = new Set();
+            const formats = new Set();
 
             allOpportunities.forEach(opp => {
                 const fields = opp.fields;
                 if (fields["Category"]) categories.add(fields["Category"]);
-                if (fields["Province"]) provinces.add(fields["Province"]);
+                if (fields["Format"]) formats.add(normalizeFormat(fields["Format"]));
             });
 
             if (heroOpportunityCountEl) {
                 heroOpportunityCountEl.textContent = `${allOpportunities.length}+`;
             }
 
-            if (heroProvinceCountEl) {
-                heroProvinceCountEl.textContent = `${provinces.size} provinces`;
-            }
+            resetSelect(categorySelect, 'All Categories');
+            resetSelect(provinceSelect, 'All Provinces');
+            resetSelect(formatSelect, 'All Formats');
 
             // Populate Category Select
             Array.from(categories).sort().forEach(cat => {
@@ -1030,56 +1238,78 @@
             });
 
             // Populate Province Select
-            Array.from(provinces).sort().forEach(prov => {
+            CANADIAN_REGIONS.forEach(prov => {
                 const option = document.createElement('option');
                 option.value = prov;
                 option.textContent = prov;
                 provinceSelect.appendChild(option);
             });
+
+            // Populate Format Select
+            FORMAT_ORDER.filter(format => formats.has(format)).forEach(format => {
+                const option = document.createElement('option');
+                option.value = format;
+                option.textContent = format;
+                formatSelect.appendChild(option);
+            });
         }
 
         function applyFilters() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedCategory = categorySelect.value;
-            const selectedProvince = provinceSelect.value;
-            const selectedFormat = formatSelect.value;
+            const nextSearchTerm = searchInput.value.toLowerCase();
+            const nextCategory = categorySelect.value;
+            const nextProvince = provinceSelect.value;
+            const nextFormat = formatSelect.value;
 
-            filteredOpportunities = allOpportunities.filter(opp => {
-                const fields = opp.fields;
-                
-                const title = (fields["Opportunity Title"] || '').toLowerCase();
-                const org = (fields["Organization"] || '').toLowerCase();
-                const matchesSearch = title.includes(searchTerm) || org.includes(searchTerm);
-                
-                const matchesCategory = selectedCategory === '' || fields["Category"] === selectedCategory;
-                const matchesProvince = selectedProvince === '' || fields["Province"] === selectedProvince;
-                const matchesFormat = selectedFormat === '' || fields["Format"] === selectedFormat;
+            gridEl.classList.add('is-transitioning');
+            clearTimeout(filterTransitionTimeout);
 
-                return matchesSearch && matchesCategory && matchesProvince && matchesFormat;
-            });
+            filterTransitionTimeout = setTimeout(() => {
+                filteredOpportunities = allOpportunities.filter(opp => {
+                    const fields = opp.fields;
 
-            renderCards(filteredOpportunities);
+                    const title = (fields["Opportunity Title"] || '').toLowerCase();
+                    const org = (fields["Organization"] || '').toLowerCase();
+                    const matchesSearch = title.includes(nextSearchTerm) || org.includes(nextSearchTerm);
+
+                    const matchesCategory = nextCategory === '' || fields["Category"] === nextCategory;
+                    const matchesProvince = nextProvince === '' || fields["Province"] === nextProvince;
+                    const matchesFormat = nextFormat === '' || normalizeFormat(fields["Format"]) === nextFormat;
+
+                    return matchesSearch && matchesCategory && matchesProvince && matchesFormat;
+                });
+
+                renderCards(filteredOpportunities);
+                requestAnimationFrame(() => gridEl.classList.remove('is-transitioning'));
+            }, 120);
         }
 
         function getCategoryTagStyle(category) {
             const normalized = (category || '').trim().toLowerCase();
             const categoryStyles = {
-                youth: { bg: '#d7f4ea', text: '#0f5a48' },
-                education: { bg: '#dceeff', text: '#24568b' },
-                tutoring: { bg: '#dceeff', text: '#24568b' },
-                healthcare: { bg: '#ffe0e3', text: '#9f2f46' },
-                seniors: { bg: '#efe4ff', text: '#6942a5' },
-                environment: { bg: '#d9f3d8', text: '#2f6a35' },
-                'food bank': { bg: '#ffe9c8', text: '#915c11' },
-                'community service': { bg: '#dff3ed', text: '#1f6655' },
+                youth: { bg: '#ddf4e8', text: '#195946' },
+                education: { bg: '#dcecff', text: '#1f5f96' },
+                tutoring: { bg: '#dcecff', text: '#1f5f96' },
+                healthcare: { bg: '#def2e5', text: '#1f6a4b' },
+                seniors: { bg: '#efe6ff', text: '#6543a7' },
+                environment: { bg: '#deefd8', text: '#346931' },
+                'food bank': { bg: '#ffe5cc', text: '#9a5a17' },
+                'community service': { bg: '#e2efe9', text: '#295f54' },
                 admin: { bg: '#eceff3', text: '#586273' },
-                arts: { bg: '#ffe0f1', text: '#8e2c69' },
-                sports: { bg: '#ffe1d4', text: '#a4491d' },
-                animal: { bg: '#fbe1cc', text: '#8d4e1d' },
+                arts: { bg: '#fde0ef', text: '#953569' },
+                sports: { bg: '#ffe6d8', text: '#a14c23' },
+                animal: { bg: '#f8ead9', text: '#8b5525' },
                 other: { bg: '#eceff3', text: '#586273' }
             };
 
             return categoryStyles[normalized] || { bg: '#dfece7', text: '#274740' };
+        }
+
+        function resetFilters() {
+            searchInput.value = '';
+            categorySelect.value = '';
+            provinceSelect.value = '';
+            formatSelect.value = '';
+            applyFilters();
         }
 
         // --- RENDERING ---
@@ -1092,29 +1322,29 @@
             if (opportunities.length === 0) {
                 gridEl.innerHTML = `
                     <div class="no-results">
-                        <h3>No opportunities found</h3>
-                        <p>Try adjusting your filters or search term.</p>
+                        <h3>No opportunities found.</h3>
+                        <p>Try adjusting your filters.</p>
+                        <button class="reset-btn" type="button" onclick="resetFilters()">Reset filters</button>
                     </div>
                 `;
                 return;
             }
 
-            opportunities.forEach(opp => {
+            opportunities.forEach((opp, index) => {
                 const fields = opp.fields;
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => openModal(opp);
+                card.style.setProperty('--card-delay', `${index * 55}ms`);
 
                 // Safe field getters
                 const title = fields["Opportunity Title"] || 'Untitled Opportunity';
                 const org = fields["Organization"] || 'Unknown Organization';
-                const city = fields["City"] || '';
-                const prov = fields["Province"] || '';
-                const location = [city, prov].filter(Boolean).join(', ') || 'Location not specified';
+                const location = formatLocation(fields);
                 const category = fields["Category"] || '';
-                const format = fields["Format"] || '';
+                const format = normalizeFormat(fields["Format"]) || '';
                 const commitment = fields["Commitment Type"] || 'N/A';
-                const age = fields["Age Requirement"] || 'N/A';
+                const studentFriendly = getStudentFriendlyLabel(fields["Student Friendly"]);
                 const categoryStyle = getCategoryTagStyle(category);
 
                 card.innerHTML = `
@@ -1139,8 +1369,8 @@
                             <span class="footer-val">${commitment}</span>
                         </div>
                         <div class="footer-item" style="text-align: right;">
-                            <span class="footer-label">Age</span>
-                            <span class="footer-val">${age}</span>
+                            <span class="footer-label">Student</span>
+                            <span class="footer-val">${studentFriendly}</span>
                         </div>
                     </div>
                 `;
@@ -1154,14 +1384,14 @@
             
             const title = fields["Opportunity Title"] || 'Untitled Opportunity';
             const org = fields["Organization"] || 'Unknown Organization';
-            const city = fields["City"] || '';
-            const prov = fields["Province"] || '';
-            const location = [city, prov].filter(Boolean).join(', ') || 'Location not specified';
+            const location = formatLocation(fields);
             const category = fields["Category"] || '';
-            const format = fields["Format"] || '';
+            const format = normalizeFormat(fields["Format"]) || '';
             const commitment = fields["Commitment Type"] || 'N/A';
-            const age = fields["Age Requirement"] || 'N/A';
+            const studentFriendly = getStudentFriendlyLabel(fields["Student Friendly"]);
             const hours = fields["Hours Per Week"] ? `${fields["Hours Per Week"]} hrs/week` : 'N/A';
+            const categoryStyle = getCategoryTagStyle(category);
+            const orgWebsite = getOrganizationWebsite(fields);
             
             let deadlineStr = 'No deadline';
             if (fields["Application Deadline"]) {
@@ -1171,20 +1401,24 @@
 
             const desc = fields["Description"] || 'No description provided.';
             const applyLink = fields["Application Link"] || '#';
+            const reportHref = `mailto:pitchin.live@proton.me?subject=${encodeURIComponent(`Listing Report: ${title}`)}`;
+            const orgMarkup = orgWebsite
+                ? `<a href="${orgWebsite}" target="_blank" rel="noopener noreferrer" class="modal-org-link">${org}</a>`
+                : org;
 
             modalContent.innerHTML = `
                 <div class="modal-header">
                     <h2 class="modal-title">${title}</h2>
                     <div class="card-org" style="font-size: 16px; margin-bottom: 8px;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/></svg>
-                        ${org}
+                        ${orgMarkup}
                     </div>
                     <div class="card-location" style="font-size: 14px;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                         ${location}
                     </div>
                     <div class="card-tags" style="margin-top: 16px;">
-                        ${category ? `<span class="tag">${category}</span>` : ''}
+                        ${category ? `<span class="tag" style="background-color: ${categoryStyle.bg}; color: ${categoryStyle.text};">${category}</span>` : ''}
                         ${format ? `<span class="tag format">${format}</span>` : ''}
                     </div>
                 </div>
@@ -1199,8 +1433,8 @@
                         <span class="footer-val">${hours}</span>
                     </div>
                     <div class="modal-meta-item">
-                        <span class="footer-label">Age Requirement</span>
-                        <span class="footer-val">${age}</span>
+                        <span class="footer-label">Student Friendly</span>
+                        <span class="footer-val">${studentFriendly}</span>
                     </div>
                     <div class="modal-meta-item">
                         <span class="footer-label">Application Deadline</span>
@@ -1220,6 +1454,7 @@
                 ` : `
                     <div class="no-results" style="padding: 20px;">No application link available.</div>
                 `}
+                <a href="${reportHref}" class="report-link">Report this listing</a>
             `;
 
             modalOverlay.classList.add('active');
