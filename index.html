@@ -680,6 +680,10 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.25s var(--snappy-ease), visibility 0.25s var(--snappy-ease);
+            transform: translateZ(0);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+            isolation: isolate;
         }
 
         .modal-overlay.active {
@@ -695,7 +699,7 @@
             max-height: min(90vh, 860px);
             overflow-y: auto;
             box-shadow: var(--shadow-lg);
-            transform: scale(0.92);
+            transform: translateZ(0) scale(0.92);
             opacity: 0;
             transition: transform 0.25s var(--snappy-ease), opacity 0.25s var(--snappy-ease);
             position: relative;
@@ -1695,37 +1699,39 @@
             const sourceRect = sourceCard.getBoundingClientRect();
             sourceCard.style.opacity = '0';
             requestAnimationFrame(() => {
-                const targetRect = modal.getBoundingClientRect();
-                const { translateX, translateY, scaleX, scaleY } = getFlipTransform(sourceRect, targetRect);
+                requestAnimationFrame(() => {
+                    const targetRect = modal.getBoundingClientRect();
+                    const { translateX, translateY, scaleX, scaleY } = getFlipTransform(sourceRect, targetRect);
 
-                const overlayAnimation = modalOverlay.animate(
-                    [{ opacity: 0 }, { opacity: 1 }],
-                    { duration: 400, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
-                );
+                    const overlayAnimation = modalOverlay.animate(
+                        [{ opacity: 0 }, { opacity: 1 }],
+                        { duration: 400, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+                    );
 
-                const modalAnimation = modal.animate(
-                    [
+                    const modalAnimation = modal.animate(
+                        [
+                            {
+                                transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scaleX}, ${scaleY})`,
+                                opacity: 0
+                            },
+                            {
+                                transform: 'translate3d(0px, 0px, 0) scale(1, 1)',
+                                opacity: 1
+                            }
+                        ],
                         {
-                            transform: `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`,
-                            opacity: 0
-                        },
-                        {
-                            transform: 'translate(0px, 0px) scale(1, 1)',
-                            opacity: 1
+                            duration: 400,
+                            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                            fill: 'both'
                         }
-                    ],
-                    {
-                        duration: 400,
-                        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                        fill: 'both'
-                    }
-                );
+                    );
 
-                Promise.allSettled([overlayAnimation.finished, modalAnimation.finished]).then(() => {
-                    resetModalAnimationState();
-                    modal.classList.add('shared-transition');
-                    showModalContent();
-                    isModalTransitioning = false;
+                    Promise.allSettled([overlayAnimation.finished, modalAnimation.finished]).then(() => {
+                        resetModalAnimationState();
+                        modal.classList.add('shared-transition');
+                        showModalContent();
+                        isModalTransitioning = false;
+                    });
                 });
             });
         }
@@ -1752,36 +1758,40 @@
             const targetRect = targetCard.getBoundingClientRect();
             const { translateX, translateY, scaleX, scaleY } = getFlipTransform(targetRect, sourceRect);
 
-            const overlayAnimation = modalOverlay.animate(
-                [{ opacity: 1 }, { opacity: 0 }],
-                { duration: 400, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
-            );
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const overlayAnimation = modalOverlay.animate(
+                        [{ opacity: 1 }, { opacity: 0 }],
+                        { duration: 400, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+                    );
 
-            const modalAnimation = modal.animate(
-                [
-                    {
-                        transform: 'translate(0px, 0px) scale(1, 1)',
-                        opacity: 1
-                    },
-                    {
-                        transform: `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`,
-                        opacity: 0
-                    }
-                ],
-                {
-                    duration: 400,
-                    easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                    fill: 'both'
-                }
-            );
+                    const modalAnimation = modal.animate(
+                        [
+                            {
+                                transform: 'translate3d(0px, 0px, 0) scale(1, 1)',
+                                opacity: 1
+                            },
+                            {
+                                transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scaleX}, ${scaleY})`,
+                                opacity: 0
+                            }
+                        ],
+                        {
+                            duration: 400,
+                            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                            fill: 'both'
+                        }
+                    );
 
-            Promise.allSettled([overlayAnimation.finished, modalAnimation.finished]).then(() => {
-                resetModalAnimationState();
-                modalOverlay.classList.remove('active');
-                targetCard.style.opacity = '1';
-                currentOpenCard = null;
-                document.body.style.overflow = '';
-                isModalTransitioning = false;
+                    Promise.allSettled([overlayAnimation.finished, modalAnimation.finished]).then(() => {
+                        resetModalAnimationState();
+                        modalOverlay.classList.remove('active');
+                        targetCard.style.opacity = '1';
+                        currentOpenCard = null;
+                        document.body.style.overflow = '';
+                        isModalTransitioning = false;
+                    });
+                });
             });
         }
 
