@@ -12,7 +12,7 @@
             --primary: #1f514c;
             --primary-hover: #173f3a;
             --snappy-ease: cubic-bezier(0.16, 1, 0.3, 1);
-            --bg-color: #f7f5f1;
+            --bg-color: #ffffff;
             --card-bg: #FFFFFF;
             --text-main: #1f2426;
             --text-muted: #6f7674;
@@ -240,18 +240,6 @@
             flex-wrap: wrap;
         }
 
-        .hero-link {
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            letter-spacing: -0.03em;
-        }
-
-        .hero-link:hover {
-            color: white;
-        }
-
         .hero-btn {
             display: inline-flex;
             align-items: center;
@@ -336,7 +324,7 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 28px;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 10px 28px rgba(18, 27, 24, 0.045);
             overflow: hidden;
             margin-bottom: 34px;
         }
@@ -522,6 +510,13 @@
 
         /* Card */
         .card {
+            --accent-color: var(--primary);
+            --card-tilt-x: 0deg;
+            --card-tilt-y: 0deg;
+            --card-lift: 0px;
+            --glare-x: 50%;
+            --glare-y: 50%;
+            --glare-opacity: 0;
             background-color: var(--card-bg);
             border-radius: var(--radius-md);
             border: 1px solid var(--border-color);
@@ -533,13 +528,14 @@
             height: 100%;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 28px rgba(18, 27, 24, 0.045);
+            box-shadow: 0 18px 42px rgba(18, 27, 24, 0.075);
             opacity: 0;
-            transform: translateY(18px);
+            transform: perspective(800px) rotateX(var(--card-tilt-x)) rotateY(var(--card-tilt-y)) translateY(var(--card-lift));
             animation: cardIn 0.35s var(--snappy-ease) forwards;
             animation-delay: var(--card-delay, 0ms);
             will-change: transform, opacity;
             backface-visibility: hidden;
+            transform-style: preserve-3d;
         }
 
         .card::before {
@@ -550,7 +546,7 @@
             left: 0;
             width: 3px;
             border-radius: 999px;
-            background: var(--primary);
+            background: var(--accent-color);
             transform: scaleY(0);
             transform-origin: top;
             transition: transform 0.15s var(--snappy-ease);
@@ -558,9 +554,26 @@
             backface-visibility: hidden;
         }
 
+        .card::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 180px;
+            height: 180px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0) 68%);
+            transform: translate3d(calc(var(--glare-x) - 90px), calc(var(--glare-y) - 90px), 0);
+            opacity: var(--glare-opacity);
+            pointer-events: none;
+            transition: opacity 0.18s var(--snappy-ease);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+        }
+
         .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 24px 44px rgba(18, 27, 24, 0.11);
+            --card-lift: -6px;
+            box-shadow: 0 26px 58px rgba(18, 27, 24, 0.13);
             border-color: #d6ddd7;
         }
 
@@ -850,11 +863,11 @@
         @keyframes cardIn {
             from {
                 opacity: 0;
-                transform: translateY(18px);
+                transform: perspective(800px) rotateX(0deg) rotateY(0deg) translateY(18px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0);
             }
         }
 
@@ -999,7 +1012,6 @@
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                         </span>
                     </a>
-                    <a href="https://pitchin.framer.website" class="hero-link">Return to the main Pitchin site</a>
                 </div>
             </div>
             <div class="hero-image">
@@ -1082,6 +1094,7 @@
         let allOpportunities = [];
         let filteredOpportunities = [];
         let filterTransitionTimeout;
+        const supportsCardTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
         const CANADIAN_REGIONS = ['AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'];
         const FORMAT_ORDER = ['In Person', 'Remote', 'Hybrid'];
@@ -1402,6 +1415,73 @@
             applyFilters();
         }
 
+        function initializeCardTiltEffects() {
+            if (!supportsCardTilt) return;
+
+            const cards = gridEl.querySelectorAll('.card');
+
+            cards.forEach(card => {
+                let rafId = null;
+                let lastEvent = null;
+                let resetTimeout = null;
+
+                const updateTilt = () => {
+                    rafId = null;
+                    if (!lastEvent) return;
+
+                    const rect = card.getBoundingClientRect();
+                    const x = lastEvent.clientX - rect.left;
+                    const y = lastEvent.clientY - rect.top;
+                    const relX = x / rect.width - 0.5;
+                    const relY = y / rect.height - 0.5;
+                    const rotateY = relX * 24;
+                    const rotateX = relY * -24;
+
+                    card.style.setProperty('--card-tilt-x', `${rotateX.toFixed(2)}deg`);
+                    card.style.setProperty('--card-tilt-y', `${rotateY.toFixed(2)}deg`);
+                    card.style.setProperty('--glare-x', `${x.toFixed(1)}px`);
+                    card.style.setProperty('--glare-y', `${y.toFixed(1)}px`);
+                    card.style.setProperty('--glare-opacity', '0.08');
+                };
+
+                card.addEventListener('mousemove', (event) => {
+                    clearTimeout(resetTimeout);
+                    card.style.transition = 'none';
+                    lastEvent = event;
+
+                    if (rafId === null) {
+                        rafId = requestAnimationFrame(updateTilt);
+                    }
+                });
+
+                card.addEventListener('mouseenter', (event) => {
+                    clearTimeout(resetTimeout);
+                    card.style.transition = 'none';
+                    lastEvent = event;
+                    if (rafId === null) {
+                        rafId = requestAnimationFrame(updateTilt);
+                    }
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    if (rafId !== null) {
+                        cancelAnimationFrame(rafId);
+                        rafId = null;
+                    }
+
+                    lastEvent = null;
+                    card.style.transition = 'transform 0.4s var(--snappy-ease)';
+                    card.style.setProperty('--card-tilt-x', '0deg');
+                    card.style.setProperty('--card-tilt-y', '0deg');
+                    card.style.setProperty('--glare-opacity', '0');
+
+                    resetTimeout = window.setTimeout(() => {
+                        card.style.transition = '';
+                    }, 400);
+                });
+            });
+        }
+
         // --- RENDERING ---
         function renderCards(opportunities) {
             gridEl.innerHTML = '';
@@ -1436,6 +1516,8 @@
                 const commitment = fields["Commitment Type"] || 'N/A';
                 const studentFriendly = getStudentFriendlyLabel(fields["Student Friendly"]);
                 const categoryStyle = getCategoryTagStyle(category);
+                const accentColor = categoryStyle.text;
+                card.style.setProperty('--accent-color', accentColor);
 
                 card.innerHTML = `
                     <div class="card-header">
@@ -1466,6 +1548,8 @@
                 `;
                 gridEl.appendChild(card);
             });
+
+            initializeCardTiltEffects();
         }
 
         // --- MODAL LOGIC ---
