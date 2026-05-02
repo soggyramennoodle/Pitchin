@@ -908,6 +908,101 @@
             gap: 14px;
         }
 
+        .ai-overview {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ai-overview-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: fit-content;
+            max-width: 100%;
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(31, 81, 76, 0.18);
+            background: rgba(31, 81, 76, 0.06);
+            color: var(--primary);
+            font: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s var(--snappy-ease), background-color 0.15s var(--snappy-ease), border-color 0.15s var(--snappy-ease);
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        .ai-overview-trigger:hover {
+            transform: translateY(-1px);
+            background: rgba(31, 81, 76, 0.1);
+            border-color: rgba(31, 81, 76, 0.26);
+        }
+
+        .ai-overview-state {
+            display: none;
+        }
+
+        .ai-overview-state.active {
+            display: block;
+        }
+
+        .ai-overview-box {
+            --ai-solid-bg: #E2F3EA;
+            position: relative;
+            overflow: hidden;
+            border-left: 3px solid #2D5A45;
+            border-radius: 18px;
+            padding: 16px 18px;
+            background: rgba(45, 90, 69, 0.08);
+            transition: background-color 0.25s var(--snappy-ease), opacity 0.2s var(--snappy-ease), transform 0.2s var(--snappy-ease);
+        }
+
+        .ai-overview-box.loading {
+            background: linear-gradient(120deg, rgba(255, 102, 196, 0.2), rgba(255, 206, 84, 0.22), rgba(85, 214, 194, 0.2), rgba(129, 140, 248, 0.22), rgba(255, 102, 196, 0.2));
+            background-size: 240% 240%;
+            animation: aiWaveFlow 4.2s linear infinite;
+        }
+
+        .ai-overview-box.complete {
+            background: var(--ai-solid-bg);
+        }
+
+        .ai-overview-box.error {
+            background: #F9FAFB;
+            border-left-color: #9CA3AF;
+        }
+
+        .ai-overview-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(45, 90, 69, 0.78);
+        }
+
+        .ai-overview-text {
+            color: #1f2426;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .ai-overview-text.loading-text {
+            color: rgba(31, 36, 38, 0.78);
+            transition: opacity 0.2s var(--snappy-ease);
+        }
+
+        .ai-overview-text.error-text {
+            color: var(--text-muted);
+        }
+
         .apply-disclosure {
             border-radius: var(--radius-sm);
         }
@@ -1056,6 +1151,18 @@
 
         .report-btn svg {
             flex-shrink: 0;
+        }
+
+        @keyframes aiWaveFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         @keyframes cardIn {
@@ -1336,6 +1443,8 @@
         const AIRTABLE_TOKEN = 'patDiR5tzj1IjBNvP.e455c6390b0b18825637770ae3bebb60eee9aa9f19a619bea938b168d787cadd';
         const TABLE_NAME = 'tblhV2mJc83wp5dgG';
         const REPORT_FORM_URL = 'https://tally.so/r/your-report-form-link-here';
+        const GEMINI_API_KEY = 'AIzaSyCKX42JwBNdb09Ulo4KZg63xaNO-Vr2yKA';
+        const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
         
         // Use true to test UI with fake data, change to false to connect to Airtable
         const USE_MOCK_DATA = false; 
@@ -1495,6 +1604,125 @@
             const date = new Date(value);
             if (isNaN(date.getTime())) return String(value);
             return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function getAiOverviewPrompt(fields) {
+            return `You are helping a volunteer searcher understand a volunteer opportunity. Based on this listing, write a 3-4 sentence overview covering: who this role is best suited for, what skills or experience they'll gain, and one thing to know before applying. Be concise, warm, and practical. Listing details: ${JSON.stringify(fields, null, 2)}`;
+        }
+
+        function getRandomAiOverviewColor() {
+            const palette = ['#E2F3EA', '#E8F4FF', '#FDECCF', '#F4E8FF', '#FCE7F3', '#E6F7F2'];
+            return palette[Math.floor(Math.random() * palette.length)];
+        }
+
+        function extractGeminiText(data) {
+            const parts = data?.candidates?.[0]?.content?.parts;
+            if (!Array.isArray(parts)) return '';
+            return parts
+                .map((part) => part?.text || '')
+                .join('\n')
+                .trim();
+        }
+
+        async function fetchAiOverview(fields) {
+            const response = await fetch(GEMINI_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            parts: [
+                                {
+                                    text: getAiOverviewPrompt(fields)
+                                }
+                            ]
+                        }
+                    ]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Gemini API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const text = extractGeminiText(data);
+            if (!text) {
+                throw new Error('Gemini overview was empty');
+            }
+
+            return text;
+        }
+
+        function bindAiOverview(fields) {
+            const root = modalContent.querySelector('[data-ai-overview]');
+            const trigger = modalContent.querySelector('[data-ai-trigger]');
+            const state = modalContent.querySelector('[data-ai-state]');
+            const box = modalContent.querySelector('[data-ai-box]');
+            const text = modalContent.querySelector('[data-ai-text]');
+
+            if (!root || !trigger || !state || !box || !text) return;
+
+            let loadingInterval = null;
+            let isRunning = false;
+
+            const loadingMessages = ['Analyzing this opportunity...', 'Almost done...'];
+
+            const stopLoadingCycle = () => {
+                if (loadingInterval !== null) {
+                    window.clearInterval(loadingInterval);
+                    loadingInterval = null;
+                }
+            };
+
+            const startLoadingCycle = () => {
+                let index = 0;
+                text.textContent = loadingMessages[index];
+                loadingInterval = window.setInterval(() => {
+                    index = (index + 1) % loadingMessages.length;
+                    text.style.opacity = '0.35';
+                    window.setTimeout(() => {
+                        text.textContent = loadingMessages[index];
+                        text.style.opacity = '1';
+                    }, 120);
+                }, 1400);
+            };
+
+            trigger.addEventListener('click', async () => {
+                if (isRunning) return;
+
+                isRunning = true;
+                trigger.style.display = 'none';
+                state.classList.add('active');
+                box.classList.remove('complete', 'error');
+                box.classList.add('loading');
+                box.style.removeProperty('--ai-solid-bg');
+                text.classList.add('loading-text');
+                text.classList.remove('error-text');
+                startLoadingCycle();
+
+                try {
+                    const overview = await fetchAiOverview(fields);
+                    stopLoadingCycle();
+                    box.classList.remove('loading', 'error');
+                    box.classList.add('complete');
+                    box.style.setProperty('--ai-solid-bg', getRandomAiOverviewColor());
+                    text.classList.remove('loading-text', 'error-text');
+                    text.textContent = overview;
+                } catch (error) {
+                    console.error('AI overview failed:', error);
+                    stopLoadingCycle();
+                    box.classList.remove('loading', 'complete');
+                    box.classList.add('error');
+                    text.classList.remove('loading-text');
+                    text.classList.add('error-text');
+                    text.textContent = 'Overview unavailable right now';
+                } finally {
+                    isRunning = false;
+                }
+            });
         }
 
         function getCardCenterRect(card) {
@@ -2072,6 +2300,22 @@
                         </a>
                     ` : getApplyDisclosureMarkup(contactInfo)}
 
+                    <div class="ai-overview" data-ai-overview>
+                        <button type="button" class="ai-overview-trigger" data-ai-trigger>
+                            <span aria-hidden="true">✨</span>
+                            <span>Get AI Overview</span>
+                        </button>
+                        <div class="ai-overview-state" data-ai-state>
+                            <div class="ai-overview-box loading" data-ai-box>
+                                <div class="ai-overview-label">
+                                    <span aria-hidden="true">✨</span>
+                                    <span>AI Overview</span>
+                                </div>
+                                <div class="ai-overview-text loading-text" data-ai-text">Analyzing this opportunity...</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <a href="${REPORT_FORM_URL}" target="_blank" rel="noopener noreferrer" class="report-btn">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M12 3 2.6 19a1 1 0 0 0 .87 1.5h17.06a1 1 0 0 0 .87-1.5L12 3Z"></path>
@@ -2085,6 +2329,7 @@
             if (!hasApplyLink) {
                 bindApplyDisclosure();
             }
+            bindAiOverview(fields);
             currentOpenCard = sourceCard;
             document.body.style.overflow = 'hidden';
             isModalTransitioning = true;
