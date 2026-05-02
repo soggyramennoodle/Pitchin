@@ -674,6 +674,39 @@
             font-size: 15px;
         }
 
+        .student-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .student-status-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .student-status-icon.yes {
+            background: rgba(31, 81, 76, 0.12);
+            color: var(--primary);
+        }
+
+        .student-status-icon.no {
+            background: rgba(156, 163, 175, 0.16);
+            color: #6B7280;
+        }
+
+        .student-status-text {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
         /* Modal */
         .modal-overlay {
             position: fixed;
@@ -1287,6 +1320,38 @@
             return 'Unknown';
         }
 
+        function getStudentFriendlyCardMarkup(value) {
+            if (value === true) {
+                return `
+                    <span class="student-status" aria-label="Student suitable: yes">
+                        <span class="student-status-icon yes" aria-hidden="true">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 6 9 17l-5-5"></path>
+                            </svg>
+                        </span>
+                    </span>
+                `;
+            }
+
+            if (value === false) {
+                return `
+                    <span class="student-status" aria-label="Student suitable: no">
+                        <span class="student-status-icon no" aria-hidden="true">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                                <path d="M6 12h12"></path>
+                            </svg>
+                        </span>
+                    </span>
+                `;
+            }
+
+            return `
+                <span class="student-status" aria-label="Student suitable: unknown">
+                    <span class="student-status-text">N/A</span>
+                </span>
+            `;
+        }
+
         function escapeHtml(value) {
             return String(value)
                 .replaceAll('&', '&amp;')
@@ -1552,7 +1617,7 @@
                 const category = fields["Category"] || '';
                 const format = normalizeFormat(fields["Format"]) || '';
                 const commitment = fields["Commitment Type"] || 'N/A';
-                const studentFriendly = getStudentFriendlyLabel(fields["Student Friendly"]);
+                const studentFriendlyCardMarkup = getStudentFriendlyCardMarkup(fields["Student Friendly"]);
                 const categoryStyle = getCategoryTagStyle(category);
                 const accentColor = categoryStyle.text;
                 card.style.setProperty('--accent-color', accentColor);
@@ -1579,8 +1644,8 @@
                             <span class="footer-val">${commitment}</span>
                         </div>
                         <div class="footer-item" style="text-align: right;">
-                            <span class="footer-label">Student</span>
-                            <span class="footer-val">${studentFriendly}</span>
+                            <span class="footer-label">Student suitable?</span>
+                            ${studentFriendlyCardMarkup}
                         </div>
                     </div>
                 `;
