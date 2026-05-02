@@ -914,7 +914,6 @@
             gap: 10px;
         }
 
-        .ai-overview[open] .ai-overview-trigger,
         .ai-overview.started .ai-overview-trigger {
             display: none;
         }
@@ -938,7 +937,6 @@
             transition: transform 0.15s var(--snappy-ease), background-color 0.15s var(--snappy-ease), border-color 0.15s var(--snappy-ease);
             will-change: transform;
             backface-visibility: hidden;
-            list-style: none;
         }
 
         .ai-overview-trigger:hover {
@@ -947,15 +945,10 @@
             border-color: rgba(31, 81, 76, 0.26);
         }
 
-        .ai-overview-trigger::-webkit-details-marker {
-            display: none;
-        }
-
         .ai-overview-state {
             display: none;
         }
 
-        .ai-overview[open] .ai-overview-state,
         .ai-overview-state.active {
             display: block;
         }
@@ -1570,7 +1563,8 @@
             modalContent.addEventListener('click', (e) => {
                 const aiTrigger = e.target.closest('[data-ai-trigger]');
                 if (aiTrigger) {
-                    window.requestAnimationFrame(() => handleAiOverviewRequest(aiTrigger));
+                    e.preventDefault();
+                    handleAiOverviewRequest(aiTrigger);
                 }
             });
             modalCloseBtn.addEventListener('click', closeModal);
@@ -1698,9 +1692,6 @@
 
             if (!root || !state || !box || !text) return;
 
-            if (typeof root.open === 'boolean') {
-                root.open = true;
-            }
             root.classList.add('started');
             state.classList.add('active');
 
@@ -2324,11 +2315,11 @@
                         </a>
                     ` : getApplyDisclosureMarkup(contactInfo)}
 
-                    <details class="ai-overview" data-ai-overview>
-                        <summary class="ai-overview-trigger" data-ai-trigger>
+                    <div class="ai-overview" data-ai-overview>
+                        <button type="button" class="ai-overview-trigger" data-ai-trigger onclick="window.handleAiOverviewRequest(this)">
                             <span aria-hidden="true">✨</span>
                             <span>Get AI Overview</span>
-                        </summary>
+                        </button>
                         <div class="ai-overview-state" data-ai-state>
                             <div class="ai-overview-box loading" data-ai-box>
                                 <div class="ai-overview-label">
@@ -2338,7 +2329,7 @@
                                 <div class="ai-overview-text loading-text" data-ai-text">Analyzing this opportunity...</div>
                             </div>
                         </div>
-                    </details>
+                    </div>
 
                     <a href="${REPORT_FORM_URL}" target="_blank" rel="noopener noreferrer" class="report-btn">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
