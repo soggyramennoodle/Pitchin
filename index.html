@@ -932,6 +932,11 @@
             border: 1px solid var(--border-color);
         }
 
+        .apply-disclosure-inner.warning {
+            background: #FEF3C7;
+            border-color: #FCD34D;
+        }
+
         .apply-disclosure-top {
             display: flex;
             align-items: center;
@@ -991,6 +996,41 @@
 
         .apply-contact-value a:hover {
             color: var(--primary);
+        }
+
+        .apply-warning-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .apply-warning-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: rgba(245, 158, 11, 0.14);
+            color: #B45309;
+        }
+
+        .apply-warning-copy {
+            display: grid;
+            gap: 6px;
+        }
+
+        .apply-warning-text {
+            color: #7C4A03;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .apply-warning-note {
+            color: #92400E;
+            font-size: 13px;
+            line-height: 1.45;
         }
 
         .report-btn {
@@ -1521,6 +1561,7 @@
             const details = [];
             const seen = new Set();
             const website = getOrganizationWebsite(fields);
+            let hasDirectContact = false;
             const candidates = [
                 { label: 'Organization', value: fields["Organization"], href: website || '' },
                 { label: 'Contact person', value: fields["Contact Name"] || fields["Volunteer Coordinator"] || fields["Coordinator"] || fields["Contact Person"] || '' },
@@ -1543,14 +1584,46 @@
                     value: rawValue,
                     href
                 });
+
+                if (item.label !== 'Organization') {
+                    hasDirectContact = true;
+                }
             });
 
-            return details;
+            return {
+                details,
+                hasDirectContact
+            };
         }
 
-        function getApplyDisclosureMarkup(contactDetails) {
-            const detailItems = contactDetails.length > 0
-                ? contactDetails.map((detail) => `
+        function getApplyDisclosureMarkup(contactInfo) {
+            const organizationDetail = contactInfo.details.find((detail) => detail.label === 'Organization');
+            const warningMarkup = `
+                <div class="apply-warning-row">
+                    <span class="apply-warning-icon" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3 2.6 19a1 1 0 0 0 .87 1.5h17.06a1 1 0 0 0 .87-1.5L12 3Z"></path>
+                            <path d="M12 9v4"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+                    </span>
+                    <div class="apply-warning-copy">
+                        <div class="apply-warning-text">No direct contact details are available for this listing right now.</div>
+                        <div class="apply-warning-note">Please use the report button below so we can review, update, or remove it.</div>
+                    </div>
+                </div>
+                ${organizationDetail ? `
+                    <div class="apply-contact-list" style="margin-top: 14px;">
+                        <div class="apply-contact-item">
+                            <span class="apply-contact-label">${escapeHtml(organizationDetail.label)}</span>
+                            <span class="apply-contact-value">${escapeHtml(organizationDetail.value)}</span>
+                        </div>
+                    </div>
+                ` : ''}
+            `;
+
+            const detailItems = contactInfo.details.length > 0
+                ? contactInfo.details.map((detail) => `
                     <div class="apply-contact-item">
                         <span class="apply-contact-label">${escapeHtml(detail.label)}</span>
                         <span class="apply-contact-value">
@@ -1562,12 +1635,7 @@
                         </span>
                     </div>
                 `).join('')
-                : `
-                    <div class="apply-contact-item">
-                        <span class="apply-contact-label">Contact</span>
-                        <span class="apply-contact-value">No direct contact info was provided for this listing.</span>
-                    </div>
-                `;
+                : warningMarkup;
 
             return `
                 <div class="apply-disclosure" data-apply-disclosure>
@@ -1575,14 +1643,12 @@
                         Apply Now
                     </button>
                     <div class="apply-disclosure-panel" data-apply-panel>
-                        <div class="apply-disclosure-inner">
+                        <div class="apply-disclosure-inner ${contactInfo.hasDirectContact ? '' : 'warning'}">
                             <div class="apply-disclosure-top">
-                                <div class="apply-disclosure-title">Contact this organization directly</div>
+                                <div class="apply-disclosure-title">${contactInfo.hasDirectContact ? 'Contact this organization directly' : 'No contact available'}</div>
                                 <button type="button" class="apply-disclosure-close" data-apply-close aria-label="Close contact details">Close</button>
                             </div>
-                            <div class="apply-contact-list">
-                                ${detailItems}
-                            </div>
+                            ${contactInfo.hasDirectContact ? `<div class="apply-contact-list">${detailItems}</div>` : warningMarkup}
                         </div>
                     </div>
                 </div>
@@ -1941,7 +2007,7 @@
             const desc = fields["Description"] || 'No description provided.';
             const applyLink = typeof fields["Application Link"] === 'string' ? fields["Application Link"].trim() : fields["Application Link"];
             const hasApplyLink = Boolean(applyLink);
-            const contactDetails = getContactDetails(fields);
+            const contactInfo = getContactDetails(fields);
             const orgMarkup = orgWebsite
                 ? `<a href="${orgWebsite}" target="_blank" rel="noopener noreferrer" class="modal-org-link">${org}</a>`
                 : org;
@@ -1992,7 +2058,7 @@
                         <a href="${applyLink}" target="_blank" rel="noopener noreferrer" class="apply-btn">
                             Apply Now
                         </a>
-                    ` : getApplyDisclosureMarkup(contactDetails)}
+                    ` : getApplyDisclosureMarkup(contactInfo)}
 
                     <a href="${REPORT_FORM_URL}" target="_blank" rel="noopener noreferrer" class="report-btn">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
