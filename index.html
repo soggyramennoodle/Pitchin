@@ -128,6 +128,16 @@
             flex-shrink: 0;
         }
 
+        .header-cta-icon svg {
+            transition: transform 0.15s var(--snappy-ease);
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        .header-cta:hover .header-cta-icon svg {
+            transform: translateX(3px);
+        }
+
         /* Hero Section */
         .hero-container {
             padding: 10px 24px 0;
