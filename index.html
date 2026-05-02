@@ -1533,6 +1533,7 @@
 
         function normalizeStudentFriendlyValue(value) {
             if (value === true || value === false) return value;
+            if (value == null) return false;
             if (typeof value === 'number') {
                 if (value === 1) return true;
                 if (value === 0) return false;
