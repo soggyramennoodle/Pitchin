@@ -11,6 +11,7 @@
         :root {
             --primary: #1f514c;
             --primary-hover: #173f3a;
+            --snappy-ease: cubic-bezier(0.16, 1, 0.3, 1);
             --bg-color: #f7f5f1;
             --card-bg: #FFFFFF;
             --text-main: #1f2426;
@@ -169,6 +170,12 @@
         }
 
         .hero-title {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0 0.22em;
+        }
+
+        .hero-title {
             font-size: clamp(3.15rem, 5.4vw, 4rem);
             font-family: var(--serif);
             line-height: 0.96;
@@ -176,6 +183,16 @@
             margin-bottom: 14px;
             font-weight: 400;
             max-width: 11ch;
+        }
+
+        .hero-title .word {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: transform 0.4s var(--snappy-ease), opacity 0.4s var(--snappy-ease);
+            transition-delay: var(--word-delay, 0ms);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
         }
 
         .hero-desc {
@@ -249,46 +266,58 @@
             letter-spacing: -0.03em;
             text-decoration: none;
             width: fit-content;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.15s var(--snappy-ease), opacity 0.15s var(--snappy-ease);
             box-shadow: 0 10px 24px rgba(20, 36, 32, 0.12);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
         }
 
         .hero-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 16px 36px rgba(20, 36, 32, 0.18);
         }
 
         body:not(.page-ready) .hero-badge,
-        body:not(.page-ready) .hero-copy,
+        body:not(.page-ready) .hero-desc,
         body:not(.page-ready) .hero-stats,
-        body:not(.page-ready) .hero-actions,
         body:not(.page-ready) .hero-image {
             opacity: 0;
             transform: translateY(18px);
         }
 
+        body:not(.page-ready) .hero-actions {
+            opacity: 0;
+            transform: translateY(10px) scale(0.9);
+        }
+
         .hero-badge,
-        .hero-copy,
+        .hero-desc,
         .hero-stats,
         .hero-actions,
         .hero-image {
-            transition: opacity 0.55s ease, transform 0.55s ease;
+            transition: opacity 0.4s var(--snappy-ease), transform 0.4s var(--snappy-ease);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
         }
 
-        .hero-copy {
-            transition-delay: 0.06s;
+        .hero-desc {
+            transition-delay: 0.1s;
         }
 
         .hero-stats {
-            transition-delay: 0.12s;
+            transition-delay: 0.36s;
         }
 
         .hero-actions {
-            transition-delay: 0.18s;
+            transition-delay: 0.3s;
         }
 
         .hero-image {
             transition-delay: 0.1s;
+        }
+
+        body.page-ready .hero-title .word {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .hero-image {
@@ -396,7 +425,7 @@
             font-size: 15px;
             color: var(--text-main);
             background-color: var(--card-bg);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+            transition: transform 0.15s var(--snappy-ease);
             outline: none;
         }
 
@@ -424,7 +453,7 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 24px;
             margin-bottom: 60px;
-            transition: opacity 0.18s ease, transform 0.18s ease;
+            transition: opacity 0.15s var(--snappy-ease), transform 0.15s var(--snappy-ease);
         }
 
         .opportunities-grid.is-transitioning {
@@ -480,13 +509,15 @@
             font: inherit;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            transition: transform 0.15s var(--snappy-ease), opacity 0.15s var(--snappy-ease);
             box-shadow: 0 8px 18px rgba(31, 81, 76, 0.16);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
         }
 
         .reset-btn:hover {
-            background: var(--primary-hover);
             transform: translateY(-1px);
+            opacity: 0.96;
         }
 
         /* Card */
@@ -495,7 +526,7 @@
             border-radius: var(--radius-md);
             border: 1px solid var(--border-color);
             padding: 28px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            transition: transform 0.15s var(--snappy-ease);
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -505,34 +536,36 @@
             box-shadow: 0 10px 28px rgba(18, 27, 24, 0.045);
             opacity: 0;
             transform: translateY(18px);
-            animation: cardIn 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: cardIn 0.35s var(--snappy-ease) forwards;
             animation-delay: var(--card-delay, 0ms);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
         }
 
         .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 20px;
-            right: 20px;
-            height: 3px;
+            top: 24px;
+            bottom: 24px;
+            left: 0;
+            width: 3px;
             border-radius: 999px;
             background: var(--primary);
-            transform: scaleX(0.2);
-            transform-origin: center;
-            opacity: 0;
-            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.15s var(--snappy-ease);
+            will-change: transform;
+            backface-visibility: hidden;
         }
 
         .card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-6px);
             box-shadow: 0 24px 44px rgba(18, 27, 24, 0.11);
             border-color: #d6ddd7;
         }
 
         .card:hover::before {
-            opacity: 1;
-            transform: scaleX(1);
+            transform: scaleY(1);
         }
 
         .card-header {
@@ -626,7 +659,6 @@
             right: 0;
             bottom: 0;
             background-color: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(2px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -634,7 +666,7 @@
             padding: 20px;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.2s ease, visibility 0.2s ease;
+            transition: opacity 0.25s var(--snappy-ease), visibility 0.25s var(--snappy-ease);
         }
 
         .modal-overlay.active {
@@ -650,11 +682,13 @@
             max-height: min(90vh, 860px);
             overflow-y: auto;
             box-shadow: var(--shadow-lg);
-            transform: scale(0.95);
+            transform: scale(0.92);
             opacity: 0;
-            transition: transform 0.2s ease, opacity 0.2s ease;
+            transition: transform 0.25s var(--snappy-ease), opacity 0.25s var(--snappy-ease);
             position: relative;
             overscroll-behavior: contain;
+            will-change: transform, opacity;
+            backface-visibility: hidden;
         }
 
         .modal-overlay.active .modal {
@@ -683,6 +717,20 @@
 
         .modal-content {
             padding: 32px;
+        }
+
+        .modal-stagger {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: transform 0.25s var(--snappy-ease), opacity 0.25s var(--snappy-ease);
+            transition-delay: calc(0.05s * var(--stagger-index, 0) + 0.04s);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+        }
+
+        .modal-overlay.active .modal-stagger {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .modal-header {
@@ -755,14 +803,35 @@
             font-weight: 600;
             font-size: 16px;
             border-radius: var(--radius-sm);
-            transition: background-color 0.2s ease, transform 0.2s ease;
+            transition: transform 0.15s var(--snappy-ease), opacity 0.15s var(--snappy-ease);
             border: none;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+        }
+
+        .apply-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.12);
+            opacity: 0;
+            transition: opacity 0.15s var(--snappy-ease);
+            pointer-events: none;
         }
 
         .apply-btn:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+        }
+
+        .apply-btn:hover::before {
+            opacity: 1;
+        }
+
+        .apply-btn:active {
+            transform: scale(0.97);
         }
 
         .report-link {
@@ -911,7 +980,7 @@
                 </div>
                 <div class="hero-copy">
                     <h1 class="hero-title">Browse live volunteer opportunities across Canada.</h1>
-                    <p class="hero-desc">This directory extends the main Pitchin site with a cleaner, searchable list of active roles for students and community members. Same brand, more utility.</p>
+                    <p class="hero-desc">One place for verified volunteer opportunities across Canada. No dead links, no outdated listings, no noise.</p>
                 </div>
                 <div class="hero-stats" aria-label="Directory summary">
                     <div class="hero-stat">
@@ -1028,6 +1097,7 @@
         const modalContent = document.getElementById('modalContent');
         const resultsCountEl = document.getElementById('resultsCount');
         const heroOpportunityCountEl = document.getElementById('heroOpportunityCount');
+        const heroTitleEl = document.querySelector('.hero-title');
 
         // --- MOCK DATA FOR TESTING ---
         const mockData = [
@@ -1089,7 +1159,10 @@
 
         // --- INITIALIZATION ---
         async function init() {
-            requestAnimationFrame(() => document.body.classList.add('page-ready'));
+            prepareHeroTitleAnimation();
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => document.body.classList.add('page-ready'));
+            });
 
             if (USE_MOCK_DATA) {
                 allOpportunities = mockData;
@@ -1112,6 +1185,23 @@
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
             });
+        }
+
+        function prepareHeroTitleAnimation() {
+            if (!heroTitleEl || heroTitleEl.dataset.prepared === 'true') return;
+
+            const words = heroTitleEl.textContent.trim().split(/\s+/);
+            heroTitleEl.textContent = '';
+
+            words.forEach((word, index) => {
+                const span = document.createElement('span');
+                span.className = 'word';
+                span.style.setProperty('--word-delay', `${index * 32}ms`);
+                span.textContent = word;
+                heroTitleEl.appendChild(span);
+            });
+
+            heroTitleEl.dataset.prepared = 'true';
         }
 
         function normalizeFormat(format) {
@@ -1407,7 +1497,7 @@
                 : org;
 
             modalContent.innerHTML = `
-                <div class="modal-header">
+                <div class="modal-header modal-stagger" style="--stagger-index: 0;">
                     <h2 class="modal-title">${title}</h2>
                     <div class="card-org" style="font-size: 16px; margin-bottom: 8px;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/></svg>
@@ -1423,7 +1513,7 @@
                     </div>
                 </div>
 
-                <div class="modal-meta-grid">
+                <div class="modal-meta-grid modal-stagger" style="--stagger-index: 1;">
                     <div class="modal-meta-item">
                         <span class="footer-label">Commitment Type</span>
                         <span class="footer-val">${commitment}</span>
@@ -1442,19 +1532,19 @@
                     </div>
                 </div>
 
-                <div class="modal-section">
+                <div class="modal-section modal-stagger" style="--stagger-index: 2;">
                     <h3 class="modal-section-title">About the Role</h3>
                     <div class="modal-desc">${desc}</div>
                 </div>
 
                 ${applyLink !== '#' ? `
-                    <a href="${applyLink}" target="_blank" rel="noopener noreferrer" class="apply-btn">
+                    <a href="${applyLink}" target="_blank" rel="noopener noreferrer" class="apply-btn modal-stagger" style="--stagger-index: 3;">
                         Apply Now
                     </a>
                 ` : `
-                    <div class="no-results" style="padding: 20px;">No application link available.</div>
+                    <div class="no-results modal-stagger" style="padding: 20px; --stagger-index: 3;">No application link available.</div>
                 `}
-                <a href="${reportHref}" class="report-link">Report this listing</a>
+                <a href="${reportHref}" class="report-link modal-stagger" style="--stagger-index: 4;">Report this listing</a>
             `;
 
             modalOverlay.classList.add('active');
