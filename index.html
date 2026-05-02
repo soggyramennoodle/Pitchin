@@ -877,6 +877,10 @@
             backface-visibility: hidden;
         }
 
+        .apply-btn--toggle {
+            font: inherit;
+        }
+
         .apply-btn::before {
             content: '';
             position: absolute;
@@ -899,17 +903,120 @@
             transform: scale(0.97);
         }
 
-        .report-link {
-            display: inline-block;
-            margin-top: 16px;
-            font-size: 13px;
-            color: var(--text-muted);
-            text-decoration: none;
+        .modal-action-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
         }
 
-        .report-link:hover {
+        .apply-disclosure {
+            border-radius: var(--radius-sm);
+        }
+
+        .apply-disclosure-panel {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.3s var(--snappy-ease), opacity 0.22s var(--snappy-ease);
+        }
+
+        .apply-disclosure.open .apply-disclosure-panel {
+            opacity: 1;
+        }
+
+        .apply-disclosure-inner {
+            margin-top: 12px;
+            padding: 16px;
+            border-radius: 18px;
+            background: #f8faf9;
+            border: 1px solid var(--border-color);
+        }
+
+        .apply-disclosure-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .apply-disclosure-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .apply-disclosure-close {
+            border: 0;
+            background: transparent;
+            color: var(--text-muted);
+            font: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.15s var(--snappy-ease);
+        }
+
+        .apply-disclosure-close:hover {
+            color: var(--text-main);
+        }
+
+        .apply-contact-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .apply-contact-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .apply-contact-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #9CA3AF;
+        }
+
+        .apply-contact-value,
+        .apply-contact-value a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+        .apply-contact-value a:hover {
             color: var(--primary);
-            text-decoration: underline;
+        }
+
+        .report-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: fit-content;
+            padding: 9px 14px;
+            border-radius: 999px;
+            background: #FEE2E2;
+            color: #DC2626;
+            border: 1px solid #FECACA;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.15s var(--snappy-ease), transform 0.15s var(--snappy-ease);
+        }
+
+        .report-btn:hover {
+            background: #FECACA;
+            transform: translateY(-1px);
+        }
+
+        .report-btn svg {
+            flex-shrink: 0;
         }
 
         @keyframes cardIn {
@@ -1183,6 +1290,7 @@
         const AIRTABLE_BASE_ID = 'appjyvV00uXnhlK24';
         const AIRTABLE_TOKEN = 'patDiR5tzj1IjBNvP.e455c6390b0b18825637770ae3bebb60eee9aa9f19a619bea938b168d787cadd';
         const TABLE_NAME = 'tblhV2mJc83wp5dgG';
+        const REPORT_FORM_URL = 'https://tally.so/r/your-report-form-link-here';
         
         // Use true to test UI with fake data, change to false to connect to Airtable
         const USE_MOCK_DATA = false; 
@@ -1407,6 +1515,102 @@
                     <span class="student-status-text">N/A</span>
                 </span>
             `;
+        }
+
+        function getContactDetails(fields) {
+            const details = [];
+            const seen = new Set();
+            const website = getOrganizationWebsite(fields);
+            const candidates = [
+                { label: 'Organization', value: fields["Organization"], href: website || '' },
+                { label: 'Contact person', value: fields["Contact Name"] || fields["Volunteer Coordinator"] || fields["Coordinator"] || fields["Contact Person"] || '' },
+                { label: 'Email', value: fields["Email"] || fields["Contact Email"] || fields["Organization Email"] || fields["Volunteer Email"] || '', hrefPrefix: 'mailto:' },
+                { label: 'Phone', value: fields["Phone"] || fields["Contact Phone"] || fields["Organization Phone"] || fields["Volunteer Phone"] || '', hrefPrefix: 'tel:' },
+                { label: 'Website', value: website, href: website || '' }
+            ];
+
+            candidates.forEach((item) => {
+                const rawValue = typeof item.value === 'string' ? item.value.trim() : item.value;
+                if (!rawValue) return;
+
+                const key = `${item.label}:${rawValue}`.toLowerCase();
+                if (seen.has(key)) return;
+                seen.add(key);
+
+                const href = item.href || (item.hrefPrefix ? `${item.hrefPrefix}${rawValue}` : '');
+                details.push({
+                    label: item.label,
+                    value: rawValue,
+                    href
+                });
+            });
+
+            return details;
+        }
+
+        function getApplyDisclosureMarkup(contactDetails) {
+            const detailItems = contactDetails.length > 0
+                ? contactDetails.map((detail) => `
+                    <div class="apply-contact-item">
+                        <span class="apply-contact-label">${escapeHtml(detail.label)}</span>
+                        <span class="apply-contact-value">
+                            ${detail.href
+                                ? (detail.href.startsWith('http')
+                                    ? `<a href="${detail.href}" target="_blank" rel="noopener noreferrer">${escapeHtml(detail.value)}</a>`
+                                    : `<a href="${detail.href}">${escapeHtml(detail.value)}</a>`)
+                                : escapeHtml(detail.value)}
+                        </span>
+                    </div>
+                `).join('')
+                : `
+                    <div class="apply-contact-item">
+                        <span class="apply-contact-label">Contact</span>
+                        <span class="apply-contact-value">No direct contact info was provided for this listing.</span>
+                    </div>
+                `;
+
+            return `
+                <div class="apply-disclosure" data-apply-disclosure>
+                    <button type="button" class="apply-btn apply-btn--toggle" data-apply-toggle aria-expanded="false">
+                        Apply Now
+                    </button>
+                    <div class="apply-disclosure-panel" data-apply-panel>
+                        <div class="apply-disclosure-inner">
+                            <div class="apply-disclosure-top">
+                                <div class="apply-disclosure-title">Contact this organization directly</div>
+                                <button type="button" class="apply-disclosure-close" data-apply-close aria-label="Close contact details">Close</button>
+                            </div>
+                            <div class="apply-contact-list">
+                                ${detailItems}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function bindApplyDisclosure() {
+            const disclosure = modalContent.querySelector('[data-apply-disclosure]');
+            const toggle = modalContent.querySelector('[data-apply-toggle]');
+            const panel = modalContent.querySelector('[data-apply-panel]');
+            const close = modalContent.querySelector('[data-apply-close]');
+
+            if (!disclosure || !toggle || !panel || !close) return;
+
+            const setExpanded = (isOpen) => {
+                disclosure.classList.toggle('open', isOpen);
+                toggle.setAttribute('aria-expanded', String(isOpen));
+                panel.style.maxHeight = isOpen ? `${panel.scrollHeight}px` : '0px';
+            };
+
+            toggle.addEventListener('click', () => {
+                const nextState = !disclosure.classList.contains('open');
+                setExpanded(nextState);
+            });
+
+            close.addEventListener('click', () => setExpanded(false));
+
+            panel.style.maxHeight = '0px';
         }
 
         function escapeHtml(value) {
@@ -1735,8 +1939,9 @@
             }
 
             const desc = fields["Description"] || 'No description provided.';
-            const applyLink = fields["Application Link"] || '#';
-            const reportHref = `mailto:pitchin.live@proton.me?subject=${encodeURIComponent(`Listing Report: ${title}`)}`;
+            const applyLink = typeof fields["Application Link"] === 'string' ? fields["Application Link"].trim() : fields["Application Link"];
+            const hasApplyLink = Boolean(applyLink);
+            const contactDetails = getContactDetails(fields);
             const orgMarkup = orgWebsite
                 ? `<a href="${orgWebsite}" target="_blank" rel="noopener noreferrer" class="modal-org-link">${org}</a>`
                 : org;
@@ -1782,15 +1987,26 @@
                     <div class="modal-desc">${desc}</div>
                 </div>
 
-                ${applyLink !== '#' ? `
-                    <a href="${applyLink}" target="_blank" rel="noopener noreferrer" class="apply-btn modal-stagger" style="--stagger-index: 3;">
-                        Apply Now
+                <div class="modal-action-stack modal-stagger" style="--stagger-index: 3;">
+                    ${hasApplyLink ? `
+                        <a href="${applyLink}" target="_blank" rel="noopener noreferrer" class="apply-btn">
+                            Apply Now
+                        </a>
+                    ` : getApplyDisclosureMarkup(contactDetails)}
+
+                    <a href="${REPORT_FORM_URL}" target="_blank" rel="noopener noreferrer" class="report-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 3 2.6 19a1 1 0 0 0 .87 1.5h17.06a1 1 0 0 0 .87-1.5L12 3Z"></path>
+                            <path d="M12 9v4"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+                        Report this listing
                     </a>
-                ` : `
-                    <div class="no-results modal-stagger" style="padding: 20px; --stagger-index: 3;">No application link available.</div>
-                `}
-                <a href="${reportHref}" class="report-link modal-stagger" style="--stagger-index: 4;">Report this listing</a>
+                </div>
             `;
+            if (!hasApplyLink) {
+                bindApplyDisclosure();
+            }
             currentOpenCard = sourceCard;
             document.body.style.overflow = 'hidden';
             isModalTransitioning = true;
