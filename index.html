@@ -1455,6 +1455,7 @@
         let filterTransitionTimeout;
         const supportsCardTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
         let currentOpenCard = null;
+        let currentModalOpportunityFields = null;
         let isModalTransitioning = false;
 
         const CANADIAN_REGIONS = ['AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'];
@@ -1656,73 +1657,62 @@
             return text;
         }
 
-        function bindAiOverview(fields) {
+        function startAiOverviewLoadingCycle(text) {
+            const loadingMessages = ['Analyzing this opportunity...', 'Almost done...'];
+            let index = 0;
+            text.textContent = loadingMessages[index];
+
+            return window.setInterval(() => {
+                index = (index + 1) % loadingMessages.length;
+                text.style.opacity = '0.35';
+                window.setTimeout(() => {
+                    text.textContent = loadingMessages[index];
+                    text.style.opacity = '1';
+                }, 120);
+            }, 1400);
+        }
+
+        async function handleAiOverviewRequest() {
             const root = modalContent.querySelector('[data-ai-overview]');
             const trigger = modalContent.querySelector('[data-ai-trigger]');
             const state = modalContent.querySelector('[data-ai-state]');
             const box = modalContent.querySelector('[data-ai-box]');
             const text = modalContent.querySelector('[data-ai-text]');
 
-            if (!root || !trigger || !state || !box || !text) return;
+            if (!root || !trigger || !state || !box || !text || !currentModalOpportunityFields) return;
+            if (root.dataset.loading === 'true' || root.dataset.loaded === 'true') return;
 
-            let loadingInterval = null;
-            let isRunning = false;
+            root.dataset.loading = 'true';
+            trigger.style.display = 'none';
+            state.classList.add('active');
+            box.classList.remove('complete', 'error');
+            box.classList.add('loading');
+            box.style.removeProperty('--ai-solid-bg');
+            text.classList.add('loading-text');
+            text.classList.remove('error-text');
 
-            const loadingMessages = ['Analyzing this opportunity...', 'Almost done...'];
+            const loadingInterval = startAiOverviewLoadingCycle(text);
 
-            const stopLoadingCycle = () => {
-                if (loadingInterval !== null) {
-                    window.clearInterval(loadingInterval);
-                    loadingInterval = null;
-                }
-            };
-
-            const startLoadingCycle = () => {
-                let index = 0;
-                text.textContent = loadingMessages[index];
-                loadingInterval = window.setInterval(() => {
-                    index = (index + 1) % loadingMessages.length;
-                    text.style.opacity = '0.35';
-                    window.setTimeout(() => {
-                        text.textContent = loadingMessages[index];
-                        text.style.opacity = '1';
-                    }, 120);
-                }, 1400);
-            };
-
-            trigger.addEventListener('click', async () => {
-                if (isRunning) return;
-
-                isRunning = true;
-                trigger.style.display = 'none';
-                state.classList.add('active');
-                box.classList.remove('complete', 'error');
-                box.classList.add('loading');
-                box.style.removeProperty('--ai-solid-bg');
-                text.classList.add('loading-text');
-                text.classList.remove('error-text');
-                startLoadingCycle();
-
-                try {
-                    const overview = await fetchAiOverview(fields);
-                    stopLoadingCycle();
-                    box.classList.remove('loading', 'error');
-                    box.classList.add('complete');
-                    box.style.setProperty('--ai-solid-bg', getRandomAiOverviewColor());
-                    text.classList.remove('loading-text', 'error-text');
-                    text.textContent = overview;
-                } catch (error) {
-                    console.error('AI overview failed:', error);
-                    stopLoadingCycle();
-                    box.classList.remove('loading', 'complete');
-                    box.classList.add('error');
-                    text.classList.remove('loading-text');
-                    text.classList.add('error-text');
-                    text.textContent = 'Overview unavailable right now';
-                } finally {
-                    isRunning = false;
-                }
-            });
+            try {
+                const overview = await fetchAiOverview(currentModalOpportunityFields);
+                window.clearInterval(loadingInterval);
+                box.classList.remove('loading', 'error');
+                box.classList.add('complete');
+                box.style.setProperty('--ai-solid-bg', getRandomAiOverviewColor());
+                text.classList.remove('loading-text', 'error-text');
+                text.textContent = overview;
+                root.dataset.loaded = 'true';
+            } catch (error) {
+                console.error('AI overview failed:', error);
+                window.clearInterval(loadingInterval);
+                box.classList.remove('loading', 'complete');
+                box.classList.add('error');
+                text.classList.remove('loading-text');
+                text.classList.add('error-text');
+                text.textContent = 'Overview unavailable right now';
+            } finally {
+                delete root.dataset.loading;
+            }
         }
 
         function getCardCenterRect(card) {
@@ -2301,7 +2291,7 @@
                     ` : getApplyDisclosureMarkup(contactInfo)}
 
                     <div class="ai-overview" data-ai-overview>
-                        <button type="button" class="ai-overview-trigger" data-ai-trigger>
+                        <button type="button" class="ai-overview-trigger" data-ai-trigger onclick="handleAiOverviewRequest()">
                             <span aria-hidden="true">✨</span>
                             <span>Get AI Overview</span>
                         </button>
@@ -2329,7 +2319,7 @@
             if (!hasApplyLink) {
                 bindApplyDisclosure();
             }
-            bindAiOverview(fields);
+            currentModalOpportunityFields = fields;
             currentOpenCard = sourceCard;
             document.body.style.overflow = 'hidden';
             isModalTransitioning = true;
@@ -2430,6 +2420,7 @@
                 Promise.allSettled([overlayAnimation.finished, modalAnimation.finished]).then(() => {
                     resetModalAnimationState();
                     modalOverlay.classList.remove('active');
+                    currentModalOpportunityFields = null;
                     currentOpenCard = null;
                     document.body.style.overflow = '';
                     isModalTransitioning = false;
