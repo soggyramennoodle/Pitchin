@@ -2121,7 +2121,6 @@
             const format = normalizeFormat(fields["Format"]) || '';
             const commitment = formatCommitmentType(fields["Commitment Type"]);
             const studentFriendly = getStudentFriendlyLabel(fields["Student Friendly"]);
-            const formatValue = normalizeFormat(fields["Format"]) || '';
             const categoryStyle = getCategoryTagStyle(category);
             const orgWebsite = getOrganizationWebsite(fields);
             const verifiedDate = formatVerifiedDate(fields["Date Last Checked"]);
@@ -2167,12 +2166,12 @@
 
                 <div class="modal-meta-grid modal-stagger" style="--stagger-index: 1;">
                     <div class="modal-meta-item">
-                        <span class="footer-label">Commitment Type</span>
-                        ${getModalMetaValueMarkup(commitment, 'Unknown')}
+                        <span class="footer-label">Category</span>
+                        ${getModalMetaValueMarkup(category, 'Unknown')}
                     </div>
                     <div class="modal-meta-item">
-                        <span class="footer-label">Format</span>
-                        ${getModalMetaValueMarkup(formatValue, 'Unknown')}
+                        <span class="footer-label">Commitment Type</span>
+                        ${getModalMetaValueMarkup(commitment, 'Unknown')}
                     </div>
                     <div class="modal-meta-item">
                         <span class="footer-label">Student Friendly</span>
