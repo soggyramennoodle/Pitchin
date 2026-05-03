@@ -76,6 +76,11 @@
         }
 
         .announcement-card {
+            --card-tilt-x: 0deg;
+            --card-tilt-y: 0deg;
+            --glow-x: 50%;
+            --glow-y: 50%;
+            --glow-opacity: 0;
             position: relative;
             border-radius: var(--radius-xl);
             padding: 30px 30px 28px;
@@ -85,13 +90,35 @@
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             opacity: 0;
-            transform: translateY(18px);
-            transition: opacity 0.55s var(--snappy-ease), transform 0.55s var(--snappy-ease);
+            transform: perspective(1200px) rotateX(var(--card-tilt-x)) rotateY(var(--card-tilt-y)) translateY(18px);
+            transition: opacity 0.55s var(--snappy-ease), transform 0.55s var(--snappy-ease), box-shadow 0.22s var(--snappy-ease), border-color 0.22s var(--snappy-ease);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            overflow: hidden;
         }
 
         body.page-ready .announcement-card {
             opacity: 1;
-            transform: translateY(0);
+            transform: perspective(1200px) rotateX(var(--card-tilt-x)) rotateY(var(--card-tilt-y)) translateY(0);
+        }
+
+        .announcement-card::after {
+            content: '';
+            position: absolute;
+            inset: -20%;
+            background:
+                radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.19) 0%, rgba(255, 255, 255, 0.08) 18%, rgba(255, 255, 255, 0) 46%);
+            opacity: var(--glow-opacity);
+            pointer-events: none;
+            transition: opacity 0.24s var(--snappy-ease);
+            will-change: opacity, transform;
+            backface-visibility: hidden;
+        }
+
+        .announcement-card:hover {
+            box-shadow: 0 34px 90px rgba(10, 20, 16, 0.28);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .announcement-topbar {
@@ -107,6 +134,12 @@
             align-items: center;
             gap: 16px;
             text-decoration: none;
+            transition: transform 0.18s var(--snappy-ease), opacity 0.18s var(--snappy-ease);
+        }
+
+        .brand:hover {
+            transform: translateY(-1px);
+            opacity: 0.96;
         }
 
         .brand-icon {
@@ -119,12 +152,18 @@
             background: radial-gradient(circle at 30% 25%, #5c8c74 0%, #346756 42%, #2D5A45 68%, #163629 100%);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 14px 24px rgba(7, 16, 13, 0.22);
             flex-shrink: 0;
+            transition: transform 0.18s var(--snappy-ease), box-shadow 0.18s var(--snappy-ease);
         }
 
         .brand-icon svg {
             width: 26px;
             height: 26px;
             display: block;
+        }
+
+        .brand:hover .brand-icon {
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 28px rgba(7, 16, 13, 0.26);
         }
 
         .brand-text {
@@ -220,6 +259,10 @@
             box-shadow: 0 20px 34px rgba(9, 18, 14, 0.22);
         }
 
+        .announcement-cta:active {
+            transform: translateY(0) scale(0.985);
+        }
+
         .announcement-footer {
             margin-top: 40px;
             padding-top: 22px;
@@ -243,6 +286,7 @@
 
         .announcement-back:hover {
             color: var(--text-main);
+            transform: translateX(-3px);
         }
 
         @media (max-width: 640px) {
@@ -254,6 +298,7 @@
             .announcement-card {
                 padding: 22px 18px 22px;
                 border-radius: 28px;
+                transform: translateY(18px);
             }
 
             .announcement-topbar {
@@ -322,11 +367,66 @@
     </main>
 
     <script>
+        const announcementCard = document.querySelector('.announcement-card');
+        const supportsInteractiveHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 document.body.classList.add('page-ready');
             });
         });
+
+        if (announcementCard && supportsInteractiveHover) {
+            let rafId = null;
+            let lastEvent = null;
+
+            const updateCardMotion = () => {
+                rafId = null;
+                if (!lastEvent) return;
+
+                const rect = announcementCard.getBoundingClientRect();
+                const x = lastEvent.clientX - rect.left;
+                const y = lastEvent.clientY - rect.top;
+                const relX = x / rect.width - 0.5;
+                const relY = y / rect.height - 0.5;
+                const rotateY = relX * 9;
+                const rotateX = relY * -7;
+
+                announcementCard.style.transition = 'none';
+                announcementCard.style.setProperty('--card-tilt-x', `${rotateX.toFixed(2)}deg`);
+                announcementCard.style.setProperty('--card-tilt-y', `${rotateY.toFixed(2)}deg`);
+                announcementCard.style.setProperty('--glow-x', `${x.toFixed(1)}px`);
+                announcementCard.style.setProperty('--glow-y', `${y.toFixed(1)}px`);
+                announcementCard.style.setProperty('--glow-opacity', '1');
+            };
+
+            const queueUpdate = (event) => {
+                lastEvent = event;
+                if (rafId === null) {
+                    rafId = requestAnimationFrame(updateCardMotion);
+                }
+            };
+
+            announcementCard.addEventListener('mouseenter', queueUpdate);
+            announcementCard.addEventListener('mousemove', queueUpdate);
+
+            announcementCard.addEventListener('mouseleave', () => {
+                if (rafId !== null) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+
+                lastEvent = null;
+                announcementCard.style.transition = 'transform 0.38s var(--snappy-ease), box-shadow 0.22s var(--snappy-ease), border-color 0.22s var(--snappy-ease)';
+                announcementCard.style.setProperty('--card-tilt-x', '0deg');
+                announcementCard.style.setProperty('--card-tilt-y', '0deg');
+                announcementCard.style.setProperty('--glow-opacity', '0');
+
+                window.setTimeout(() => {
+                    announcementCard.style.transition = '';
+                }, 380);
+            });
+        }
     </script>
 </body>
 </html>
