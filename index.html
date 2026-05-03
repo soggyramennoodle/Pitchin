@@ -66,26 +66,32 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
         }
 
         .logo-icon {
-            background: radial-gradient(circle at 30% 25%, #467069 0%, #1f514c 58%, #143935 100%);
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
+            background: radial-gradient(circle at 30% 25%, #467069 0%, #255f57 42%, #1f514c 68%, #143935 100%);
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 18px rgba(31, 81, 76, 0.18);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 14px 28px rgba(31, 81, 76, 0.2);
             flex-shrink: 0;
         }
 
+        .logo-icon svg {
+            width: 26px;
+            height: 26px;
+            display: block;
+        }
+
         .logo-text {
-            font-size: 29px;
+            font-size: 31px;
             font-weight: 400;
             color: var(--text-main);
-            letter-spacing: -0.04em;
+            letter-spacing: -0.05em;
             line-height: 1;
             font-family: var(--serif);
         }
@@ -823,6 +829,22 @@
             width: fit-content;
         }
 
+        .footer-brand .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 18px rgba(31, 81, 76, 0.16);
+        }
+
+        .footer-brand .logo-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .footer-brand .logo-text {
+            font-size: 24px;
+        }
+
         .footer-copy {
             max-width: 18ch;
             color: #5f6664;
@@ -1240,6 +1262,15 @@
             .logo-text {
                 font-size: 24px;
             }
+            .logo-icon {
+                width: 46px;
+                height: 46px;
+                border-radius: 16px;
+            }
+            .logo-icon svg {
+                width: 22px;
+                height: 22px;
+            }
             .hero-container {
                 padding: 4px 16px 0;
             }
@@ -1329,9 +1360,8 @@
         <div class="container header-content">
             <a href="https://pitchin.framer.website" class="logo">
                 <div class="logo-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21.75 3.25 3.9 10.2c-.82.32-.78 1.5.07 1.76l4.96 1.52 1.52 4.96c.26.85 1.44.89 1.76.07L20.75 6.25c.26-.73-.47-1.46-1.2-1.2Z" fill="white"/>
                     </svg>
                 </div>
                 <span class="logo-text">Pitchin</span>
@@ -1438,9 +1468,8 @@
                 <div class="footer-brand">
                     <a href="https://pitchin.framer.website" class="logo">
                         <div class="logo-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="22" y1="2" x2="11" y2="13"></line>
-                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21.75 3.25 3.9 10.2c-.82.32-.78 1.5.07 1.76l4.96 1.52 1.52 4.96c.26.85 1.44.89 1.76.07L20.75 6.25c.26-.73-.47-1.46-1.2-1.2Z" fill="white"/>
                             </svg>
                         </div>
                         <span class="logo-text">Pitchin</span>
