@@ -1574,6 +1574,8 @@
         let filteredOpportunities = [];
         let filterTransitionTimeout;
         let studentFriendlyOnly = false;
+        let cityToProvince = new Map();
+        let provinceToCities = new Map();
         const supportsCardTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
         let currentOpenCard = null;
         let isModalTransitioning = false;
@@ -1693,8 +1695,8 @@
             // Event Listeners
             searchInput.addEventListener('input', applyFilters);
             categorySelect.addEventListener('change', applyFilters);
-            provinceSelect.addEventListener('change', applyFilters);
-            citySelect.addEventListener('change', applyFilters);
+            provinceSelect.addEventListener('change', handleProvinceChange);
+            citySelect.addEventListener('change', handleCityChange);
             commitmentSelect.addEventListener('change', applyFilters);
             formatSelect.addEventListener('change', applyFilters);
             studentFriendlyToggle.addEventListener('click', () => {
@@ -1819,6 +1821,82 @@
             }
 
             return 'Viewing Canada-wide';
+        }
+
+        function buildLocationMaps() {
+            cityToProvince = new Map();
+            provinceToCities = new Map();
+
+            allOpportunities.forEach((opp) => {
+                const fields = opp.fields;
+                const city = typeof fields["City"] === 'string' ? fields["City"].trim() : '';
+                const province = typeof fields["Province"] === 'string' ? fields["Province"].trim() : '';
+
+                if (!city) return;
+
+                if (!cityToProvince.has(city)) {
+                    cityToProvince.set(city, province || '');
+                }
+
+                if (!province) return;
+
+                if (!provinceToCities.has(province)) {
+                    provinceToCities.set(province, new Set());
+                }
+
+                provinceToCities.get(province).add(city);
+            });
+        }
+
+        function populateCityOptions(selectedProvince = '', selectedCity = '') {
+            const placeholder = 'All Cities';
+            const normalizedProvince = selectedProvince.trim();
+            const normalizedCity = selectedCity.trim();
+            const availableCities = normalizedProvince && provinceToCities.has(normalizedProvince)
+                ? Array.from(provinceToCities.get(normalizedProvince))
+                : Array.from(cityToProvince.keys());
+
+            resetSelect(citySelect, placeholder);
+
+            availableCities
+                .sort((a, b) => a.localeCompare(b))
+                .forEach((city) => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+
+            if (normalizedCity && availableCities.includes(normalizedCity)) {
+                citySelect.value = normalizedCity;
+            }
+        }
+
+        function handleProvinceChange() {
+            const selectedProvince = provinceSelect.value.trim();
+            const selectedCity = citySelect.value.trim();
+
+            if (selectedCity) {
+                const matchingProvince = cityToProvince.get(selectedCity);
+                if (selectedProvince && matchingProvince && matchingProvince !== selectedProvince) {
+                    citySelect.value = '';
+                }
+            }
+
+            populateCityOptions(selectedProvince, citySelect.value);
+            applyFilters();
+        }
+
+        function handleCityChange() {
+            const selectedCity = citySelect.value.trim();
+            const matchingProvince = cityToProvince.get(selectedCity);
+
+            if (selectedCity && matchingProvince) {
+                provinceSelect.value = matchingProvince;
+            }
+
+            populateCityOptions(provinceSelect.value, selectedCity);
+            applyFilters();
         }
 
         function syncFilterUiState() {
@@ -2098,14 +2176,14 @@
         // --- FILTERING LOGIC ---
         function setupFilters() {
             const categories = new Set();
-            const cities = new Set();
             const commitments = new Set();
             const formats = new Set();
+
+            buildLocationMaps();
 
             allOpportunities.forEach(opp => {
                 const fields = opp.fields;
                 if (fields["Category"]) categories.add(fields["Category"]);
-                if (fields["City"]) cities.add(fields["City"].trim());
                 if (fields["Commitment Type"]) commitments.add(formatCommitmentType(fields["Commitment Type"]));
                 if (fields["Format"]) formats.add(normalizeFormat(fields["Format"]));
             });
@@ -2135,13 +2213,7 @@
                 option.textContent = prov;
                 provinceSelect.appendChild(option);
             });
-
-            Array.from(cities).sort((a, b) => a.localeCompare(b)).forEach(city => {
-                const option = document.createElement('option');
-                option.value = city;
-                option.textContent = city;
-                citySelect.appendChild(option);
-            });
+            populateCityOptions();
 
             COMMITMENT_ORDER.filter(commitment => commitments.has(commitment)).forEach(commitment => {
                 const option = document.createElement('option');
@@ -2313,7 +2385,7 @@
                 gridEl.innerHTML = `
                     <div class="no-results">
                         <h3>No opportunities found.</h3>
-                        <p>Try adjusting your filters.</p>
+                        <p>${hasActiveFilters() ? 'These filters might be doing a little too much. Try easing one or two back.' : 'Try adjusting your filters.'}</p>
                         <button class="reset-btn" type="button" onclick="resetFilters()">Reset filters</button>
                     </div>
                 `;
