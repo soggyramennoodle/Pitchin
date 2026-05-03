@@ -278,6 +278,14 @@
             margin-bottom: 16px;
         }
 
+        .filters-heading-main {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            min-width: 0;
+        }
+
         .section-kicker {
             display: inline-block;
             color: var(--primary);
@@ -313,6 +321,27 @@
             color: var(--text-muted);
             font-size: 13px;
             font-weight: 500;
+        }
+
+        .scope-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 36px;
+            padding: 0 12px;
+            border-radius: var(--radius-full);
+            background: rgba(31, 81, 76, 0.07);
+            border: 1px solid rgba(31, 81, 76, 0.12);
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+        }
+
+        .scope-pill svg {
+            flex-shrink: 0;
+            opacity: 0.82;
         }
 
         .filters-bar {
@@ -1234,6 +1263,9 @@
             .filters-heading {
                 flex-wrap: wrap;
             }
+            .filters-heading-main {
+                width: 100%;
+            }
             .footer-main {
                 grid-template-columns: 1fr 1fr;
                 gap: 32px;
@@ -1312,6 +1344,11 @@
             .filters-heading {
                 align-items: flex-start;
                 gap: 10px;
+            }
+            .scope-pill {
+                min-height: 34px;
+                padding: 0 11px;
+                font-size: 12px;
             }
             .results-pill {
                 padding: 8px 12px;
@@ -1403,7 +1440,16 @@
             <div class="filters-section">
                 <div class="filters-inner">
                     <div class="filters-heading">
-                        <h2 class="filters-title">Search the opportunity board.</h2>
+                        <div class="filters-heading-main">
+                            <h2 class="filters-title">Search the opportunity board.</h2>
+                            <div class="scope-pill" id="locationScope">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                <span>Viewing Canada-wide</span>
+                            </div>
+                        </div>
                         <div class="results-pill"><span id="resultsCount">0</span> roles loaded</div>
                     </div>
                     <div class="filters-bar">
@@ -1533,6 +1579,21 @@
         let isModalTransitioning = false;
 
         const CANADIAN_REGIONS = ['AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'];
+        const PROVINCE_LABELS = {
+            AB: 'Alberta',
+            BC: 'British Columbia',
+            MB: 'Manitoba',
+            NB: 'New Brunswick',
+            NL: 'Newfoundland and Labrador',
+            NS: 'Nova Scotia',
+            NT: 'Northwest Territories',
+            NU: 'Nunavut',
+            ON: 'Ontario',
+            PE: 'Prince Edward Island',
+            QC: 'Quebec',
+            SK: 'Saskatchewan',
+            YT: 'Yukon'
+        };
         const FORMAT_ORDER = ['In Person', 'Remote', 'Hybrid'];
         const COMMITMENT_ORDER = ['Flexible', 'One-time', 'Recurring'];
 
@@ -1550,6 +1611,7 @@
         const modalCloseBtn = document.getElementById('modalClose');
         const modalContent = document.getElementById('modalContent');
         const resultsCountEl = document.getElementById('resultsCount');
+        const locationScopeEl = document.getElementById('locationScope');
         const heroOpportunityCountEl = document.getElementById('heroOpportunityCount');
         const heroTitleEl = document.querySelector('.hero-title');
 
@@ -1739,10 +1801,33 @@
             );
         }
 
+        function getBrowseScopeLabel() {
+            const city = citySelect.value.trim();
+            const provinceCode = provinceSelect.value.trim();
+            const provinceName = PROVINCE_LABELS[provinceCode] || provinceCode;
+
+            if (city && provinceName) {
+                return `Viewing ${city}, ${provinceName}`;
+            }
+
+            if (city) {
+                return `Viewing ${city}`;
+            }
+
+            if (provinceName) {
+                return `Viewing ${provinceName}`;
+            }
+
+            return 'Viewing Canada-wide';
+        }
+
         function syncFilterUiState() {
             studentFriendlyToggle.classList.toggle('active', studentFriendlyOnly);
             studentFriendlyToggle.setAttribute('aria-pressed', String(studentFriendlyOnly));
             clearFiltersBtn.hidden = !hasActiveFilters();
+            if (locationScopeEl) {
+                locationScopeEl.querySelector('span').textContent = getBrowseScopeLabel();
+            }
         }
 
         function getCardCenterRect(card) {
