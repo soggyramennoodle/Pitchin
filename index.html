@@ -673,6 +673,17 @@
             font-weight: 600;
         }
 
+        .footer-val--positive {
+            display: inline-block;
+            background: linear-gradient(90deg, #1f514c 0%, #79c8a7 50%, #1f514c 100%);
+            background-size: 220% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: alertSweep 1.8s linear infinite;
+            font-weight: 600;
+        }
+
         .student-status {
             display: inline-flex;
             align-items: center;
@@ -1667,10 +1678,23 @@
             return String(value).trim();
         }
 
-        function getModalMetaValueMarkup(value, fallbackText = 'Unknown') {
+        function getModalMetaValueMarkup(value, fallbackText = 'Not specified') {
             if (value == null || value === '') {
                 return `<span class="footer-val footer-val--alert">${escapeHtml(fallbackText)}</span>`;
             }
+            return `<span class="footer-val">${escapeHtml(value)}</span>`;
+        }
+
+        function getApplicationDeadlineMarkup(value) {
+            if (value == null || value === '') {
+                return `<span class="footer-val footer-val--alert">Not specified</span>`;
+            }
+
+            const normalized = String(value).trim().toLowerCase();
+            if (normalized === 'ongoing') {
+                return `<span class="footer-val footer-val--positive">Ongoing</span>`;
+            }
+
             return `<span class="footer-val">${escapeHtml(value)}</span>`;
         }
 
@@ -2301,14 +2325,12 @@
                     </div>
                     <div class="modal-meta-item">
                         <span class="footer-label">Commitment Type</span>
-                        ${getModalMetaValueMarkup(commitment, 'Unknown')}
+                        ${getModalMetaValueMarkup(commitment, 'Not specified')}
                     </div>
-                    ${timeCommitment ? `
-                        <div class="modal-meta-item">
-                            <span class="footer-label">Time Commitment</span>
-                            <span class="footer-val">${escapeHtml(timeCommitment)}</span>
-                        </div>
-                    ` : ''}
+                    <div class="modal-meta-item">
+                        <span class="footer-label">Time Commitment</span>
+                        ${getModalMetaValueMarkup(timeCommitment, 'Not specified')}
+                    </div>
                     <div class="modal-meta-item">
                         <span class="footer-label">Student Friendly</span>
                         ${studentFriendly === 'Unknown'
@@ -2317,7 +2339,7 @@
                     </div>
                     <div class="modal-meta-item">
                         <span class="footer-label">Application Deadline</span>
-                        ${getModalMetaValueMarkup(deadlineStr, 'Ongoing')}
+                        ${getApplicationDeadlineMarkup(deadlineStr)}
                     </div>
                 </div>
 
