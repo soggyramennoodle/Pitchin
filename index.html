@@ -2279,11 +2279,9 @@
             const orgWebsite = getOrganizationWebsite(fields);
             const verifiedDate = formatVerifiedDate(fields["Date Last Checked"]);
             
-            let deadlineStr = '';
-            if (fields["Application Deadline"]) {
-                const date = new Date(fields["Application Deadline"]);
-                deadlineStr = isNaN(date.getTime()) ? fields["Application Deadline"] : date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-            }
+            const deadlineStr = typeof fields["Application Deadline"] === 'string'
+                ? fields["Application Deadline"].trim()
+                : (fields["Application Deadline"] ?? '');
 
             const desc = fields["Description"] || 'No description provided.';
             const applyLink = typeof fields["Application Link"] === 'string' ? fields["Application Link"].trim() : fields["Application Link"];
