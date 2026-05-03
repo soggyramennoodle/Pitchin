@@ -266,10 +266,10 @@
 
         .filters-heading {
             display: flex;
-            align-items: flex-end;
+            align-items: center;
             justify-content: space-between;
             gap: 18px;
-            margin-bottom: 28px;
+            margin-bottom: 16px;
         }
 
         .section-kicker {
@@ -284,12 +284,12 @@
 
         .filters-title {
             font-family: var(--serif);
-            font-size: clamp(1.9rem, 2.7vw, 2.45rem);
-            line-height: 1.02;
+            font-size: clamp(1.45rem, 2.2vw, 2rem);
+            line-height: 1.05;
             letter-spacing: -0.05em;
             font-weight: 400;
             color: var(--text-main);
-            margin-bottom: 14px;
+            margin: 0;
         }
 
         .filters-subtitle {
@@ -303,54 +303,63 @@
             flex-shrink: 0;
             border-radius: var(--radius-full);
             border: 1px solid var(--border-color);
-            padding: 10px 16px;
+            padding: 9px 14px;
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
         }
 
-        .filters-grid {
+        .filters-bar {
             display: grid;
-            grid-template-columns: minmax(220px, 1.55fr) repeat(5, minmax(150px, 1fr));
-            gap: 16px;
+            grid-template-columns: minmax(240px, 1.45fr) repeat(5, minmax(120px, 0.72fr)) auto;
+            gap: 10px;
+            align-items: center;
         }
 
         .filter-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 0;
             grid-column: span 1;
         }
 
-        .filter-group--wide {
-            grid-column: span 2;
+        .filter-group--search {
+            min-width: 0;
         }
 
-        .filter-group label {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-muted);
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
         .filter-control {
-            min-height: 60px;
-            padding: 0 18px;
+            min-height: 48px;
+            padding: 0 14px;
             border: 1px solid var(--border-color);
-            border-radius: 18px;
+            border-radius: 14px;
             font-family: inherit;
-            font-size: 15px;
+            font-size: 14px;
             color: var(--text-main);
             background-color: var(--card-bg);
             transition: transform 0.15s var(--snappy-ease);
             outline: none;
+            width: 100%;
+            min-width: 0;
         }
 
         select.filter-control {
             appearance: none;
-            padding-right: 50px;
+            padding-right: 40px;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236f7674' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 18px center;
+            background-position: right 14px center;
             background-size: 14px;
         }
 
@@ -361,6 +370,67 @@
 
         .filter-control:hover {
             transform: translateY(-1px);
+        }
+
+        .filters-actions {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            min-height: 48px;
+            white-space: nowrap;
+        }
+
+        .toggle-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 15px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-main);
+            font: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s var(--snappy-ease), border-color 0.15s var(--snappy-ease), background-color 0.15s var(--snappy-ease), color 0.15s var(--snappy-ease);
+        }
+
+        .toggle-chip:hover {
+            transform: translateY(-1px);
+        }
+
+        .toggle-chip.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        .clear-filters {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--primary);
+            font: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.15s var(--snappy-ease), transform 0.15s var(--snappy-ease);
+        }
+
+        .clear-filters:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+
+        .clear-filters[hidden] {
+            display: none;
         }
 
         /* Grid Layout */
@@ -1102,15 +1172,19 @@
             .opportunities-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .filters-grid {
+            .filters-bar {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
             .filter-group,
-            .filter-group--wide {
+            .filter-group--search {
                 grid-column: span 1;
             }
-            .filter-group--wide {
+            .filter-group--search {
                 grid-column: 1 / -1;
+            }
+            .filters-actions {
+                grid-column: 1 / -1;
+                justify-content: flex-start;
             }
             .hero {
                 padding: 22px 24px;
@@ -1125,8 +1199,7 @@
                 max-width: 50ch;
             }
             .filters-heading {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-wrap: wrap;
             }
             .footer-main {
                 grid-template-columns: 1fr 1fr;
@@ -1173,11 +1246,14 @@
             .opportunities-grid {
                 grid-template-columns: 1fr;
             }
-            .filters-grid {
-                grid-template-columns: 1fr;
+            .filters-bar {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
             .filter-group,
-            .filter-group--wide {
+            .filter-group--search {
+                grid-column: span 1;
+            }
+            .filter-group--search {
                 grid-column: 1 / -1;
             }
             .hero-title {
@@ -1190,6 +1266,20 @@
             }
             .hero-stats {
                 display: none;
+            }
+            .filters-heading {
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .results-pill {
+                padding: 8px 12px;
+            }
+            .filters-actions {
+                gap: 10px;
+            }
+            .toggle-chip {
+                min-height: 42px;
+                padding: 0 14px;
             }
             .modal-content {
                 padding: 24px;
@@ -1272,52 +1362,52 @@
             <div class="filters-section">
                 <div class="filters-inner">
                     <div class="filters-heading">
-                        <div>
-                            <span class="section-kicker">Volunteer Directory</span>
-                            <h2 class="filters-title">Search the opportunity board.</h2>
-                            <p class="filters-subtitle">Use the filters below to narrow by organization, category, province, city, commitment type, and format. Listings open in a lightweight detail view so you can scan quickly.</p>
-                        </div>
+                        <h2 class="filters-title">Search the opportunity board.</h2>
                         <div class="results-pill"><span id="resultsCount">0</span> roles loaded</div>
                     </div>
-                    <div class="filters-grid">
-                        <div class="filter-group filter-group--wide">
-                            <label for="search">Search</label>
+                    <div class="filters-bar">
+                        <div class="filter-group filter-group--search">
+                            <label for="search" class="sr-only">Search</label>
                             <input type="text" id="search" class="filter-control" placeholder="Search title or organization...">
                         </div>
                         <div class="filter-group">
-                            <label for="category">Category</label>
+                            <label for="category" class="sr-only">Category</label>
                             <select id="category" class="filter-control">
                                 <option value="">All Categories</option>
                                 <!-- Options generated by JS -->
                             </select>
                         </div>
                         <div class="filter-group">
-                            <label for="province">Province</label>
+                            <label for="province" class="sr-only">Province</label>
                             <select id="province" class="filter-control">
                                 <option value="">All Provinces</option>
                                 <!-- Options generated by JS -->
                             </select>
                         </div>
                         <div class="filter-group">
-                            <label for="city">City</label>
+                            <label for="city" class="sr-only">City</label>
                             <select id="city" class="filter-control">
                                 <option value="">All Cities</option>
                                 <!-- Options generated by JS -->
                             </select>
                         </div>
                         <div class="filter-group">
-                            <label for="commitment">Commitment</label>
+                            <label for="commitment" class="sr-only">Commitment Type</label>
                             <select id="commitment" class="filter-control">
                                 <option value="">All Commitment Types</option>
                                 <!-- Options generated by JS -->
                             </select>
                         </div>
                         <div class="filter-group">
-                            <label for="format">Format</label>
+                            <label for="format" class="sr-only">Format</label>
                             <select id="format" class="filter-control">
                                 <option value="">All Formats</option>
                                 <!-- Options generated by JS -->
                             </select>
+                        </div>
+                        <div class="filters-actions">
+                            <button type="button" class="toggle-chip" id="studentFriendlyToggle" aria-pressed="false">Student Friendly</button>
+                            <button type="button" class="clear-filters" id="clearFilters" hidden>Clear all filters</button>
                         </div>
                     </div>
                 </div>
@@ -1397,6 +1487,7 @@
         let allOpportunities = [];
         let filteredOpportunities = [];
         let filterTransitionTimeout;
+        let studentFriendlyOnly = false;
         const supportsCardTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
         let currentOpenCard = null;
         let isModalTransitioning = false;
@@ -1413,6 +1504,8 @@
         const citySelect = document.getElementById('city');
         const commitmentSelect = document.getElementById('commitment');
         const formatSelect = document.getElementById('format');
+        const studentFriendlyToggle = document.getElementById('studentFriendlyToggle');
+        const clearFiltersBtn = document.getElementById('clearFilters');
         const modalOverlay = document.getElementById('modalOverlay');
         const modalCloseBtn = document.getElementById('modalClose');
         const modalContent = document.getElementById('modalContent');
@@ -1432,8 +1525,8 @@
                     "Category": "Community Service",
                     "Format": "In-person",
                     "Commitment Type": "Weekly",
+                    "Time Commitment": "4 hours/week",
                     "Age Requirement": "16+",
-                    "Hours Per Week": 4,
                     "Application Deadline": "2024-12-31",
                     "Description": "Help sort and pack food donations for distribution to local families in need. You will work as part of a team in our main warehouse. Physical lifting (up to 20lbs) may be required.",
                     "Application Link": "https://example.com/apply",
@@ -1450,8 +1543,8 @@
                     "Category": "Education",
                     "Format": "Remote",
                     "Commitment Type": "Flexible",
+                    "Time Commitment": "2 hours/week",
                     "Age Requirement": "18+",
-                    "Hours Per Week": 2,
                     "Application Deadline": "2024-10-15",
                     "Description": "Provide one-on-one math tutoring to high school students via Zoom. Strong math skills required. Training provided.",
                     "Application Link": "https://example.com/apply",
@@ -1468,8 +1561,8 @@
                     "Category": "Environment",
                     "Format": "In-person",
                     "Commitment Type": "One-time",
+                    "Time Commitment": "3 hours/week",
                     "Age Requirement": "All Ages",
-                    "Hours Per Week": 3,
                     "Application Deadline": "2024-09-01",
                     "Description": "Join our weekend cleanup event at Fish Creek Provincial Park. Bags, gloves, and refreshments will be provided.",
                     "Application Link": "https://example.com/apply",
@@ -1493,6 +1586,8 @@
                 await fetchAirtableData();
             }
 
+            syncFilterUiState();
+
             // Event Listeners
             searchInput.addEventListener('input', applyFilters);
             categorySelect.addEventListener('change', applyFilters);
@@ -1500,6 +1595,11 @@
             citySelect.addEventListener('change', applyFilters);
             commitmentSelect.addEventListener('change', applyFilters);
             formatSelect.addEventListener('change', applyFilters);
+            studentFriendlyToggle.addEventListener('click', () => {
+                studentFriendlyOnly = !studentFriendlyOnly;
+                applyFilters();
+            });
+            clearFiltersBtn.addEventListener('click', resetFilters);
 
             modalOverlay.addEventListener('click', (e) => {
                 if (e.target === modalOverlay) closeModal();
@@ -1559,11 +1659,37 @@
             return typeof value === 'string' ? value.trim() : value;
         }
 
+        function formatTimeCommitment(value) {
+            if (value == null || value === '') return '';
+            if (typeof value === 'number') {
+                return `${value} ${value === 1 ? 'hour/week' : 'hours/week'}`;
+            }
+            return String(value).trim();
+        }
+
         function getModalMetaValueMarkup(value, fallbackText = 'Unknown') {
             if (value == null || value === '') {
                 return `<span class="footer-val footer-val--alert">${escapeHtml(fallbackText)}</span>`;
             }
             return `<span class="footer-val">${escapeHtml(value)}</span>`;
+        }
+
+        function hasActiveFilters() {
+            return Boolean(
+                searchInput.value.trim() ||
+                categorySelect.value ||
+                provinceSelect.value ||
+                citySelect.value ||
+                commitmentSelect.value ||
+                formatSelect.value ||
+                studentFriendlyOnly
+            );
+        }
+
+        function syncFilterUiState() {
+            studentFriendlyToggle.classList.toggle('active', studentFriendlyOnly);
+            studentFriendlyToggle.setAttribute('aria-pressed', String(studentFriendlyOnly));
+            clearFiltersBtn.hidden = !hasActiveFilters();
         }
 
         function getCardCenterRect(card) {
@@ -1912,6 +2038,7 @@
             const nextCity = citySelect.value;
             const nextCommitment = commitmentSelect.value;
             const nextFormat = formatSelect.value;
+            syncFilterUiState();
 
             gridEl.classList.add('is-transitioning');
             clearTimeout(filterTransitionTimeout);
@@ -1929,8 +2056,9 @@
                     const matchesCity = nextCity === '' || (fields["City"] || '') === nextCity;
                     const matchesCommitment = nextCommitment === '' || formatCommitmentType(fields["Commitment Type"]) === nextCommitment;
                     const matchesFormat = nextFormat === '' || normalizeFormat(fields["Format"]) === nextFormat;
+                    const matchesStudentFriendly = !studentFriendlyOnly || normalizeStudentFriendlyValue(fields["Student Friendly"]) === true;
 
-                    return matchesSearch && matchesCategory && matchesProvince && matchesCity && matchesCommitment && matchesFormat;
+                    return matchesSearch && matchesCategory && matchesProvince && matchesCity && matchesCommitment && matchesFormat && matchesStudentFriendly;
                 });
 
                 renderCards(filteredOpportunities);
@@ -1966,6 +2094,7 @@
             citySelect.value = '';
             commitmentSelect.value = '';
             formatSelect.value = '';
+            studentFriendlyOnly = false;
             applyFilters();
         }
 
@@ -2120,6 +2249,7 @@
             const category = fields["Category"] || '';
             const format = normalizeFormat(fields["Format"]) || '';
             const commitment = formatCommitmentType(fields["Commitment Type"]);
+            const timeCommitment = formatTimeCommitment(fields["Time Commitment"]);
             const studentFriendly = getStudentFriendlyLabel(fields["Student Friendly"]);
             const categoryStyle = getCategoryTagStyle(category);
             const orgWebsite = getOrganizationWebsite(fields);
@@ -2173,6 +2303,12 @@
                         <span class="footer-label">Commitment Type</span>
                         ${getModalMetaValueMarkup(commitment, 'Unknown')}
                     </div>
+                    ${timeCommitment ? `
+                        <div class="modal-meta-item">
+                            <span class="footer-label">Time Commitment</span>
+                            <span class="footer-val">${escapeHtml(timeCommitment)}</span>
+                        </div>
+                    ` : ''}
                     <div class="modal-meta-item">
                         <span class="footer-label">Student Friendly</span>
                         ${studentFriendly === 'Unknown'
