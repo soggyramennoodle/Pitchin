@@ -1294,6 +1294,47 @@
             line-height: 1.45;
         }
 
+        .issue-detail-box {
+            display: grid;
+            gap: 10px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: linear-gradient(180deg, #FFFBEB 0%, #FEF3C7 100%);
+            border: 1px solid #FCD34D;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .issue-detail-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .issue-detail-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: rgba(245, 158, 11, 0.16);
+            color: #B45309;
+        }
+
+        .issue-detail-heading {
+            color: #9A6700;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .issue-detail-copy {
+            color: #7C5B13;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
         .report-btn {
             display: inline-flex;
             align-items: center;
@@ -1318,6 +1359,129 @@
 
         .report-btn svg {
             flex-shrink: 0;
+        }
+
+        .feedback-fab {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            z-index: 40;
+        }
+
+        .feedback-fab details {
+            position: relative;
+        }
+
+        .feedback-fab summary {
+            list-style: none;
+            width: 56px;
+            height: 56px;
+            border-radius: 999px;
+            border: 1px solid rgba(31, 81, 76, 0.14);
+            background: rgba(255, 255, 255, 0.78);
+            box-shadow: 0 18px 36px rgba(31, 36, 38, 0.16);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            cursor: pointer;
+            transition: transform 0.18s var(--snappy-ease), box-shadow 0.18s var(--snappy-ease), background-color 0.18s var(--snappy-ease);
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        .feedback-fab summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .feedback-fab summary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 22px 42px rgba(31, 36, 38, 0.2);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .feedback-fab details[open] summary {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .feedback-fab-panel {
+            position: absolute;
+            right: 0;
+            bottom: 72px;
+            width: min(300px, calc(100vw - 32px));
+            padding: 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(31, 81, 76, 0.12);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 28px 56px rgba(31, 36, 38, 0.18);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            opacity: 0;
+            transform: translateY(10px) scale(0.98);
+            transform-origin: bottom right;
+            pointer-events: none;
+            transition: opacity 0.22s var(--snappy-ease), transform 0.22s var(--snappy-ease);
+        }
+
+        .feedback-fab details[open] .feedback-fab-panel {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .feedback-fab-label {
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .feedback-fab-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .feedback-fab-copy {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .feedback-fab-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 0 14px;
+            border-radius: 999px;
+            background: var(--primary);
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: transform 0.15s var(--snappy-ease), opacity 0.15s var(--snappy-ease);
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        .feedback-fab-link:hover {
+            transform: translateY(-1px);
+            opacity: 0.94;
+        }
+
+        .feedback-fab-link-arrow {
+            transition: transform 0.15s var(--snappy-ease);
+        }
+
+        .feedback-fab-link:hover .feedback-fab-link-arrow {
+            transform: translateX(2px);
         }
 
         @keyframes alertSweep {
@@ -1404,6 +1568,10 @@
             }
             .footer-meta {
                 margin-top: 44px;
+            }
+            .feedback-fab {
+                right: 18px;
+                bottom: 18px;
             }
         }
 
@@ -1516,6 +1684,20 @@
                 gap: 10px;
                 margin-top: 34px;
                 font-size: 13px;
+            }
+            .feedback-fab {
+                right: 14px;
+                bottom: 14px;
+            }
+            .feedback-fab summary {
+                width: 52px;
+                height: 52px;
+            }
+            .feedback-fab-panel {
+                right: 0;
+                bottom: 66px;
+                width: min(280px, calc(100vw - 28px));
+                padding: 14px;
             }
         }
     </style>
@@ -1687,6 +1869,27 @@
             </div>
         </div>
     </footer>
+
+    <div class="feedback-fab" aria-label="Feedback contact">
+        <details>
+            <summary aria-label="Open feedback contact">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 3-3 3"></path>
+                    <path d="M12 17h.01"></path>
+                    <circle cx="12" cy="12" r="9"></circle>
+                </svg>
+            </summary>
+            <div class="feedback-fab-panel">
+                <div class="feedback-fab-label">Feedback</div>
+                <div class="feedback-fab-title">Something to tell us?</div>
+                <p class="feedback-fab-copy">Send thoughts, bugs, or ideas straight to the Pitchin team.</p>
+                <a class="feedback-fab-link" href="mailto:pitchin.live@proton.me">
+                    <span>pitchin.live@proton.me</span>
+                    <span class="feedback-fab-link-arrow" aria-hidden="true">↗</span>
+                </a>
+            </div>
+        </details>
+    </div>
 
     <!-- Modal -->
     <div class="modal-overlay" id="modalOverlay">
@@ -2131,6 +2334,28 @@
                     <span class="issue-pill-dot" aria-hidden="true"></span>
                     <span class="issue-pill-text">Issue under review</span>
                 </span>
+            `;
+        }
+
+        function getIssueDetailMarkup(fields) {
+            if (!hasListingIssue(fields["Issue?"])) return '';
+            const rawReason = typeof fields["Issue Reason"] === 'string' ? fields["Issue Reason"].trim() : '';
+            const reason = rawReason || 'We found something worth checking on this listing and are actively investigating it now.';
+
+            return `
+                <div class="issue-detail-box modal-stagger" style="--stagger-index: 2;">
+                    <div class="issue-detail-top">
+                        <span class="issue-detail-icon" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 3 2.6 19a1 1 0 0 0 .87 1.5h17.06a1 1 0 0 0 .87-1.5L12 3Z"></path>
+                                <path d="M12 9v4"></path>
+                                <path d="M12 17h.01"></path>
+                            </svg>
+                        </span>
+                        <span class="issue-pill-text issue-detail-heading">We’re investigating a possible issue with this listing.</span>
+                    </div>
+                    <div class="issue-detail-copy">${escapeHtml(reason)}</div>
+                </div>
             `;
         }
 
@@ -2661,6 +2886,7 @@
             const applyLink = typeof fields["Application Link"] === 'string' ? fields["Application Link"].trim() : fields["Application Link"];
             const hasApplyLink = Boolean(applyLink);
             const issuePillMarkup = hasListingIssue(fields["Issue?"]) ? getIssuePillMarkup() : '';
+            const issueDetailMarkup = getIssueDetailMarkup(fields);
             const contactInfo = getContactDetails(fields);
             const orgMarkup = orgWebsite
                 ? `<a href="${orgWebsite}" target="_blank" rel="noopener noreferrer" class="modal-org-link">${org}</a>`
@@ -2724,6 +2950,8 @@
                     <h3 class="modal-section-title">About the Role</h3>
                     <div class="modal-desc">${desc}</div>
                 </div>
+
+                ${issueDetailMarkup}
 
                 <div class="modal-action-stack modal-stagger" style="--stagger-index: 3;">
                     ${hasApplyLink ? `
