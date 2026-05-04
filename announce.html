@@ -525,6 +525,119 @@
             transform: translateY(-1px);
         }
 
+        .site-footer {
+            padding: 56px 0 24px;
+        }
+
+        .footer-shell {
+            border-top: 1px solid rgba(232, 227, 219, 0.88);
+            padding-top: 34px;
+        }
+
+        .footer-main {
+            display: grid;
+            grid-template-columns: minmax(280px, 1.3fr) minmax(160px, 0.75fr) minmax(180px, 0.85fr);
+            gap: 56px;
+            align-items: start;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .footer-logo {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            width: fit-content;
+        }
+
+        .footer-logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: radial-gradient(circle at 30% 25%, #5c8c74 0%, #346756 42%, #2D5A45 68%, #163629 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 18px rgba(31, 81, 76, 0.16);
+        }
+
+        .footer-logo-icon svg {
+            width: 18px;
+            height: 18px;
+            display: block;
+        }
+
+        .footer-logo-text {
+            font-family: var(--serif);
+            font-size: 24px;
+            font-weight: 400;
+            color: var(--text-main);
+            letter-spacing: -0.05em;
+            line-height: 1;
+        }
+
+        .footer-copy {
+            max-width: 18ch;
+            color: #5f6664;
+            font-size: 17px;
+            line-height: 1.45;
+            letter-spacing: -0.03em;
+        }
+
+        .footer-column-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 16px;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a,
+        .footer-links span {
+            color: #818785;
+            text-decoration: none;
+            font-size: 15px;
+            line-height: 1.45;
+            transition: color 0.15s var(--snappy-ease), transform 0.15s var(--snappy-ease);
+            display: inline-block;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            transform: translateX(2px);
+        }
+
+        .footer-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 78px;
+            color: #767d7b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .footer-meta-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 999px;
+            background: rgba(31, 81, 76, 0.72);
+            flex-shrink: 0;
+        }
+
         @media (max-width: 920px) {
             .page-shell {
                 padding: 22px 18px 34px;
@@ -555,6 +668,19 @@
 
             .archive-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .footer-main {
+                grid-template-columns: 1fr 1fr;
+                gap: 32px;
+            }
+
+            .footer-brand {
+                grid-column: 1 / -1;
+            }
+
+            .footer-meta {
+                margin-top: 44px;
             }
         }
 
@@ -635,6 +761,30 @@
             .archive-actions {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+
+            .site-footer {
+                padding: 44px 0 20px;
+            }
+
+            .footer-shell {
+                padding-top: 28px;
+            }
+
+            .footer-main {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+
+            .footer-copy {
+                max-width: 24ch;
+                font-size: 16px;
+            }
+
+            .footer-meta {
+                gap: 10px;
+                margin-top: 34px;
+                font-size: 13px;
             }
         }
     </style>
@@ -727,6 +877,46 @@
             </div>
         </section>
     </main>
+
+    <footer class="site-footer">
+        <div class="page-shell footer-shell">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <a href="https://rebrand.ly/pitchin" class="footer-logo">
+                        <span class="footer-logo-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21.75 3.25 3.9 10.2c-.82.32-.78 1.5.07 1.76l4.96 1.52 1.52 4.96c.26.85 1.44.89 1.76.07L20.75 6.25c.26-.73-.47-1.46-1.2-1.2Z" fill="white"/>
+                            </svg>
+                        </span>
+                        <span class="footer-logo-text">Pitchin</span>
+                    </a>
+                    <p class="footer-copy">Connecting Canadians to meaningful volunteer opportunities.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h3 class="footer-column-title">Follow us:</h3>
+                    <ul class="footer-links">
+                        <li><span>Instagram (soon!)</span></li>
+                        <li><span>LinkedIn (soon 👀)</span></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3 class="footer-column-title">Contact</h3>
+                    <ul class="footer-links">
+                        <li><a href="mailto:pitchin.live@proton.me">pitchin.live@proton.me</a></li>
+                        <li><span>Saskatchewan, CA</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-meta">
+                <span>All Rights Reserved, 2026</span>
+                <span class="footer-meta-dot" aria-hidden="true"></span>
+                <span>Made with love in The Prairies 🌾</span>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const expandableCards = Array.from(document.querySelectorAll('[data-expand-card]'));
