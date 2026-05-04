@@ -893,6 +893,7 @@
             will-change: transform, opacity;
             backface-visibility: hidden;
             transform-origin: center center;
+            contain: layout paint style;
         }
 
         .modal.modal--fallback-actions {
@@ -921,6 +922,7 @@
 
         .modal-content {
             padding: 32px;
+            contain: layout paint;
         }
 
         .modal-content.modal-content--fallback-actions {
@@ -2319,9 +2321,13 @@
             };
         }
 
-        function resetModalAnimationState() {
+        function cancelModalAnimations() {
             modal.getAnimations().forEach(animation => animation.cancel());
             modalOverlay.getAnimations().forEach(animation => animation.cancel());
+        }
+
+        function resetModalAnimationState() {
+            cancelModalAnimations();
             modal.style.transform = 'translateZ(0) scale(0.08)';
             modal.style.opacity = '0';
             modal.style.transformOrigin = 'center center';
@@ -3043,15 +3049,18 @@
                     </a>
                 </div>
             `;
-            if (!hasApplyLink) {
-                bindApplyDisclosure();
-            }
             currentOpenCard = sourceCard;
             document.body.style.overflow = 'hidden';
             isModalTransitioning = true;
             hideModalContent();
-            resetModalAnimationState();
+            cancelModalAnimations();
             modalOverlay.classList.add('active');
+            modal.scrollTop = 0;
+            modalContent.scrollTop = 0;
+            modal.style.transform = 'translateZ(0) scale(1)';
+            modal.style.opacity = '0';
+            modal.style.transformOrigin = 'center center';
+            modalOverlay.style.opacity = '0';
             const cardCenter = getCardCenterRect(sourceCard) || {
                 x: window.innerWidth / 2,
                 y: window.innerHeight / 2
@@ -3059,8 +3068,6 @@
 
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    modal.style.transform = 'translateZ(0) scale(1)';
-                    modal.style.opacity = '0';
                     const modalRect = modal.getBoundingClientRect();
                     const originX = cardCenter.x - modalRect.left;
                     const originY = cardCenter.y - modalRect.top;
@@ -3094,6 +3101,9 @@
                         modal.style.opacity = '1';
                         modalOverlay.style.opacity = '1';
                         showModalContent();
+                        if (!hasApplyLink) {
+                            bindApplyDisclosure();
+                        }
                         isModalTransitioning = false;
                     });
                 });
@@ -3105,7 +3115,7 @@
 
             isModalTransitioning = true;
             hideModalContent();
-            resetModalAnimationState();
+            cancelModalAnimations();
             modal.style.transform = 'translateZ(0) scale(1)';
             modal.style.opacity = '1';
             modalOverlay.style.opacity = '1';
