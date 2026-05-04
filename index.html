@@ -2348,7 +2348,10 @@
         function getIssueDetailMarkup(fields) {
             if (!hasListingIssue(fields["Issue?"])) return '';
             const rawReason = typeof fields["Issue Reason"] === 'string' ? fields["Issue Reason"].trim() : '';
-            const reason = rawReason || 'We found something worth checking on this listing and are actively investigating it now.';
+            const baseReason = 'We found something worth checking on this listing and are actively investigating it now.';
+            const reason = rawReason
+                ? `${baseReason} ${rawReason}`
+                : baseReason;
 
             return `
                 <div class="issue-detail-box modal-stagger" style="--stagger-index: 2;">
