@@ -1296,8 +1296,8 @@
 
         .issue-detail-box {
             display: grid;
-            gap: 10px;
-            padding: 16px 18px;
+            gap: 8px;
+            padding: 15px 18px;
             border-radius: 18px;
             background: linear-gradient(180deg, #FFFBEB 0%, #FEF3C7 100%);
             border: 1px solid #FCD34D;
@@ -1333,6 +1333,14 @@
             color: #7C5B13;
             font-size: 14px;
             line-height: 1.6;
+        }
+
+        .modal-section + .issue-detail-box {
+            margin-top: -6px;
+        }
+
+        .issue-detail-box + .modal-action-stack {
+            margin-top: -4px;
         }
 
         .report-btn {
