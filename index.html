@@ -2406,7 +2406,8 @@
         }
 
         function getAdditionalApplicationInfoMarkup(fields) {
-            if (normalizeStudentFriendlyValue(fields["Other Application Info"]) !== true) return '';
+            const otherApplicationInfoValue = fields["Other Application Info?"] ?? fields["Other Application Info"];
+            if (normalizeStudentFriendlyValue(otherApplicationInfoValue) !== true) return '';
 
             const detailsValue = fields["Other Application Info Details"] ?? fields["Other Application Info Detail"];
             const rawDetails = typeof detailsValue === 'string' ? detailsValue.trim() : '';
