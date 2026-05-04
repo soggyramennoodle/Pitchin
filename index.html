@@ -1294,14 +1294,22 @@
             line-height: 1.45;
         }
 
-        .issue-detail-box {
+        .modal-callout {
             display: grid;
             gap: 8px;
             padding: 15px 18px;
             border-radius: 18px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .modal-callout + .modal-callout {
+            margin-top: 12px;
+        }
+
+        .issue-detail-box {
+            display: grid;
             background: linear-gradient(180deg, #FFFBEB 0%, #FEF3C7 100%);
             border: 1px solid #FCD34D;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
 
         .issue-detail-top {
@@ -1335,7 +1343,37 @@
             line-height: 1.6;
         }
 
-        .issue-detail-box + .modal-action-stack {
+        .info-detail-box {
+            background: linear-gradient(180deg, #EFF6FF 0%, #DBEAFE 100%);
+            border: 1px solid #93C5FD;
+        }
+
+        .info-detail-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: rgba(59, 130, 246, 0.14);
+            color: #2563EB;
+        }
+
+        .info-detail-heading {
+            color: #1D4ED8;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .info-detail-copy {
+            color: #1E3A8A;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .modal-callout + .modal-action-stack {
             margin-top: 14px;
         }
 
@@ -2351,7 +2389,7 @@
                 : baseReason;
 
             return `
-                <div class="issue-detail-box modal-stagger" style="--stagger-index: 2;">
+                <div class="issue-detail-box modal-callout modal-stagger" style="--stagger-index: 2;">
                     <div class="issue-detail-top">
                         <span class="issue-detail-icon" aria-hidden="true">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2363,6 +2401,30 @@
                         <span class="issue-pill-text issue-detail-heading">We’re investigating a possible issue with this listing.</span>
                     </div>
                     <div class="issue-detail-copy">${escapeHtml(reason)}</div>
+                </div>
+            `;
+        }
+
+        function getAdditionalApplicationInfoMarkup(fields) {
+            if (normalizeStudentFriendlyValue(fields["Other Application Info"]) !== true) return '';
+
+            const detailsValue = fields["Other Application Info Details"] ?? fields["Other Application Info Detail"];
+            const rawDetails = typeof detailsValue === 'string' ? detailsValue.trim() : '';
+            const details = rawDetails || 'Additional application information is available for this listing.';
+
+            return `
+                <div class="info-detail-box modal-callout modal-stagger" style="--stagger-index: 2.2;">
+                    <div class="issue-detail-top">
+                        <span class="info-detail-icon" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <path d="M12 10v6"></path>
+                                <path d="M12 7h.01"></path>
+                            </svg>
+                        </span>
+                        <span class="info-detail-heading">Additional Application Info</span>
+                    </div>
+                    <div class="info-detail-copy">${escapeHtml(details)}</div>
                 </div>
             `;
         }
@@ -2895,6 +2957,7 @@
             const hasApplyLink = Boolean(applyLink);
             const issuePillMarkup = hasListingIssue(fields["Issue?"]) ? getIssuePillMarkup() : '';
             const issueDetailMarkup = getIssueDetailMarkup(fields);
+            const additionalApplicationInfoMarkup = getAdditionalApplicationInfoMarkup(fields);
             const contactInfo = getContactDetails(fields);
             const orgMarkup = orgWebsite
                 ? `<a href="${orgWebsite}" target="_blank" rel="noopener noreferrer" class="modal-org-link">${org}</a>`
@@ -2960,6 +3023,7 @@
                 </div>
 
                 ${issueDetailMarkup}
+                ${additionalApplicationInfoMarkup}
 
                 <div class="modal-action-stack modal-stagger" style="--stagger-index: 3;">
                     ${hasApplyLink ? `
