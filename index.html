@@ -1777,8 +1777,9 @@
             });
             clearFiltersBtn.addEventListener('click', resetFilters);
             showMoreBtn.addEventListener('click', () => {
+                const previousVisibleCount = visibleOpportunityCount;
                 visibleOpportunityCount += VISIBLE_OPPORTUNITY_STEP;
-                renderCards(filteredOpportunities);
+                renderCards(filteredOpportunities, { append: true, startIndex: previousVisibleCount });
             });
 
             modalOverlay.addEventListener('click', (e) => {
@@ -2458,8 +2459,62 @@
         }
 
         // --- RENDERING ---
-        function renderCards(opportunities) {
-            gridEl.innerHTML = '';
+        function createOpportunityCard(opp, animationIndex = 0) {
+            const fields = opp.fields;
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.onclick = () => openModal(opp, card);
+            card.style.setProperty('--card-delay', `${animationIndex * 55}ms`);
+            card.addEventListener('animationend', () => {
+                card.style.animation = 'none';
+                card.style.opacity = '1';
+            }, { once: true });
+
+            const title = fields["Opportunity Title"] || 'Untitled Opportunity';
+            const org = fields["Organization"] || 'Unknown Organization';
+            const location = formatLocation(fields);
+            const category = fields["Category"] || '';
+            const format = normalizeFormat(fields["Format"]) || '';
+            const commitment = formatCommitmentType(fields["Commitment Type"]);
+            const studentFriendlyCardMarkup = getStudentFriendlyCardMarkup(fields["Student Friendly"]);
+            const categoryStyle = getCategoryTagStyle(category);
+            const accentColor = categoryStyle.text;
+            card.style.setProperty('--accent-color', accentColor);
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-title">${title}</div>
+                    <div class="card-org">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/></svg>
+                        ${org}
+                    </div>
+                    <div class="card-location">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        ${location}
+                    </div>
+                </div>
+                <div class="card-tags">
+                    ${category ? `<span class="tag" style="background-color: ${categoryStyle.bg}; color: ${categoryStyle.text};">${category}</span>` : ''}
+                    ${format ? `<span class="tag format">${format}</span>` : ''}
+                </div>
+                <div class="card-footer">
+                    <div class="footer-item">
+                        <span class="footer-label">Commitment</span>
+                        <span class="footer-val">${escapeHtml(commitment || 'Unknown')}</span>
+                    </div>
+                    <div class="footer-item" style="text-align: right;">
+                        <span class="footer-label">Student suitable?</span>
+                        ${studentFriendlyCardMarkup}
+                    </div>
+                </div>
+            `;
+
+            attachCardTiltEffect(card);
+            return card;
+        }
+
+        function renderCards(opportunities, options = {}) {
+            const { append = false, startIndex = 0 } = options;
             if (resultsCountEl) {
                 resultsCountEl.textContent = opportunities.length;
             }
@@ -2476,58 +2531,18 @@
                 return;
             }
 
-            opportunities.slice(0, visibleOpportunityCount).forEach((opp, index) => {
-                const fields = opp.fields;
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => openModal(opp, card);
-                card.style.setProperty('--card-delay', `${index * 55}ms`);
-                card.addEventListener('animationend', () => {
-                    card.style.animation = 'none';
-                    card.style.opacity = '1';
-                }, { once: true });
+            const visibleOpportunities = opportunities.slice(0, visibleOpportunityCount);
+            const opportunitiesToRender = append
+                ? visibleOpportunities.slice(startIndex)
+                : visibleOpportunities;
 
-                // Safe field getters
-                const title = fields["Opportunity Title"] || 'Untitled Opportunity';
-                const org = fields["Organization"] || 'Unknown Organization';
-                const location = formatLocation(fields);
-                const category = fields["Category"] || '';
-                const format = normalizeFormat(fields["Format"]) || '';
-                const commitment = formatCommitmentType(fields["Commitment Type"]);
-                const studentFriendlyCardMarkup = getStudentFriendlyCardMarkup(fields["Student Friendly"]);
-                const categoryStyle = getCategoryTagStyle(category);
-                const accentColor = categoryStyle.text;
-                card.style.setProperty('--accent-color', accentColor);
+            if (!append) {
+                gridEl.innerHTML = '';
+            }
 
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div class="card-title">${title}</div>
-                        <div class="card-org">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/></svg>
-                            ${org}
-                        </div>
-                        <div class="card-location">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                            ${location}
-                        </div>
-                    </div>
-                    <div class="card-tags">
-                        ${category ? `<span class="tag" style="background-color: ${categoryStyle.bg}; color: ${categoryStyle.text};">${category}</span>` : ''}
-                        ${format ? `<span class="tag format">${format}</span>` : ''}
-                    </div>
-                    <div class="card-footer">
-                        <div class="footer-item">
-                            <span class="footer-label">Commitment</span>
-                            <span class="footer-val">${escapeHtml(commitment || 'Unknown')}</span>
-                        </div>
-                        <div class="footer-item" style="text-align: right;">
-                            <span class="footer-label">Student suitable?</span>
-                            ${studentFriendlyCardMarkup}
-                        </div>
-                    </div>
-                `;
+            opportunitiesToRender.forEach((opp, index) => {
+                const card = createOpportunityCard(opp, index);
                 gridEl.appendChild(card);
-                attachCardTiltEffect(card);
             });
         }
 
