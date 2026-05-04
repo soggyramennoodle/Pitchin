@@ -16,7 +16,7 @@
             --card-bg: rgba(255, 255, 255, 0.055);
             --card-bg-strong: rgba(255, 255, 255, 0.075);
             --text-main: #1f2426;
-            --text-soft: #5f6664;
+            --text-soft: #636363;
             --text-muted: #7a8280;
             --border-soft: rgba(255, 255, 255, 0.12);
             --page-border: #e8e3db;
@@ -77,6 +77,14 @@
             margin-bottom: 46px;
         }
 
+        .header-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
         .brand {
             display: inline-flex;
             align-items: center;
@@ -110,8 +118,8 @@
 
         .brand-copy {
             display: inline-flex;
-            align-items: baseline;
-            gap: 12px;
+            align-items: center;
+            gap: 10px;
         }
 
         .brand-text {
@@ -127,15 +135,13 @@
             font-weight: 500;
             color: var(--text-muted);
             letter-spacing: -0.01em;
-            position: relative;
-            padding-left: 12px;
         }
 
-        .brand-kicker::before {
-            content: '|';
-            position: absolute;
-            left: 0;
-            color: #a8afad;
+        .brand-separator {
+            color: #b6bcba;
+            font-size: 1.9rem;
+            line-height: 1;
+            transform: translateY(-1px);
         }
 
         .page-intro {
@@ -144,26 +150,80 @@
             white-space: nowrap;
         }
 
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 48px;
+            padding: 0 18px;
+            border-radius: var(--radius-full);
+            background: #ffffff;
+            color: var(--primary);
+            border: 1px solid var(--page-border);
+            box-shadow: 0 14px 28px rgba(16, 22, 19, 0.08);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: transform 0.18s var(--snappy-ease), box-shadow 0.18s var(--snappy-ease), opacity 0.18s var(--snappy-ease);
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        .back-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 36px rgba(16, 22, 19, 0.11);
+            opacity: 0.98;
+        }
+
+        .back-home-arrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            transition: transform 0.18s var(--snappy-ease);
+        }
+
+        .back-home:hover .back-home-arrow {
+            transform: translateX(-3px);
+        }
+
         .featured-news {
             position: relative;
             overflow: hidden;
             border-radius: var(--radius-xl);
-            border: 1px solid rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(45, 90, 69, 0.08);
             background:
-                radial-gradient(circle at top right, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 28%),
-                linear-gradient(180deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.04) 100%);
+                radial-gradient(circle at top right, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 30%),
+                linear-gradient(180deg, #33654e 0%, #2D5A45 100%);
             box-shadow: var(--shadow-lg);
-            padding: 42px 42px 40px;
+            padding: 16px;
             margin-bottom: 42px;
-            color: #ffffff;
+            color: var(--text-main);
+            transition: transform 0.2s var(--snappy-ease), box-shadow 0.2s var(--snappy-ease);
+        }
+
+        .featured-news:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 38px 90px rgba(10, 20, 16, 0.24);
         }
 
         .featured-news::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0));
             pointer-events: none;
+        }
+
+        .featured-panel {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 28px;
+            padding: 32px 30px 30px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
         }
 
         .load-in {
@@ -201,7 +261,7 @@
         }
 
         .featured-date {
-            color: rgba(255, 255, 255, 0.64);
+            color: #8a918f;
             font-size: 0.95rem;
         }
 
@@ -214,11 +274,12 @@
             font-weight: 400;
             text-wrap: balance;
             margin-bottom: 20px;
+            color: #111315;
         }
 
         .featured-body {
             max-width: 48ch;
-            color: rgba(255, 255, 255, 0.82);
+            color: #636363;
             font-size: clamp(1.04rem, 1.9vw, 1.18rem);
             line-height: 1.72;
             margin-bottom: 28px;
@@ -232,20 +293,20 @@
             min-height: 54px;
             padding: 0 22px;
             border-radius: var(--radius-full);
-            background: #ffffff;
-            color: var(--primary);
+            background: var(--primary);
+            color: #ffffff;
             text-decoration: none;
             font-size: 0.98rem;
             font-weight: 600;
             letter-spacing: -0.01em;
-            box-shadow: 0 16px 28px rgba(9, 18, 14, 0.18);
+            box-shadow: 0 16px 28px rgba(45, 90, 69, 0.2);
             transition: transform 0.15s var(--snappy-ease), opacity 0.15s var(--snappy-ease), box-shadow 0.15s var(--snappy-ease);
         }
 
         .cta:hover {
             transform: translateY(-2px);
             opacity: 0.985;
-            box-shadow: 0 22px 36px rgba(9, 18, 14, 0.22);
+            box-shadow: 0 22px 36px rgba(45, 90, 69, 0.28);
         }
 
         .cta:active {
@@ -340,19 +401,27 @@
         }
 
         .archive-expand {
-            background: transparent;
-            border: 0;
-            color: #e4f1ea;
-            font-size: 0.92rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: var(--radius-full);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: #f3fbf7;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.15s var(--snappy-ease), transform 0.15s var(--snappy-ease);
-            padding: 0;
+            transition: opacity 0.15s var(--snappy-ease), transform 0.15s var(--snappy-ease), background-color 0.15s var(--snappy-ease), border-color 0.15s var(--snappy-ease);
+            padding: 0 16px;
         }
 
         .archive-expand:hover {
-            opacity: 0.82;
-            transform: translateX(2px);
+            opacity: 0.95;
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .archive-panel {
@@ -407,22 +476,6 @@
             transform: translateY(-1px);
         }
 
-        .archive-collapse {
-            background: transparent;
-            border: 0;
-            color: #6b7471;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: color 0.15s var(--snappy-ease), transform 0.15s var(--snappy-ease);
-            padding: 0;
-        }
-
-        .archive-collapse:hover {
-            color: var(--text-main);
-            transform: translateX(-2px);
-        }
-
         @media (max-width: 920px) {
             .page-shell {
                 padding: 22px 18px 34px;
@@ -433,8 +486,13 @@
                 flex-wrap: wrap;
             }
 
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
             .featured-news {
-                padding: 30px 24px 28px;
+                padding: 14px;
             }
 
             .featured-title {
@@ -481,6 +539,10 @@
 
             .featured-news {
                 border-radius: 28px;
+                padding: 12px;
+            }
+
+            .featured-panel {
                 padding: 24px 18px 22px;
             }
 
@@ -525,28 +587,42 @@
                 </span>
                 <span class="brand-copy">
                     <span class="brand-text">Pitchin</span>
+                    <span class="brand-separator" aria-hidden="true">|</span>
                     <span class="brand-kicker">Newsroom</span>
                 </span>
             </a>
-            <div class="page-intro">All your Pitchin news, here.</div>
+            <div class="header-actions">
+                <div class="page-intro">All your Pitchin news, here.</div>
+                <a class="back-home" href="https://rebrand.ly/pitchin">
+                    <span class="back-home-arrow" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 12H5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                            <path d="m12 19-7-7 7-7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <span>Back to Pitchin</span>
+                </a>
+            </div>
         </header>
 
         <section class="featured-news load-in" style="--stagger-delay: 60ms;" aria-labelledby="featured-title">
-            <div class="featured-meta">
-                <span class="badge">Latest</span>
-                <span class="featured-date">Posted May 3, 2026</span>
+            <div class="featured-panel">
+                <div class="featured-meta">
+                    <span class="badge">Latest</span>
+                    <span class="featured-date">Posted May 3, 2026</span>
+                </div>
+                <h1 class="featured-title" id="featured-title">Toronto, Ontario is live.</h1>
+                <p class="featured-body">Pitchin's second city is now live. Browse verified volunteer opportunities across Toronto — from healthcare and community support to tutoring, food banks, and more. We're growing fast.</p>
+                <a class="cta" href="https://pitchin.live">
+                    <span>Browse Toronto opportunities</span>
+                    <span class="cta-arrow" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                            <path d="m12 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </a>
             </div>
-            <h1 class="featured-title" id="featured-title">Toronto, Ontario is live.</h1>
-            <p class="featured-body">Pitchin's second city is now live. Browse verified volunteer opportunities across Toronto — from healthcare and community support to tutoring, food banks, and more. We're growing fast.</p>
-            <a class="cta" href="https://pitchin.live">
-                <span>Browse Toronto opportunities</span>
-                <span class="cta-arrow" aria-hidden="true">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-                        <path d="m12 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-            </a>
         </section>
 
         <section aria-labelledby="archive-title">
@@ -569,7 +645,6 @@
                                     <span>Browse Saskatoon opportunities</span>
                                     <span aria-hidden="true">→</span>
                                 </a>
-                                <button class="archive-collapse" type="button" data-collapse-trigger>Show less</button>
                             </div>
                         </div>
                     </div>
@@ -589,19 +664,21 @@
 
         expandableCards.forEach((card) => {
             const expandTrigger = card.querySelector('[data-expand-trigger]');
-            const collapseTrigger = card.querySelector('[data-collapse-trigger]');
             const panel = card.querySelector('[data-expand-panel]');
 
-            if (!expandTrigger || !collapseTrigger || !panel) return;
+            if (!expandTrigger || !panel) return;
 
             const setExpanded = (isOpen) => {
                 card.classList.toggle('open', isOpen);
                 expandTrigger.setAttribute('aria-expanded', String(isOpen));
+                expandTrigger.textContent = isOpen ? 'Read less' : 'Read more';
                 panel.style.maxHeight = isOpen ? `${panel.scrollHeight}px` : '0px';
             };
 
-            expandTrigger.addEventListener('click', () => setExpanded(true));
-            collapseTrigger.addEventListener('click', () => setExpanded(false));
+            expandTrigger.addEventListener('click', () => {
+                const nextState = !card.classList.contains('open');
+                setExpanded(nextState);
+            });
 
             panel.style.maxHeight = '0px';
         });
