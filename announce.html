@@ -246,23 +246,32 @@
             margin-bottom: 18px;
         }
 
-        .badge {
+        .featured-pill {
             display: inline-flex;
             align-items: center;
-            min-height: 34px;
-            padding: 0 14px;
+            gap: 12px;
+            min-height: 40px;
+            padding: 0 16px;
             border-radius: var(--radius-full);
-            background: var(--primary-soft);
-            border: 1px solid rgba(201, 233, 214, 0.2);
-            color: rgba(240, 250, 244, 0.94);
-            font-size: 0.9rem;
+            background: rgba(233, 244, 238, 0.7);
+            border: 1px solid rgba(210, 227, 218, 0.72);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            color: var(--primary);
+            font-size: 0.92rem;
             font-weight: 600;
-            letter-spacing: 0.01em;
+            letter-spacing: -0.01em;
         }
 
-        .featured-date {
-            color: #8a918f;
-            font-size: 0.95rem;
+        .featured-pill-divider {
+            color: #a9b2ae;
+            font-weight: 500;
+        }
+
+        .featured-pill-date {
+            color: #6d7672;
+            font-weight: 500;
         }
 
         .featured-title {
@@ -608,8 +617,11 @@
         <section class="featured-news load-in" style="--stagger-delay: 60ms;" aria-labelledby="featured-title">
             <div class="featured-panel">
                 <div class="featured-meta">
-                    <span class="badge">Latest</span>
-                    <span class="featured-date">Posted May 3, 2026</span>
+                    <div class="featured-pill">
+                        <span>Latest</span>
+                        <span class="featured-pill-divider" aria-hidden="true">|</span>
+                        <span class="featured-pill-date">May 3, 2026</span>
+                    </div>
                 </div>
                 <h1 class="featured-title" id="featured-title">Toronto, Ontario is live.</h1>
                 <p class="featured-body">Pitchin's second city is now live. Browse verified volunteer opportunities across Toronto — from healthcare and community support to tutoring, food banks, and more. We're growing fast.</p>
