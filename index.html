@@ -1335,12 +1335,8 @@
             line-height: 1.6;
         }
 
-        .modal-section + .issue-detail-box {
-            margin-top: -6px;
-        }
-
         .issue-detail-box + .modal-action-stack {
-            margin-top: -4px;
+            margin-top: 14px;
         }
 
         .report-btn {
@@ -2347,7 +2343,8 @@
 
         function getIssueDetailMarkup(fields) {
             if (!hasListingIssue(fields["Issue?"])) return '';
-            const rawReason = typeof fields["Issue Reason"] === 'string' ? fields["Issue Reason"].trim() : '';
+            const issueReasonValue = fields["Issue Reason?"] ?? fields["Issue Reason"];
+            const rawReason = typeof issueReasonValue === 'string' ? issueReasonValue.trim() : '';
             const baseReason = 'We found something worth checking on this listing and are actively investigating it now.';
             const reason = rawReason
                 ? `${baseReason} ${rawReason}`
