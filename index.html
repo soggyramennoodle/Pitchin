@@ -724,6 +724,51 @@
             color: #505968;
         }
 
+        .issue-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 34px;
+            padding: 0 14px;
+            border-radius: var(--radius-full);
+            background: #FEF3C7;
+            border: 1px solid #FCD34D;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42);
+            max-width: 100%;
+        }
+
+        .issue-pill-dot {
+            position: relative;
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: #FBBF24;
+            flex-shrink: 0;
+        }
+
+        .issue-pill-dot::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 999px;
+            border: 2px solid rgba(245, 158, 11, 0.42);
+            animation: issuePulse 1.8s ease-out infinite;
+        }
+
+        .issue-pill-text {
+            display: inline-block;
+            background: linear-gradient(90deg, #92400E 0%, #F59E0B 50%, #92400E 100%);
+            background-size: 220% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: alertSweep 1.8s linear infinite;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            line-height: 1.1;
+        }
+
         .card-footer {
             margin-top: auto;
             padding-top: 18px;
@@ -850,6 +895,11 @@
             transform-origin: center center;
         }
 
+        .modal.modal--fallback-actions {
+            max-width: 660px;
+            max-height: min(94vh, 920px);
+        }
+
         .modal-close {
             position: absolute;
             top: 20px;
@@ -871,6 +921,10 @@
 
         .modal-content {
             padding: 32px;
+        }
+
+        .modal-content.modal-content--fallback-actions {
+            padding-bottom: 42px;
         }
 
         .modal-stagger {
@@ -1112,6 +1166,10 @@
             gap: 14px;
         }
 
+        .modal-content--fallback-actions .modal-action-stack {
+            gap: 16px;
+        }
+
         .apply-disclosure {
             border-radius: var(--radius-sm);
         }
@@ -1271,6 +1329,21 @@
             }
             100% {
                 background-position: 0% 50%;
+            }
+        }
+
+        @keyframes issuePulse {
+            0% {
+                transform: scale(0.7);
+                opacity: 0.92;
+            }
+            72% {
+                transform: scale(1.95);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1.95);
+                opacity: 0;
             }
         }
 
@@ -1681,6 +1754,7 @@
         const clearFiltersBtn = document.getElementById('clearFilters');
         const gridActionsEl = document.getElementById('gridActions');
         const showMoreBtn = document.getElementById('showMoreBtn');
+        const modalEl = document.getElementById('modal');
         const modalOverlay = document.getElementById('modalOverlay');
         const modalCloseBtn = document.getElementById('modalClose');
         const modalContent = document.getElementById('modalContent');
@@ -2045,6 +2119,19 @@
             if (normalized === true) return 'Yes';
             if (normalized === false) return 'No';
             return 'Unknown';
+        }
+
+        function hasListingIssue(value) {
+            return normalizeStudentFriendlyValue(value) === true;
+        }
+
+        function getIssuePillMarkup() {
+            return `
+                <span class="issue-pill" aria-label="There may be an issue with this listing and we are investigating it">
+                    <span class="issue-pill-dot" aria-hidden="true"></span>
+                    <span class="issue-pill-text">Issue under review</span>
+                </span>
+            `;
         }
 
         function getStudentFriendlyCardMarkup(value) {
@@ -2477,6 +2564,7 @@
             const format = normalizeFormat(fields["Format"]) || '';
             const commitment = formatCommitmentType(fields["Commitment Type"]);
             const studentFriendlyCardMarkup = getStudentFriendlyCardMarkup(fields["Student Friendly"]);
+            const issuePillMarkup = hasListingIssue(fields["Issue?"]) ? getIssuePillMarkup() : '';
             const categoryStyle = getCategoryTagStyle(category);
             const accentColor = categoryStyle.text;
             card.style.setProperty('--accent-color', accentColor);
@@ -2496,6 +2584,7 @@
                 <div class="card-tags">
                     ${category ? `<span class="tag" style="background-color: ${categoryStyle.bg}; color: ${categoryStyle.text};">${category}</span>` : ''}
                     ${format ? `<span class="tag format">${format}</span>` : ''}
+                    ${issuePillMarkup}
                 </div>
                 <div class="card-footer">
                     <div class="footer-item">
@@ -2571,10 +2660,14 @@
             const desc = fields["Description"] || 'No description provided.';
             const applyLink = typeof fields["Application Link"] === 'string' ? fields["Application Link"].trim() : fields["Application Link"];
             const hasApplyLink = Boolean(applyLink);
+            const issuePillMarkup = hasListingIssue(fields["Issue?"]) ? getIssuePillMarkup() : '';
             const contactInfo = getContactDetails(fields);
             const orgMarkup = orgWebsite
                 ? `<a href="${orgWebsite}" target="_blank" rel="noopener noreferrer" class="modal-org-link">${org}</a>`
                 : org;
+
+            modalEl.classList.toggle('modal--fallback-actions', !hasApplyLink);
+            modalContent.classList.toggle('modal-content--fallback-actions', !hasApplyLink);
 
             modalContent.innerHTML = `
                 <div class="modal-header modal-stagger" style="--stagger-index: 0;">
@@ -2598,6 +2691,7 @@
                     <div class="card-tags" style="margin-top: 16px;">
                         ${category ? `<span class="tag" style="background-color: ${categoryStyle.bg}; color: ${categoryStyle.text};">${category}</span>` : ''}
                         ${format ? `<span class="tag format">${format}</span>` : ''}
+                        ${issuePillMarkup}
                     </div>
                 </div>
 
