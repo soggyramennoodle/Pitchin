@@ -2614,23 +2614,32 @@
             gridEl.innerHTML = '<div class="loading">Loading opportunities from Airtable...</div>';
 
             try {
-                const url = new URL(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(TABLE_NAME)}`);
-                url.searchParams.append('filterByFormula', "Status = 'Published'");
-                
-                // Note: Airtable paginates responses. For a full app, you'd handle the 'offset' token.
-                // This fetches the first 100 records.
-                const response = await fetch(url, {
-                    headers: {
-                        'Authorization': `Bearer ${AIRTABLE_TOKEN}`
+                const records = [];
+                let offset;
+
+                do {
+                    const url = new URL(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(TABLE_NAME)}`);
+                    url.searchParams.append('filterByFormula', "Status = 'Published'");
+                    if (offset) {
+                        url.searchParams.append('offset', offset);
                     }
-                });
 
-                if (!response.ok) {
-                    throw new Error(`Airtable API error: ${response.status}`);
-                }
+                    const response = await fetch(url, {
+                        headers: {
+                            'Authorization': `Bearer ${AIRTABLE_TOKEN}`
+                        }
+                    });
 
-                const data = await response.json();
-                allOpportunities = data.records;
+                    if (!response.ok) {
+                        throw new Error(`Airtable API error: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    records.push(...data.records);
+                    offset = data.offset;
+                } while (offset);
+
+                allOpportunities = records;
                 filteredOpportunities = [...allOpportunities];
                 
                 setupFilters();
