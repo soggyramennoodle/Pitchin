@@ -1949,14 +1949,11 @@
 
     <script>
         // --- CONFIGURATION ---
-        // REPLACE THESE WITH YOUR ACTUAL AIRTABLE CREDENTIALS
-        const AIRTABLE_BASE_ID = 'appjyvV00uXnhlK24';
-        const AIRTABLE_TOKEN = 'patDiR5tzj1IjBNvP.e455c6390b0b18825637770ae3bebb60eee9aa9f19a619bea938b168d787cadd';
-        const TABLE_NAME = 'tblhV2mJc83wp5dgG';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyMOyPsde1QFaJnoAX5yXlXjEj8zYkKDOAuLFItcZmvWdz-YhlL8aKI0iSr4oyYT1mp/exec';
         const REPORT_FORM_URL = 'https://tally.so/r/oblBZO';
         
-        // Use true to test UI with fake data, change to false to connect to Airtable
-        const USE_MOCK_DATA = false; 
+        // Use true to test UI with fake data, change to false to connect to Google Sheets
+        const USE_MOCK_DATA = false;
 
         // --- STATE ---
         let allOpportunities = [];
@@ -2082,7 +2079,7 @@
                 setupFilters();
                 renderCards(allOpportunities);
             } else {
-                await fetchAirtableData();
+                await fetchDirectoryData();
             }
 
             syncFilterUiState();
@@ -2596,55 +2593,83 @@
         }
 
         // --- DATA FETCHING ---
-        async function fetchAirtableData() {
-            if (AIRTABLE_BASE_ID === 'YOUR_BASE_ID' || AIRTABLE_TOKEN === 'YOUR_PERSONAL_ACCESS_TOKEN') {
-                gridEl.innerHTML = `
-                    <div class="no-results" style="border-color: #ef4444; color: #ef4444;">
-                        <h3>Configuration Error</h3>
-                        <p>Please update AIRTABLE_BASE_ID and AIRTABLE_TOKEN in the source code.</p>
-                        <p style="margin-top:10px; font-size:14px; color:var(--text-muted)">Currently viewing mock data as fallback.</p>
-                    </div>
-                `;
-                allOpportunities = mockData;
-                setupFilters();
-                setTimeout(() => renderCards(allOpportunities), 2000);
-                return;
-            }
+        function getTextValue(value) {
+            if (value == null) return '';
+            return String(value).trim();
+        }
 
-            gridEl.innerHTML = '<div class="loading">Loading opportunities from Airtable...</div>';
+        function normalizeDirectoryRow(row, index) {
+            const source = row && typeof row === 'object' ? row : {};
+            const studentFriendly = normalizeStudentFriendlyValue(source.studentFriendly) === true;
+
+            return {
+                id: getTextValue(source.id) || getTextValue(source.recordId) || `sheet-row-${index}`,
+                fields: {
+                    "Opportunity Title": getTextValue(source.title),
+                    "Organization": getTextValue(source.organization),
+                    "Category": getTextValue(source.category),
+                    "City": getTextValue(source.city),
+                    "Province": getTextValue(source.province),
+                    "Format": normalizeFormat(getTextValue(source.format)),
+                    "Commitment Type": formatCommitmentType(getTextValue(source.commitmentType)),
+                    "Time Commitment": formatTimeCommitment(source.timeCommitment),
+                    "Student Friendly": studentFriendly,
+                    "Application Deadline": getTextValue(source.applicationDeadline),
+                    "Application Link": getTextValue(source.applicationLink),
+                    "Email": getTextValue(source.email),
+                    "Description": getTextValue(source.description),
+                    "Date Last Checked": getTextValue(source.dateLastChecked)
+                }
+            };
+        }
+
+        function normalizeDirectoryPayload(data) {
+            if (Array.isArray(data)) return data;
+            if (Array.isArray(data?.rows)) return data.rows;
+            if (Array.isArray(data?.data)) return data.data;
+            if (Array.isArray(data?.records)) return data.records.map(record => record.fields || record);
+            return [];
+        }
+
+        function loadDirectoryJsonp() {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                let timeoutId;
+
+                const cleanup = () => {
+                    window.clearTimeout(timeoutId);
+                    script.remove();
+                };
+
+                window.pitchinDirectoryData = (data) => {
+                    cleanup();
+                    resolve(normalizeDirectoryPayload(data).map(normalizeDirectoryRow));
+                };
+
+                script.onerror = () => {
+                    cleanup();
+                    reject(new Error('Google Sheets JSONP load failed'));
+                };
+
+                timeoutId = window.setTimeout(() => {
+                    cleanup();
+                    reject(new Error('Google Sheets JSONP load timed out'));
+                }, 15000);
+
+                script.src = API_URL + '?callback=pitchinDirectoryData&v=' + Date.now();
+                document.body.appendChild(script);
+            });
+        }
+
+        async function fetchDirectoryData() {
+            gridEl.innerHTML = '<div class="loading">Loading opportunities...</div>';
 
             try {
-                const records = [];
-                let offset;
-
-                do {
-                    const url = new URL(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(TABLE_NAME)}`);
-                    url.searchParams.append('filterByFormula', "Status = 'Published'");
-                    if (offset) {
-                        url.searchParams.append('offset', offset);
-                    }
-
-                    const response = await fetch(url, {
-                        headers: {
-                            'Authorization': `Bearer ${AIRTABLE_TOKEN}`
-                        }
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`Airtable API error: ${response.status}`);
-                    }
-
-                    const data = await response.json();
-                    records.push(...data.records);
-                    offset = data.offset;
-                } while (offset);
-
-                allOpportunities = records;
+                allOpportunities = await loadDirectoryJsonp();
                 filteredOpportunities = [...allOpportunities];
-                
+
                 setupFilters();
                 renderCards(filteredOpportunities);
-
             } catch (error) {
                 console.error("Error fetching data:", error);
                 syncShowMoreState(0);
