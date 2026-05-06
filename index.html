@@ -2375,6 +2375,14 @@
             return normalizeStudentFriendlyValue(value) === true;
         }
 
+        function getListingIssue(fields) {
+            return fields["Issue?"] ?? fields["Issue"];
+        }
+
+        function getListingIssueReason(fields) {
+            return fields["Issue Reason?"] ?? fields["Issue Reason"] ?? '';
+        }
+
         function getIssuePillMarkup() {
             return `
                 <span class="issue-pill" aria-label="There may be an issue with this listing and we are investigating it">
@@ -2385,8 +2393,8 @@
         }
 
         function getIssueDetailMarkup(fields) {
-            if (!hasListingIssue(fields["Issue?"])) return '';
-            const issueReasonValue = fields["Issue Reason?"] ?? fields["Issue Reason"];
+            if (!hasListingIssue(getListingIssue(fields))) return '';
+            const issueReasonValue = getListingIssueReason(fields);
             const rawReason = typeof issueReasonValue === 'string' ? issueReasonValue.trim() : '';
             const baseReason = 'We found something worth checking on this listing and are actively investigating it now.';
             const reason = rawReason
@@ -2475,6 +2483,7 @@
             const seen = new Set();
             const website = getOrganizationWebsite(fields);
             let hasDirectContact = false;
+            let primaryEmailHref = '';
             const candidates = [
                 { label: 'Organization', value: fields["Organization"], href: website || '' },
                 { label: 'Contact person', value: fields["Contact Name"] || fields["Volunteer Coordinator"] || fields["Coordinator"] || fields["Contact Person"] || '' },
@@ -2501,11 +2510,16 @@
                 if (item.label !== 'Organization') {
                     hasDirectContact = true;
                 }
+
+                if (item.label === 'Email' && !primaryEmailHref) {
+                    primaryEmailHref = href;
+                }
             });
 
             return {
                 details,
-                hasDirectContact
+                hasDirectContact,
+                primaryEmailHref
             };
         }
 
@@ -2543,9 +2557,13 @@
 
             return `
                 <div class="apply-disclosure" data-apply-disclosure>
-                    <button type="button" class="apply-btn apply-btn--toggle" data-apply-toggle aria-expanded="false">
-                        Apply Now
-                    </button>
+                    ${contactInfo.primaryEmailHref ? `
+                        <a href="${contactInfo.primaryEmailHref}" class="apply-btn">Email to Apply</a>
+                    ` : `
+                        <button type="button" class="apply-btn apply-btn--toggle" data-apply-toggle aria-expanded="false">
+                            Apply Now
+                        </button>
+                    `}
                     <div class="apply-disclosure-panel" data-apply-panel>
                         <div class="apply-disclosure-inner ${contactInfo.hasDirectContact ? '' : 'warning'}">
                             <div class="apply-disclosure-top">
@@ -2601,6 +2619,8 @@
         function normalizeDirectoryRow(row, index) {
             const source = row && typeof row === 'object' ? row : {};
             const studentFriendly = normalizeStudentFriendlyValue(source.studentFriendly) === true;
+            const issue = normalizeStudentFriendlyValue(source.issue) === true;
+            const otherApplicationInfo = normalizeStudentFriendlyValue(source.otherApplicationInfo) === true;
 
             return {
                 id: getTextValue(source.id) || getTextValue(source.recordId) || `sheet-row-${index}`,
@@ -2618,9 +2638,24 @@
                     "Application Link": getTextValue(source.applicationLink),
                     "Email": getTextValue(source.email),
                     "Description": getTextValue(source.description),
-                    "Date Last Checked": getTextValue(source.dateLastChecked)
+                    "Date Last Checked": getTextValue(source.dateLastChecked),
+                    "Issue?": issue,
+                    "Issue Reason?": getTextValue(source.issueReason),
+                    "Other Application Info?": otherApplicationInfo,
+                    "Other Application Info Details": getTextValue(source.otherApplicationInfoDetails)
                 }
             };
+        }
+
+        function hasListingContent(opportunity) {
+            const fields = opportunity.fields || {};
+            return Boolean(
+                fields["Opportunity Title"] ||
+                fields["Organization"] ||
+                fields["Description"] ||
+                fields["Application Link"] ||
+                fields["Email"]
+            );
         }
 
         function normalizeDirectoryPayload(data) {
@@ -2643,7 +2678,7 @@
 
                 window.pitchinDirectoryData = (data) => {
                     cleanup();
-                    resolve(normalizeDirectoryPayload(data).map(normalizeDirectoryRow));
+                    resolve(normalizeDirectoryPayload(data).map(normalizeDirectoryRow).filter(hasListingContent));
                 };
 
                 script.onerror = () => {
