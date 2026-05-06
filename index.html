@@ -2678,7 +2678,11 @@
 
                 window.pitchinDirectoryData = (data) => {
                     cleanup();
-                    resolve(normalizeDirectoryPayload(data).map(normalizeDirectoryRow).filter(hasListingContent));
+                    const mappedRows = normalizeDirectoryPayload(data).map(normalizeDirectoryRow);
+                    resolve({
+                        rows: mappedRows.filter(hasListingContent),
+                        totalRows: mappedRows.length
+                    });
                 };
 
                 script.onerror = () => {
@@ -2700,7 +2704,12 @@
             gridEl.innerHTML = '<div class="loading">Loading opportunities...</div>';
 
             try {
-                allOpportunities = await loadDirectoryJsonp();
+                const { rows, totalRows } = await loadDirectoryJsonp();
+                if (totalRows > 0 && rows.length === 0) {
+                    throw new Error('Directory feed returned only blank rows');
+                }
+
+                allOpportunities = rows;
                 filteredOpportunities = [...allOpportunities];
 
                 setupFilters();
@@ -2708,10 +2717,13 @@
             } catch (error) {
                 console.error("Error fetching data:", error);
                 syncShowMoreState(0);
+                if (heroOpportunityCountEl) {
+                    heroOpportunityCountEl.textContent = 'Unavailable';
+                }
                 gridEl.innerHTML = `
                     <div class="no-results">
                         <h3>Couldn't load opportunities :(</h3>
-                        <p>Maybe that's on us... or you.</p>
+                        <p>Our directory feed is returning empty rows right now. The site is okay, but the Google Sheets web app still needs a fix.</p>
                     </div>
                 `;
             }
