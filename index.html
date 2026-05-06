@@ -2009,6 +2009,10 @@
         const heroOpportunityCountEl = document.getElementById('heroOpportunityCount');
         const heroTitleEl = document.querySelector('.hero-title');
 
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+
         // --- MOCK DATA FOR TESTING ---
         const mockData = [
             {
@@ -2069,6 +2073,7 @@
 
         // --- INITIALIZATION ---
         async function init() {
+            window.scrollTo(0, 0);
             prepareHeroTitleAnimation();
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => document.body.classList.add('page-ready'));
@@ -2705,6 +2710,7 @@
 
                 setupFilters();
                 renderCards(filteredOpportunities);
+                requestAnimationFrame(() => window.scrollTo(0, 0));
             } catch (error) {
                 console.error("Error fetching data:", error);
                 syncShowMoreState(0);
