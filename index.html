@@ -1963,15 +1963,15 @@
         let filteredOpportunities = [];
         let filterTransitionTimeout;
         let studentFriendlyOnly = false;
-        let visibleOpportunityCount = 40;
+        let visibleOpportunityCount = 39;
         let cityToProvince = new Map();
         let provinceToCities = new Map();
         const supportsCardTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
         let currentOpenCard = null;
         let isModalTransitioning = false;
 
-        const INITIAL_VISIBLE_OPPORTUNITIES = 40;
-        const VISIBLE_OPPORTUNITY_STEP = 40;
+        const INITIAL_VISIBLE_OPPORTUNITIES = 39;
+        const VISIBLE_OPPORTUNITY_STEP = 39;
         const CANADIAN_REGIONS = ['AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'];
         const PROVINCE_LABELS = {
             AB: 'Alberta',
