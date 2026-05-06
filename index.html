@@ -2483,7 +2483,6 @@
             const seen = new Set();
             const website = getOrganizationWebsite(fields);
             let hasDirectContact = false;
-            let primaryEmailHref = '';
             const candidates = [
                 { label: 'Organization', value: fields["Organization"], href: website || '' },
                 { label: 'Contact person', value: fields["Contact Name"] || fields["Volunteer Coordinator"] || fields["Coordinator"] || fields["Contact Person"] || '' },
@@ -2511,15 +2510,11 @@
                     hasDirectContact = true;
                 }
 
-                if (item.label === 'Email' && !primaryEmailHref) {
-                    primaryEmailHref = href;
-                }
             });
 
             return {
                 details,
-                hasDirectContact,
-                primaryEmailHref
+                hasDirectContact
             };
         }
 
@@ -2557,13 +2552,9 @@
 
             return `
                 <div class="apply-disclosure" data-apply-disclosure>
-                    ${contactInfo.primaryEmailHref ? `
-                        <a href="${contactInfo.primaryEmailHref}" class="apply-btn">Email to Apply</a>
-                    ` : `
-                        <button type="button" class="apply-btn apply-btn--toggle" data-apply-toggle aria-expanded="false">
-                            Apply Now
-                        </button>
-                    `}
+                    <button type="button" class="apply-btn apply-btn--toggle" data-apply-toggle aria-expanded="false">
+                        Apply Now
+                    </button>
                     <div class="apply-disclosure-panel" data-apply-panel>
                         <div class="apply-disclosure-inner ${contactInfo.hasDirectContact ? '' : 'warning'}">
                             <div class="apply-disclosure-top">
