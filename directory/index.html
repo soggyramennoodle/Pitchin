@@ -2795,8 +2795,13 @@
                 script.src = API_URL + '?callback=pitchinDirectoryData&v=' + Date.now();
                 document.body.appendChild(script);
             });
-        }
-
+            }
+            function shuffleArray(array) {
+                return array
+                    .map(item => ({ item, sort: Math.random() }))
+                    .sort((a, b) => a.sort - b.sort)
+                    .map(({ item }) => item);
+            }
         async function fetchDirectoryData() {
             gridEl.innerHTML = '<div class="loading">Loading opportunities...</div>';
 
@@ -2806,7 +2811,7 @@
                     throw new Error('Directory feed returned only blank rows');
                 }
 
-                allOpportunities = rows;
+                allOpportunities = shuffleArray(rows);
                 filteredOpportunities = [...allOpportunities];
 
                 setupFilters();
