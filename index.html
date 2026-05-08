@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pitchin</title>
     <meta name="description" content="Pitchin is a searchable directory of verified volunteer opportunities across Canada.">
-    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="%2330514d"/><path d="M49 15 15 29c-2 1-2 4 .2 4.7l10.1 3.1 3.1 10.1c.7 2.2 3.7 2.3 4.7.2L49 15Z" fill="white"/></svg>'>
+    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="%2322c55e"/><path d="M49 15 15 29c-2 1-2 4 .2 4.7l10.1 3.1 3.1 10.1c.7 2.2 3.7 2.3 4.7.2L49 15Z" fill="white"/></svg>'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -988,9 +988,895 @@
                 transform: none;
             }
         }
+
+        /* SaaS revamp layer */
+        :root {
+            --brand: #22c55e;
+            --brand-dim: #16a34a;
+            --brand-glow: rgba(34, 197, 94, 0.15);
+            --surface: #ffffff;
+            --surface-2: #f9fafb;
+            --border: rgba(0, 0, 0, 0.08);
+            --text-1: #0a0a0a;
+            --text-2: #6b7280;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-fast: 200ms;
+            --duration-mid: 400ms;
+            --duration-slow: 700ms;
+            --green: var(--brand);
+            --green-dark: var(--brand-dim);
+            --green-deep: #14532d;
+            --ink: var(--text-1);
+            --muted: var(--text-2);
+            --line: var(--border);
+            --paper: var(--surface);
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 50% -20%, rgba(34, 197, 94, 0.08), transparent 34%),
+                linear-gradient(180deg, #ffffff 0%, #fbfffc 42%, #ffffff 100%);
+        }
+
+        #cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--brand);
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate3d(-50%, -50%, 0) scale(var(--cursor-scale, 1));
+            will-change: transform;
+            mix-blend-mode: multiply;
+        }
+
+        .site-header {
+            background: rgba(255, 255, 255, 0.58);
+            border-bottom: 1px solid transparent;
+            backdrop-filter: blur(0) saturate(100%);
+            transition: background 300ms var(--ease-out), border-color 300ms var(--ease-out), backdrop-filter 300ms var(--ease-out), box-shadow 300ms var(--ease-out);
+        }
+
+        .site-header.is-scrolled {
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom-color: var(--border);
+            backdrop-filter: blur(12px) saturate(180%);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-cluster {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+
+        .beta-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 3px 10px;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 999px;
+            background: var(--brand-glow);
+            color: var(--brand-dim);
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 1.5;
+            white-space: nowrap;
+        }
+
+        .beta-dot {
+            position: relative;
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: var(--brand);
+        }
+
+        .beta-dot::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: var(--brand);
+        }
+
+        .site-header .pill-button:hover,
+        .site-header .pill-button:focus-visible {
+            background: var(--brand);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--brand-glow);
+        }
+
+        .hero {
+            position: relative;
+            min-height: calc(100vh - 96px);
+            padding: clamp(36px, 5vw, 72px) 0 96px;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .aurora {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .aurora-blob {
+            position: absolute;
+            border-radius: 999px;
+            will-change: transform;
+        }
+
+        .aurora-blob--one {
+            width: 600px;
+            height: 600px;
+            top: -100px;
+            right: -100px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.18) 0%, transparent 70%);
+            filter: blur(80px);
+        }
+
+        .aurora-blob--two {
+            width: 500px;
+            height: 500px;
+            top: 200px;
+            left: -150px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%);
+            filter: blur(80px);
+        }
+
+        .aurora-blob--three {
+            width: 400px;
+            height: 400px;
+            right: 200px;
+            bottom: 0;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.09) 0%, transparent 70%);
+            filter: blur(60px);
+        }
+
+        .hero-card {
+            position: relative;
+            grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+            gap: clamp(56px, 7vw, 96px);
+            min-height: 500px;
+            padding: clamp(36px, 4.2vw, 58px);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            border-radius: calc(var(--radius-xl) + 8px);
+            background: rgba(255, 255, 255, 0.72);
+            color: var(--text-1);
+            box-shadow: 0 32px 90px rgba(15, 23, 42, 0.08), inset 0 1px rgba(255,255,255,0.88);
+            backdrop-filter: blur(20px) saturate(150%);
+        }
+
+        .hero-kicker {
+            color: var(--brand-dim);
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            max-width: 680px;
+            color: var(--text-1);
+            font-size: clamp(48px, 5vw, 72px);
+            line-height: 1;
+        }
+
+        .hero-word {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .hero-copy {
+            max-width: 620px;
+            color: var(--text-2);
+            font-size: clamp(17px, 1.35vw, 20px);
+            margin: 22px 0 26px;
+        }
+
+        .hero-actions {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .hero-actions .pill-button {
+            min-height: 52px;
+            padding: 14px 18px 14px 28px;
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-actions .pill-button--light {
+            background: var(--brand);
+            color: white;
+            border-color: rgba(34, 197, 94, 0.24);
+            box-shadow: 0 10px 26px var(--brand-glow);
+        }
+
+        .hero-actions .pill-button--light .button-arrow {
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+        }
+
+        .hero-actions .pill-button--light::after,
+        .cta-banner .pill-button::before {
+            content: "";
+            position: absolute;
+            inset: -50% auto -50% -100%;
+            width: 55%;
+            transform: skewX(-18deg);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+            pointer-events: none;
+        }
+
+        .hero-actions .pill-button--light:hover::after,
+        .cta-banner .pill-button:hover::before {
+            left: 120%;
+            transition: left 600ms var(--ease-out);
+        }
+
+        .hero-actions .pill-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--brand-glow);
+        }
+
+        .hero-actions .hero-news {
+            max-width: none;
+            background: rgba(255, 255, 255, 0.7);
+            border-color: var(--border);
+            color: var(--text-1);
+        }
+
+        .hero-actions .hero-news:hover {
+            border-color: var(--brand);
+            color: var(--brand-dim);
+        }
+
+        .hero-stage {
+            position: relative;
+            min-height: 430px;
+            align-self: stretch;
+        }
+
+        .hero-media {
+            position: relative;
+            min-height: 100%;
+            height: 100%;
+            border-radius: var(--radius-xl);
+            background: var(--surface);
+            box-shadow: 0 32px 80px rgba(0,0,0,0.12), 0 0 0 1px var(--border);
+            will-change: transform;
+        }
+
+        .hero-media::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0;
+            height: 30%;
+            background: linear-gradient(to top, rgba(34,197,94,0.15), transparent);
+            pointer-events: none;
+        }
+
+        .floating-preview {
+            position: absolute;
+            z-index: 2;
+            max-width: 230px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            backdrop-filter: blur(8px);
+        }
+
+        .floating-preview--card {
+            top: -20px;
+            right: -22px;
+        }
+
+        .floating-preview--chips {
+            left: -34px;
+            bottom: 28px;
+        }
+
+        .preview-tag {
+            display: inline-flex;
+            width: max-content;
+            margin-bottom: 10px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: var(--brand-glow);
+            color: var(--brand-dim);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .preview-title {
+            margin: 0 0 7px;
+            font-size: 15px;
+            font-weight: 650;
+            color: var(--text-1);
+        }
+
+        .preview-copy {
+            margin: 0;
+            color: var(--text-2);
+            font-size: 13px;
+        }
+
+        .chip-strip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--brand-dim);
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .logo-strip {
+            padding-top: 86px;
+            padding-bottom: 110px;
+        }
+
+        .ticker {
+            height: auto;
+            display: grid;
+            gap: 18px;
+            mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+        }
+
+        .ticker-track {
+            position: static;
+            gap: 72px;
+            animation-duration: 40s;
+        }
+
+        .ticker-track--reverse {
+            animation-name: tickerReverse;
+            animation-duration: 55s;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: running;
+        }
+
+        .reveal.revealed {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+
+        .reveal-left.revealed,
+        .reveal-right.revealed {
+            transform: translate3d(0, 0, 0);
+        }
+
+        .compare-card {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            max-width: 1080px;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+            overflow: visible;
+        }
+
+        .compare-column {
+            display: grid;
+            gap: 14px;
+            padding: 0;
+        }
+
+        .compare-column--with {
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .compare-heading {
+            padding: 0 4px 6px;
+            font-size: 18px;
+            color: var(--text-2);
+        }
+
+        .compare-list {
+            display: grid;
+            gap: 14px;
+            margin: 0;
+        }
+
+        .compare-item {
+            display: grid;
+            grid-template-columns: 34px minmax(0, 1fr);
+            gap: 14px;
+            padding: 22px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.035);
+        }
+
+        .compare-column:not(.compare-column--with) .compare-item {
+            filter: saturate(0.52);
+            opacity: 0.74;
+        }
+
+        .compare-column--with .compare-item {
+            box-shadow: 0 0 0 1px rgba(34,197,94,0.2), 0 4px 16px rgba(34,197,94,0.08);
+        }
+
+        .compare-column--with .compare-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 0 1px rgba(34,197,94,0.28), 0 14px 34px rgba(34,197,94,0.14);
+        }
+
+        .compare-item {
+            transition: transform 300ms var(--ease-spring), box-shadow 300ms ease;
+        }
+
+        .check {
+            width: 28px;
+            height: 28px;
+            margin: 0;
+            background: rgba(239, 68, 68, 0.11);
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .compare-column--with .check {
+            background: var(--brand-glow);
+            color: var(--brand);
+        }
+
+        .features-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            max-width: 1080px;
+            text-align: left;
+        }
+
+        .feature {
+            align-items: flex-start;
+            padding: 28px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+            transition: transform 300ms var(--ease-spring), box-shadow 300ms ease;
+        }
+
+        .feature:nth-child(1),
+        .feature:nth-child(6) {
+            grid-column: span 2;
+        }
+
+        .feature:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 24px;
+            border-radius: 12px;
+            background: var(--brand-glow);
+            color: var(--brand);
+            box-shadow: none;
+            transition: transform 300ms var(--ease-spring);
+        }
+
+        .feature:hover .feature-icon {
+            transform: scale(1.1);
+        }
+
+        .timeline {
+            max-width: 1100px;
+        }
+
+        .timeline::before {
+            background: repeating-linear-gradient(to bottom, var(--brand) 0 4px, transparent 4px 10px);
+            opacity: 0.42;
+            transform-origin: top;
+            transform: translateX(-50%) scaleY(var(--line-progress, 0));
+            transition: transform 900ms var(--ease-out);
+        }
+
+        .timeline.revealed::before {
+            transform: translateX(-50%) scaleY(1);
+        }
+
+        .timeline-step {
+            min-height: 450px;
+        }
+
+        .step-number {
+            position: absolute;
+            inset: 50% auto auto 50%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            background: transparent;
+            color: var(--brand);
+            opacity: 0.12;
+            font-size: 80px;
+            font-weight: 800;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .timeline-copy-wrap {
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-visual {
+            border-radius: var(--radius-xl);
+            box-shadow: 0 32px 80px rgba(0,0,0,0.15), 0 0 0 1px var(--border);
+            transform-style: preserve-3d;
+            transition: transform 400ms ease;
+            will-change: transform;
+        }
+
+        .stats-section {
+            padding: 74px 0;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            background: rgba(255,255,255,0.78);
+            box-shadow: 0 24px 70px rgba(0,0,0,0.05);
+            backdrop-filter: blur(18px);
+            overflow: hidden;
+        }
+
+        .stat {
+            flex: 1;
+            min-width: 0;
+            padding: 30px 26px;
+            text-align: center;
+        }
+
+        .stat + .stat {
+            border-left: 1px solid var(--border);
+        }
+
+        .stat-number {
+            display: block;
+            color: var(--text-1);
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .stat-label {
+            display: block;
+            margin-top: 10px;
+            color: var(--text-2);
+            font-size: 14px;
+        }
+
+        .faq-list {
+            max-width: 760px;
+            border-bottom: 0;
+        }
+
+        .faq-item {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background: var(--surface);
+        }
+
+        .faq-item + .faq-item {
+            margin-top: 10px;
+        }
+
+        .faq-toggle {
+            padding: 22px 24px;
+            transition: background 200ms ease;
+        }
+
+        .faq-toggle:focus {
+            outline: none;
+        }
+
+        .faq-toggle:focus-visible {
+            box-shadow: inset 0 0 0 2px rgba(34,197,94,0.28);
+        }
+
+        .faq-toggle:hover {
+            background: var(--surface-2);
+        }
+
+        .faq-item.is-open {
+            border-left: 2px solid var(--brand);
+        }
+
+        .faq-answer {
+            padding: 0 64px 24px 24px;
+        }
+
+        .faq-panel {
+            max-height: 0;
+            height: auto;
+            transition: max-height 400ms var(--ease-out), padding 400ms var(--ease-out);
+        }
+
+        .faq-item.is-open .faq-panel {
+            max-height: 260px;
+        }
+
+        .faq-icon {
+            transition: transform 300ms var(--ease-spring);
+        }
+
+        .faq-item.is-open .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .cta-section {
+            padding: 34px 0 96px;
+        }
+
+        .bottom-actions {
+            display: none;
+        }
+
+        .cta-banner {
+            position: relative;
+            overflow: hidden;
+            padding: clamp(42px, 6vw, 72px);
+            border: 1px solid rgba(34,197,94,0.2);
+            border-radius: var(--radius-xl);
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0f9ff 100%);
+            text-align: center;
+            isolation: isolate;
+        }
+
+        .cta-banner::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            z-index: -1;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+        }
+
+        .cta-title {
+            margin: 0;
+            font-family: var(--serif);
+            font-size: clamp(38px, 5vw, 64px);
+            font-weight: 400;
+            line-height: 1.05;
+        }
+
+        .cta-copy {
+            max-width: 560px;
+            margin: 18px auto 28px;
+            color: var(--text-2);
+            font-size: 18px;
+            line-height: 1.55;
+        }
+
+        .cta-actions {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .site-footer {
+            position: relative;
+            border-top: 1px solid var(--border);
+        }
+
+        .site-footer::before {
+            content: "";
+            position: absolute;
+            inset: -1px 0 auto;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(34,197,94,0.36), transparent);
+        }
+
+        .footer-links a,
+        .tooltip-link {
+            display: inline-flex;
+            transition: color 200ms ease, transform 200ms var(--ease-spring);
+        }
+
+        .footer-links a:hover,
+        .tooltip-link:hover,
+        .footer-links a:focus-visible,
+        .tooltip-link:focus-visible {
+            color: var(--brand);
+            transform: translateY(-2px);
+        }
+
+        .prairie {
+            display: inline-block;
+            transform-origin: 50% 100%;
+        }
+
+        @keyframes tickerReverse {
+            from { transform: translate3d(-50%, 0, 0); }
+            to { transform: translate3d(0, 0, 0); }
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .beta-dot::after {
+                animation: pulse 1.5s ease-out infinite;
+            }
+
+            .aurora-blob--one { animation: drift 10s ease-in-out infinite alternate; }
+            .aurora-blob--two { animation: drift 12s ease-in-out infinite alternate-reverse; }
+            .aurora-blob--three { animation: drift 9s ease-in-out infinite alternate; }
+            .floating-preview--card { animation: float1 4s ease-in-out infinite alternate; }
+            .floating-preview--chips { animation: float1 4s ease-in-out 2s infinite alternate; }
+            .prairie { animation: sway 2s ease-in-out infinite; }
+            .hero-word.word-ready {
+                animation: wordIn 700ms var(--ease-out) forwards;
+                animation-delay: var(--word-delay, 0ms);
+            }
+
+            @keyframes pulse {
+                0% { transform: scale(1); opacity: 1; }
+                100% { transform: scale(1.5); opacity: 0; }
+            }
+
+            @keyframes drift {
+                from { transform: translate3d(-16px, 10px, 0); }
+                to { transform: translate3d(30px, -24px, 0); }
+            }
+
+            @keyframes float1 {
+                from { transform: translate3d(0, -8px, 0); }
+                to { transform: translate3d(0, 10px, 0); }
+            }
+
+            @keyframes wordIn {
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            @keyframes sway {
+                0%, 100% { transform: rotate(-4deg); }
+                50% { transform: rotate(5deg); }
+            }
+        }
+
+        @media (max-width: 860px) {
+            #cursor { display: none; }
+            .nav-cluster { gap: 8px; }
+            .hero-card {
+                grid-template-columns: 1fr;
+                background: rgba(255,255,255,0.78);
+            }
+            .hero-stage { min-height: 420px; }
+            .floating-preview { display: none; }
+            .compare-card,
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .feature:nth-child(1),
+            .feature:nth-child(6) {
+                grid-column: auto;
+            }
+            .stats-bar {
+                flex-direction: column;
+            }
+            .stat + .stat {
+                border-left: 0;
+                border-top: 1px solid var(--border);
+            }
+            .timeline-step {
+                grid-template-columns: 44px minmax(0, 1fr);
+            }
+            .step-number {
+                position: static;
+                grid-column: 1;
+                transform: none;
+                font-size: 34px;
+                opacity: 0.34;
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .nav-cluster {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .site-header .pill-button {
+                width: auto;
+                flex: 1;
+            }
+            .hero {
+                padding-top: 36px;
+            }
+            .hero-title {
+                font-size: clamp(38px, 11vw, 44px);
+                line-height: 1.04;
+            }
+            .hero-actions {
+                flex-direction: column;
+            }
+            .hero-actions .pill-button {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .hero-actions .hero-news {
+                position: relative;
+                overflow: hidden;
+                padding-right: 64px;
+            }
+            .hero-news span:first-child {
+                display: block;
+                min-width: max-content;
+                white-space: nowrap;
+                padding-right: 72px;
+                animation: heroNewsTicker 6.5s linear infinite;
+            }
+            .hero-news .button-arrow {
+                position: absolute;
+                top: 50%;
+                right: 8px;
+                transform: translateY(-50%);
+            }
+            .hero-news:hover .button-arrow,
+            .hero-news:focus-visible .button-arrow {
+                transform: translateY(-50%) translateX(2px);
+            }
+            .hero-stage { min-height: 330px; }
+            .ticker-track { gap: 42px; }
+            .logo-item { width: 142px; }
+            .cta-actions { flex-direction: column; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #cursor { display: none; }
+            .hero-word {
+                opacity: 1;
+                transform: none;
+            }
+            .aurora-blob,
+            .floating-preview,
+            .prairie {
+                animation: none !important;
+                transform: none !important;
+            }
+            .faq-panel,
+            .faq-icon,
+            .timeline-visual,
+            .feature,
+            .compare-item,
+            .pill-button {
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
+    <div id="cursor" aria-hidden="true"></div>
     <header class="site-header">
         <div class="shell header-inner">
             <a class="brand" href="/" aria-label="Pitchin home">
@@ -1001,20 +1887,28 @@
                 </span>
                 <span class="brand-text">Pitchin</span>
             </a>
-            <a class="pill-button" href="https://tally.so/r/Me8bb0" target="_blank" rel="noopener noreferrer">
-                <span>Submit an Opportunity</span>
-                <span class="button-arrow" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-                        <path d="m12 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-            </a>
+            <div class="nav-cluster">
+                <span class="beta-badge"><span class="beta-dot" aria-hidden="true"></span>Beta</span>
+                <a class="pill-button" href="https://tally.so/r/Me8bb0" target="_blank" rel="noopener noreferrer">
+                    <span>Submit an Opportunity</span>
+                    <span class="button-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                            <path d="m12 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </a>
+            </div>
         </div>
     </header>
 
     <main>
         <section class="hero">
+            <div class="aurora" aria-hidden="true">
+                <span class="aurora-blob aurora-blob--one"></span>
+                <span class="aurora-blob aurora-blob--two"></span>
+                <span class="aurora-blob aurora-blob--three"></span>
+            </div>
             <div class="shell">
                 <div class="hero-card reveal">
                     <div>
@@ -1025,7 +1919,13 @@
                             </svg>
                             <span>Beta — Directory in active development.</span>
                         </div>
-                        <h1 class="hero-title">Find volunteer opportunities across Canada.</h1>
+                        <h1 class="hero-title" aria-label="Find volunteer opportunities across Canada.">
+                            <span class="hero-word">Find</span>
+                            <span class="hero-word">volunteer</span>
+                            <span class="hero-word">opportunities</span>
+                            <span class="hero-word">across</span>
+                            <span class="hero-word">Canada.</span>
+                        </h1>
                         <p class="hero-copy">Pitchin is a searchable directory of verified, available volunteer opportunities for students and community members, without the noise. Did we mention it's free?</p>
                         <div class="hero-actions">
                             <a class="pill-button pill-button--light" href="/directory/">
@@ -1048,8 +1948,18 @@
                             </a>
                         </div>
                     </div>
-                    <div class="hero-media reveal reveal-right" style="--delay: 110ms;">
-                        <img src="assets/landing/framer/framer-11.jpg" alt="Volunteers preparing paper bags at a community event.">
+                    <div class="hero-stage reveal reveal-right" style="--delay: 110ms;">
+                        <div class="floating-preview floating-preview--card" aria-hidden="true">
+                            <span class="preview-tag">Healthcare</span>
+                            <p class="preview-title">Patient Visitor Volunteer</p>
+                            <p class="preview-copy">Vancouver, BC · Weekly</p>
+                        </div>
+                        <div class="hero-media" data-parallax>
+                            <img src="assets/landing/framer/framer-11.jpg" alt="Volunteers preparing paper bags at a community event.">
+                        </div>
+                        <div class="floating-preview floating-preview--chips" aria-hidden="true">
+                            <span class="chip-strip">Toronto · Healthcare · Weekly</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1058,7 +1968,7 @@
         <section class="logo-strip wide-shell" aria-label="University logos">
             <div class="section-label reveal">Built for students at universities like</div>
             <div class="ticker reveal" style="--delay: 90ms;">
-                <div class="ticker-track">
+                <div class="ticker-track marquee-track">
                     <div class="logo-item"><img src="assets/landing/framer/framer-07.png" alt="University of Calgary"></div>
                     <div class="logo-item"><img src="assets/landing/framer/framer-21.png" alt="McMaster University"></div>
                     <div class="logo-item"><img src="assets/landing/framer/framer-05.png" alt="University of Manitoba"></div>
@@ -1090,6 +2000,38 @@
                     <div class="logo-item"><img src="assets/landing/framer/framer-14.png" alt=""></div>
                     <div class="logo-item"><img src="assets/landing/framer/framer-22.png" alt=""></div>
                 </div>
+                <div class="ticker-track ticker-track--reverse marquee-track" aria-hidden="true">
+                    <div class="logo-item"><img src="assets/landing/framer/framer-08.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-25.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-28.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-23.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-19.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-26.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-01.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-27.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-18.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-05.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-21.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-07.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-22.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-14.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-02.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-08.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-25.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-28.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-23.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-19.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-26.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-01.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-27.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-18.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-05.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-21.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-07.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-22.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-14.png" alt=""></div>
+                    <div class="logo-item"><img src="assets/landing/framer/framer-02.png" alt=""></div>
+                </div>
             </div>
         </section>
 
@@ -1101,17 +2043,17 @@
                     <div class="compare-column">
                         <h3 class="compare-heading">Without Pitchin 😟</h3>
                         <ul class="compare-list">
-                            <li class="compare-item"><span class="check">✓</span><span><strong class="item-title">Scattered Listings</strong><p class="item-copy">Opportunities buried across hospital websites, Instagram posts, and random nonprofit pages.</p></span></li>
-                            <li class="compare-item"><span class="check">✓</span><span><strong class="item-title">Outdated Information</strong><p class="item-copy">Deadlines passed, links broken, no way to know if a role is still available.</p></span></li>
-                            <li class="compare-item"><span class="check">✓</span><span><strong class="item-title">Hard To Compare</strong><p class="item-copy">No consistent format, no filters, and no way to find what's meant for you.</p></span></li>
+                            <li class="compare-item reveal reveal-left" style="--delay: 0ms;"><span class="check">×</span><span><strong class="item-title">Scattered Listings</strong><p class="item-copy">Opportunities buried across hospital websites, Instagram posts, and random nonprofit pages.</p></span></li>
+                            <li class="compare-item reveal reveal-left" style="--delay: 80ms;"><span class="check">×</span><span><strong class="item-title">Outdated Information</strong><p class="item-copy">Deadlines passed, links broken, no way to know if a role is still available.</p></span></li>
+                            <li class="compare-item reveal reveal-left" style="--delay: 160ms;"><span class="check">×</span><span><strong class="item-title">Hard To Compare</strong><p class="item-copy">No consistent format, no filters, and no way to find what's meant for you.</p></span></li>
                         </ul>
                     </div>
                     <div class="compare-column compare-column--with">
                         <h3 class="compare-heading">With Pitchin 🫡</h3>
                         <ul class="compare-list">
-                            <li class="compare-item"><span class="check">✓</span><span><strong class="item-title">One Searchable Directory</strong><p class="item-copy">Every opportunity in one place, filterable by location, category, and commitment.</p></span></li>
-                            <li class="compare-item"><span class="check">✓</span><span><strong class="item-title">Verified and Current</strong><p class="item-copy">We check every single listing manually before they go live.</p></span></li>
-                            <li class="compare-item"><span class="check">✓</span><span><strong class="item-title">Built for Students, and More</strong><p class="item-copy">Filter by healthcare relevance, age requirement, schedule fit, and beyond. Whatever floats your boat.</p></span></li>
+                            <li class="compare-item reveal reveal-right" style="--delay: 80ms;"><span class="check">✓</span><span><strong class="item-title">One Searchable Directory</strong><p class="item-copy">Every opportunity in one place, filterable by location, category, and commitment.</p></span></li>
+                            <li class="compare-item reveal reveal-right" style="--delay: 160ms;"><span class="check">✓</span><span><strong class="item-title">Verified and Current</strong><p class="item-copy">We check every single listing manually before they go live.</p></span></li>
+                            <li class="compare-item reveal reveal-right" style="--delay: 240ms;"><span class="check">✓</span><span><strong class="item-title">Built for Students, and More</strong><p class="item-copy">Filter by healthcare relevance, age requirement, schedule fit, and beyond. Whatever floats your boat.</p></span></li>
                         </ul>
                     </div>
                 </div>
@@ -1123,12 +2065,12 @@
                 <div class="section-label reveal">What you get</div>
                 <h2 class="section-title reveal">Everything you need to find your next opportunity.</h2>
                 <div class="features-grid">
-                    <article class="feature reveal" style="--delay: 0ms;"><div class="feature-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><h3 class="feature-title">Search by location</h3><p class="feature-copy">Find opportunities in your city, province, or browse remote options from anywhere in Canada.</p></article>
-                    <article class="feature reveal" style="--delay: 90ms;"><div class="feature-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><h3 class="feature-title">Filter by category</h3><p class="feature-copy">Healthcare, food bank, tutoring, environment, seniors, youth, and more.</p></article>
-                    <article class="feature reveal" style="--delay: 180ms;"><div class="feature-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3 4 7v6c0 4.3 3.1 6.9 8 8 4.9-1.1 8-3.7 8-8V7l-8-4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><h3 class="feature-title">Built for students</h3><p class="feature-copy">Filter by age requirement, commitment level, and healthcare relevance.</p></article>
-                    <article class="feature reveal" style="--delay: 0ms;"><div class="feature-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 7h14v12H5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m8 12 2.3 2.3L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 class="feature-title">Verified listings</h3><p class="feature-copy">Every opportunity is manually reviewed before going live. No broken links, no expired deadlines.</p></article>
-                    <article class="feature reveal" style="--delay: 90ms;"><div class="feature-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><h3 class="feature-title">Submit a listing</h3><p class="feature-copy">An organization? Submit your opportunity and we'll get it up within a few days.</p></article>
-                    <article class="feature reveal" style="--delay: 180ms;"><div class="feature-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M9 11h5.5a2 2 0 0 1 0 4H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><h3 class="feature-title">Always free</h3><p class="feature-copy">No fees, no catch. Forever.</p></article>
+                    <article class="feature reveal" style="--i: 0; --delay: calc(var(--i) * 80ms);"><div class="feature-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><h3 class="feature-title">Search by location</h3><p class="feature-copy">Find opportunities in your city, province, or browse remote options from anywhere in Canada.</p></article>
+                    <article class="feature reveal" style="--i: 1; --delay: calc(var(--i) * 80ms);"><div class="feature-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><h3 class="feature-title">Filter by category</h3><p class="feature-copy">Healthcare, food bank, tutoring, environment, seniors, youth, and more.</p></article>
+                    <article class="feature reveal" style="--i: 2; --delay: calc(var(--i) * 80ms);"><div class="feature-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3 4 7v6c0 4.3 3.1 6.9 8 8 4.9-1.1 8-3.7 8-8V7l-8-4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><h3 class="feature-title">Built for students</h3><p class="feature-copy">Filter by age requirement, commitment level, and healthcare relevance.</p></article>
+                    <article class="feature reveal" style="--i: 3; --delay: calc(var(--i) * 80ms);"><div class="feature-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 7h14v12H5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m8 12 2.3 2.3L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 class="feature-title">Verified listings</h3><p class="feature-copy">Every opportunity is manually reviewed before going live. No broken links, no expired deadlines.</p></article>
+                    <article class="feature reveal" style="--i: 4; --delay: calc(var(--i) * 80ms);"><div class="feature-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><h3 class="feature-title">Submit a listing</h3><p class="feature-copy">An organization? Submit your opportunity and we'll get it up within a few days.</p></article>
+                    <article class="feature reveal" style="--i: 5; --delay: calc(var(--i) * 80ms);"><div class="feature-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M9 11h5.5a2 2 0 0 1 0 4H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><h3 class="feature-title">Always free</h3><p class="feature-copy">No fees, no catch. Forever.</p></article>
                 </div>
             </div>
         </section>
@@ -1137,22 +2079,45 @@
             <div class="shell">
                 <div class="section-label reveal">How it works</div>
                 <h2 class="section-title reveal">Finding your next opportunity is easy as cake 🍰.</h2>
-                <div class="timeline">
+                <div class="timeline reveal">
                     <article class="timeline-step">
-                        <div class="timeline-visual reveal reveal-left"><img src="assets/landing/directory-board.png" alt="Pitchin directory search board with opportunity cards."></div>
-                        <div class="step-number">01</div>
+                        <div class="timeline-visual reveal reveal-left" data-tilt><img src="assets/landing/directory-board.png" alt="Pitchin directory search board with opportunity cards."></div>
+                        <div class="step-number" data-count="1">00</div>
                         <div class="timeline-copy-wrap reveal reveal-right"><h3 class="timeline-title">Search</h3><p class="timeline-copy">Browse verified opportunities by location, category, or commitment type.</p></div>
                     </article>
                     <article class="timeline-step">
-                        <div class="timeline-visual reveal reveal-right"><img src="assets/landing/modal-crisis.png" alt="Pitchin opportunity listing modal."></div>
-                        <div class="step-number">02</div>
+                        <div class="timeline-visual reveal reveal-right" data-tilt><img src="assets/landing/modal-crisis.png" alt="Pitchin opportunity listing modal."></div>
+                        <div class="step-number" data-count="2">00</div>
                         <div class="timeline-copy-wrap reveal reveal-left"><h3 class="timeline-title">Find your fit</h3><p class="timeline-copy">Read the full listing, check the requirements, and see if it works for your schedule.</p></div>
                     </article>
                     <article class="timeline-step">
-                        <div class="timeline-visual reveal reveal-left"><img src="assets/landing/modal-apply.png" alt="Pitchin modal showing the Apply Now button and contact details."></div>
-                        <div class="step-number">03</div>
+                        <div class="timeline-visual reveal reveal-left" data-tilt><img src="assets/landing/modal-apply.png" alt="Pitchin modal showing the Apply Now button and contact details."></div>
+                        <div class="step-number" data-count="3">00</div>
                         <div class="timeline-copy-wrap reveal reveal-right"><h3 class="timeline-title">Apply directly</h3><p class="timeline-copy">Click the application link and apply directly through the organization's own page, or use the contact details to reach out. No middleman.</p></div>
                     </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-section">
+            <div class="shell">
+                <div class="stats-bar reveal">
+                    <div class="stat">
+                        <span class="stat-number" data-stat data-target="100" data-suffix="+">0+</span>
+                        <span class="stat-label">Verified Opportunities</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" data-stat data-target="15" data-suffix="+">0+</span>
+                        <span class="stat-label">Cities Covered</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" data-stat data-target="0" data-prefix="$">$0</span>
+                        <span class="stat-label">Cost to You</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" data-stat data-target="1">0</span>
+                        <span class="stat-label">Daily Listing Updates</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1169,9 +2134,18 @@
                     <div class="faq-item"><button class="faq-toggle" type="button" aria-expanded="false"><span class="faq-question">Do you cover all of Canada?</span><span class="faq-icon">↓</span></button><div class="faq-panel"><p class="faq-answer">We're working to add listings across all the Canadian provinces and territories. We're also working on remote opportunities. Coverage will grow as the platform does.</p></div></div>
                     <div class="faq-item"><button class="faq-toggle" type="button" aria-expanded="false"><span class="faq-question">Who is Pitchin for?</span><span class="faq-icon">↓</span></button><div class="faq-panel"><p class="faq-answer">Pitchin is built for students, newcomers, and community members (so... everyone!). Especially for those pursuing healthcare, education, or social services careers.</p></div></div>
                 </div>
-                <div class="bottom-actions reveal">
-                    <a class="pill-button" href="/directory/"><span>Browse Opportunities</span><span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="m12 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-                    <a class="pill-button pill-button--secondary" href="https://tally.so/r/Me8bb0" target="_blank" rel="noopener noreferrer"><span>Submit an Opportunity</span><span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="m12 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="shell">
+                <div class="cta-banner reveal">
+                    <h2 class="cta-title">Ready to find your next opportunity?</h2>
+                    <p class="cta-copy">Search verified roles, find something that actually fits your life, and apply without getting lost in a maze of stale links.</p>
+                    <div class="cta-actions">
+                        <a class="pill-button" href="/directory/"><span>Browse Opportunities</span><span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="m12 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+                        <a class="pill-button pill-button--secondary" href="https://tally.so/r/Me8bb0" target="_blank" rel="noopener noreferrer"><span>Submit an Opportunity</span><span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="m12 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1197,7 +2171,7 @@
                 <div>
                     <h3 class="footer-title">Contact</h3>
                     <ul class="footer-links">
-                        <li><a href="mailto:hello@pitchin.live">hello@pitchin.live</a></li>
+                        <li><a href="mailto:pitchin.live@hotmail.com">pitchin.live@hotmail.com</a></li>
                         <li><span>Saskatchewan, CA</span></li>
                     </ul>
                 </div>
@@ -1205,49 +2179,170 @@
             <div class="footer-meta reveal">
                 <span>All Rights Reserved, 2026</span>
                 <span class="footer-dot" aria-hidden="true"></span>
-                <span>Made with love, in The Prairies 🌾</span>
+                <span>Made with love, in The Prairies <span class="prairie" aria-hidden="true">🌾</span></span>
             </div>
         </div>
     </footer>
 
     <script>
-        const revealElements = document.querySelectorAll(".reveal");
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const siteHeader = document.querySelector(".site-header");
+
+        const setHeaderState = () => {
+            siteHeader?.classList.toggle("is-scrolled", window.scrollY > 60);
+        };
+        setHeaderState();
+        window.addEventListener("scroll", setHeaderState, { passive: true });
+
+        document.querySelectorAll(".hero-word").forEach((word, index) => {
+            word.style.setProperty("--word-delay", `${index * 60}ms`);
+            word.classList.add("word-ready");
+        });
+
+        const formatCounter = (element, value) => {
+            const prefix = element.dataset.prefix || "";
+            const suffix = element.dataset.suffix || "";
+            element.textContent = `${prefix}${value}${suffix}`;
+        };
+
+        const animateCounter = (element, target, duration = 1200) => {
+            if (element.dataset.counted === "true") return;
+            element.dataset.counted = "true";
+            const start = performance.now();
+            const prefix = element.dataset.prefix || "";
+            const suffix = element.dataset.suffix || "";
+
+            if (reduceMotion || target === 0) {
+                element.textContent = `${prefix}${target}${suffix}`;
+                return;
+            }
+
+            const tick = (now) => {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                formatCounter(element, Math.round(target * eased));
+                if (progress < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+        };
+
+        const animateStepNumber = (element) => {
+            if (element.dataset.counted === "true") return;
+            element.dataset.counted = "true";
+            const target = Number(element.dataset.count || 0);
+            const start = performance.now();
+
+            if (reduceMotion) {
+                element.textContent = String(target).padStart(2, "0");
+                return;
+            }
+
+            const tick = (now) => {
+                const progress = Math.min((now - start) / 600, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                element.textContent = String(Math.max(1, Math.round(target * eased))).padStart(2, "0");
+                if (progress < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+        };
+
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add("is-visible");
-                    revealObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.16, rootMargin: "0px 0px -7% 0px" });
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add("is-visible", "revealed");
 
-        revealElements.forEach((element) => revealObserver.observe(element));
+                if (entry.target.matches(".stats-bar")) {
+                    entry.target.querySelectorAll("[data-stat]").forEach((stat) => {
+                        animateCounter(stat, Number(stat.dataset.target || 0));
+                    });
+                }
+
+                if (entry.target.matches(".timeline")) {
+                    entry.target.querySelectorAll("[data-count]").forEach(animateStepNumber);
+                }
+
+                revealObserver.unobserve(entry.target);
+            });
+        }, { threshold: 0.15, rootMargin: "0px 0px -60px 0px" });
+
+        document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
 
         document.querySelectorAll(".faq-toggle").forEach((toggle) => {
+            const item = toggle.closest(".faq-item");
             const panel = toggle.nextElementSibling;
+
+            panel.style.maxHeight = "0px";
 
             toggle.addEventListener("click", () => {
                 const isOpen = toggle.getAttribute("aria-expanded") === "true";
                 toggle.setAttribute("aria-expanded", String(!isOpen));
-                const icon = toggle.querySelector(".faq-icon");
-                if (icon) icon.textContent = isOpen ? "↓" : "↑";
-
-                if (isOpen) {
-                    panel.style.height = `${panel.scrollHeight}px`;
-                    requestAnimationFrame(() => {
-                        panel.style.height = "0px";
-                    });
-                } else {
-                    panel.style.height = `${panel.scrollHeight}px`;
-                }
-            });
-
-            panel.addEventListener("transitionend", () => {
-                if (toggle.getAttribute("aria-expanded") === "true") {
-                    panel.style.height = "auto";
-                }
+                item?.classList.toggle("is-open", !isOpen);
+                panel.style.maxHeight = isOpen ? "0px" : `${panel.scrollHeight}px`;
             });
         });
+
+        const heroMedia = document.querySelector("[data-parallax]");
+        let parallaxFrame = 0;
+        const runParallax = () => {
+            parallaxFrame = 0;
+            if (!heroMedia || reduceMotion) return;
+            const shift = Math.min(Math.max(window.scrollY * 0.15, 0), 60);
+            heroMedia.style.transform = `translate3d(0, ${shift}px, 0)`;
+        };
+
+        window.addEventListener("scroll", () => {
+            if (!parallaxFrame) parallaxFrame = requestAnimationFrame(runParallax);
+        }, { passive: true });
+        runParallax();
+
+        document.querySelectorAll("[data-tilt]").forEach((card) => {
+            if (reduceMotion) return;
+
+            card.addEventListener("mousemove", (event) => {
+                const rect = card.getBoundingClientRect();
+                const x = (event.clientX - rect.left) / rect.width - 0.5;
+                const y = (event.clientY - rect.top) / rect.height - 0.5;
+                card.style.transitionDuration = "100ms";
+                card.style.transform = `perspective(1000px) rotateX(${(-y * 12).toFixed(2)}deg) rotateY(${(x * 12).toFixed(2)}deg)`;
+            });
+
+            card.addEventListener("mouseleave", () => {
+                card.style.transitionDuration = "400ms";
+                card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg)";
+            });
+        });
+
+        const cursor = document.querySelector("#cursor");
+        const canUseCursor = cursor && !reduceMotion && window.matchMedia("(pointer: fine)").matches;
+        if (canUseCursor) {
+            let currentX = window.innerWidth / 2;
+            let currentY = window.innerHeight / 2;
+            let targetX = currentX;
+            let targetY = currentY;
+            let cursorScale = 1;
+            let targetScale = 1;
+
+            window.addEventListener("mousemove", (event) => {
+                targetX = event.clientX;
+                targetY = event.clientY;
+            }, { passive: true });
+
+            document.querySelectorAll("a, button, .feature, .compare-item, [data-tilt]").forEach((element) => {
+                element.addEventListener("mouseenter", () => { targetScale = 2; });
+                element.addEventListener("mouseleave", () => { targetScale = 1; });
+            });
+
+            const drawCursor = () => {
+                currentX += (targetX - currentX) * 0.15;
+                currentY += (targetY - currentY) * 0.15;
+                cursorScale += (targetScale - cursorScale) * 0.15;
+                cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate3d(-50%, -50%, 0) scale(${cursorScale})`;
+                requestAnimationFrame(drawCursor);
+            };
+            drawCursor();
+        } else if (cursor) {
+            cursor.remove();
+        }
     </script>
 </body>
 </html>
