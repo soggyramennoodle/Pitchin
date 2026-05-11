@@ -1108,30 +1108,143 @@
         .site-status {
             display: flex;
             justify-content: center;
-            margin: 0 0 18px;
+            margin: 0 0 20px;
         }
 
         .status-pill {
+            position: relative;
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto auto;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            min-height: 58px;
+            padding: 12px 18px;
+            border: 1px solid rgba(46, 125, 82, 0.18);
+            border-radius: 999px;
+            background:
+                radial-gradient(circle at 10% 50%, rgba(46, 125, 82, 0.16), transparent 28%),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.88), rgba(240, 247, 243, 0.88));
+            color: var(--brand-dim);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 12px 32px rgba(46, 125, 82, 0.10);
+            backdrop-filter: blur(14px) saturate(150%);
+            -webkit-backdrop-filter: blur(14px) saturate(150%);
+            overflow: hidden;
+            transition: transform 260ms var(--ease-spring), border-color 260ms ease, box-shadow 260ms ease;
+        }
+
+        .status-pill::before {
+            content: "";
+            position: absolute;
+            inset: auto 7% -22px;
+            height: 42px;
+            border-radius: 999px;
+            background: rgba(46, 125, 82, 0.20);
+            filter: blur(20px);
+            opacity: 0;
+            transition: opacity 260ms ease, transform 260ms var(--ease-out);
+            pointer-events: none;
+        }
+
+        .status-pill::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.55) 46%, transparent 58%);
+            transform: translateX(-120%);
+            pointer-events: none;
+        }
+
+        .status-pill:hover,
+        .status-pill:focus-visible {
+            transform: translateY(-2px);
+            border-color: rgba(46, 125, 82, 0.32);
+            box-shadow: 0 18px 44px rgba(46, 125, 82, 0.16), 0 0 0 1px rgba(46, 125, 82, 0.05);
+            outline: none;
+        }
+
+        .status-pill:hover::before,
+        .status-pill:focus-visible::before {
+            opacity: 1;
+            transform: translateY(-4px);
+        }
+
+        .status-pill:hover::after,
+        .status-pill:focus-visible::after {
+            transform: translateX(120%);
+            transition: transform 780ms var(--ease-out);
+        }
+
+        .status-copy {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            min-width: 0;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .status-label {
+            color: var(--text-1);
+            font-size: clamp(15px, 1.4vw, 17px);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .status-detail {
+            color: var(--text-2);
+            font-size: 12px;
+            line-height: 1.35;
+        }
+
+        .status-meta {
+            position: relative;
+            z-index: 1;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 9px 14px;
-            border: 1px solid rgba(46, 125, 82, 0.25);
+            justify-content: center;
+            min-height: 32px;
+            padding: 0 13px;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.76);
+            border: 1px solid rgba(46, 125, 82, 0.14);
+            background: rgba(255, 255, 255, 0.72);
             color: var(--brand-dim);
-            font-size: 13px;
-            font-weight: 500;
-            box-shadow: 0 12px 32px rgba(46, 125, 82, 0.12);
-            backdrop-filter: blur(14px) saturate(150%);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-highlights {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-2);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .status-highlights span {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            padding: 0 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.54);
+            border: 1px solid rgba(46, 125, 82, 0.10);
         }
 
         .status-dot {
             position: relative;
+            z-index: 1;
             width: 9px;
             height: 9px;
             border-radius: 999px;
             background: var(--brand);
+            box-shadow: 0 0 0 6px rgba(46, 125, 82, 0.10);
         }
 
         .status-dot::after {
@@ -1939,6 +2052,20 @@
             .hero {
                 padding-top: 36px;
             }
+            .status-pill {
+                grid-template-columns: auto minmax(0, 1fr);
+                align-items: start;
+                border-radius: 24px;
+                padding: 14px 16px;
+            }
+            .status-highlights {
+                display: none;
+            }
+            .status-meta {
+                grid-column: 2;
+                justify-self: start;
+                margin-top: 7px;
+            }
             .hero-title {
                 font-size: clamp(38px, 11vw, 44px);
                 line-height: 1.04;
@@ -2037,9 +2164,17 @@
             </div>
             <div class="shell">
                 <div class="site-status reveal">
-                    <div class="status-pill" aria-label="We have a new look!">
+                    <div class="status-pill" tabindex="0" aria-label="Website status: We have a new look. Pitchin is freshly rebuilt and still improving.">
                         <span class="status-dot" aria-hidden="true"></span>
-                        <span>We have a new look!</span>
+                        <span class="status-copy">
+                            <span class="status-label">We have a new look.</span>
+                            <span class="status-detail">Pitchin is freshly rebuilt, faster, and still getting little upgrades.</span>
+                        </span>
+                        <span class="status-highlights" aria-hidden="true">
+                            <span>Coded landing</span>
+                            <span>Live directory</span>
+                        </span>
+                        <span class="status-meta">Website status</span>
                     </div>
                 </div>
                 <div class="hero-card reveal">
