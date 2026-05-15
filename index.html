@@ -86,6 +86,12 @@
             --status-sheen: rgba(239, 68, 68, 0.11);
         }
 
+        /* Toggle the hero status banner from the <body> tag:
+           data-status-banner="off" hides it, data-status-banner="on" shows it. */
+        body[data-status-banner="off"] .site-status {
+            display: none;
+        }
+
         a {
             color: inherit;
             text-decoration: none;
@@ -2131,7 +2137,7 @@
         }
     </style>
 </head>
-<body data-status-theme="green">
+<body data-status-theme="green" data-status-banner="off">
     <div id="cursor" aria-hidden="true"></div>
     <header class="site-header">
         <div class="shell header-inner">
