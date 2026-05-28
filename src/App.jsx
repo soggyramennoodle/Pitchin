@@ -98,7 +98,7 @@ function Hero() {
       <div className="hero-body shell">
         <div className="hero-kicker" aria-hidden="true">
           <span className="hero-kicker-dot"/>
-          Beta · Directory in active development
+          BETA — Website in active development
         </div>
         <h1 className="hero-title">
           <span className="hero-line-1" aria-hidden="true">
@@ -750,7 +750,7 @@ function Footer() {
         <div>
           <h3 className="footer-col-heading">Contact</h3>
           <ul className="footer-links">
-            <li><a href="mailto:pitchin.live@hotmail.com">pitchin.live@hotmail.com</a></li>
+            <li><a href="mailto:hello@pitchin.live">hello@pitchin.live</a></li>
             <li><span style={{ color: 'rgba(242,240,233,0.35)', fontSize: '14px' }}>Saskatchewan, CA</span></li>
           </ul>
         </div>
