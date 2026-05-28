@@ -48,6 +48,18 @@ img { display: block; max-width: 100%; }
 button { font: inherit; cursor: pointer; border: 0; background: transparent; }
 a { color: inherit; text-decoration: none; }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ─── Noise overlay ──────────────────────────────────────────────────────── */
 .noise-overlay {
   position: fixed;
@@ -218,7 +230,7 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   gap: 9px;
-  color: var(--cream);
+  color: #ffffff;
   transition: opacity 200ms ease;
 }
 
@@ -238,8 +250,8 @@ a { color: inherit; text-decoration: none; }
 
 .nav-name {
   font-family: var(--serif);
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 1.35rem;
+  font-weight: 700;
   line-height: 1;
 }
 
