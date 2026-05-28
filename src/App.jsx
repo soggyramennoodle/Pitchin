@@ -102,12 +102,12 @@ function Hero() {
         </div>
         <h1 className="hero-title">
           <span className="hero-line-1" aria-hidden="true">
-            <span className="word">Volunteering</span>{' '}
-            <span className="word">is</span>{' '}
-            <span className="word">the</span>
+            <span className="word">Do</span>{' '}
+            <span className="word">something</span>{' '}
+            <span className="word">that</span>
           </span>
-          <span className="hero-drama">change.</span>
-          <span className="sr-only">Volunteering is the change.</span>
+          <span className="hero-drama">lasts.</span>
+          <span className="sr-only">Do something that lasts.</span>
         </h1>
         <p className="hero-copy">
           Pitchin is a free, searchable directory of 200+ verified volunteer opportunities across Canada — for students, newcomers, and everyone in between.
