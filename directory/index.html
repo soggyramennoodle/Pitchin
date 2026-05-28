@@ -7,7 +7,7 @@
     <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="%232e7d52"/><path d="M49 15 15 29c-2 1-2 4 .2 4.7l10.1 3.1 3.1 10.1c.7 2.2 3.7 2.3 4.7.2L49 15Z" fill="white"/></svg>'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #2e7d52;
@@ -1848,12 +1848,616 @@
             }
         }
     </style>
+
+    <!-- ─── Pitchin design-system overrides ─────────────────────────────────── -->
+    <style>
+        /* Design tokens */
+        :root {
+            --moss:        #2E4036;
+            --moss-deep:   #1e2b24;
+            --clay:        #CC5833;
+            --cream:       #F2F0E9;
+            --cream-dim:   #e8e5dc;
+            --charcoal:    #1A1A1A;
+            --ink-2:       #4a4a45;
+            --ink-3:       #7a7a72;
+            --line:        rgba(26,26,26,0.10);
+            --primary:     #2E4036;
+            --primary-hover: #1e2b24;
+            --text-main:   #1A1A1A;
+            --text-muted:  #7a7a72;
+            --border-color: rgba(26,26,26,0.10);
+            --tag-bg:      rgba(46,64,54,0.10);
+            --tag-text:    #2E4036;
+            --card-bg:     #fff;
+            --bg-color:    #F2F0E9;
+            --serif:       'Cormorant Garamond', Georgia, serif;
+            --snappy-ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --radius-md:   24px;
+            --radius-sm:   14px;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background-color: var(--cream);
+        }
+
+        /* ── Floating pill nav ───────────────────────────────────────────── */
+        header {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            width: min(calc(100% - 32px), 1200px);
+            border-radius: 999px;
+            border: 1px solid transparent;
+            background: transparent;
+            padding: 0;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            box-shadow: none;
+            transition: background 300ms ease, border-color 300ms ease, backdrop-filter 300ms ease, box-shadow 300ms ease;
+        }
+
+        header.scrolled {
+            background: rgba(242, 240, 233, 0.88);
+            border-color: var(--line);
+            backdrop-filter: blur(18px) saturate(160%);
+            -webkit-backdrop-filter: blur(18px) saturate(160%);
+            box-shadow: 0 8px 40px rgba(26,26,26,0.10);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 10px 10px 20px;
+            max-width: 100%;
+        }
+
+        .logo {
+            gap: 9px;
+        }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: var(--moss);
+            box-shadow: none;
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            font-family: var(--serif);
+            font-size: 1.38rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: rgba(242,240,233,0.92);
+        }
+
+        header.scrolled .logo-text { color: var(--charcoal); }
+
+        /* Inline nav links */
+        .dir-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+        }
+
+        .dir-nav-link {
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(242,240,233,0.80);
+            text-decoration: none;
+            transition: background 200ms ease, color 200ms ease;
+        }
+
+        header.scrolled .dir-nav-link { color: var(--ink-2); }
+
+        .dir-nav-link:hover {
+            background: rgba(46,64,54,0.08);
+            color: var(--moss);
+        }
+
+        .dir-nav-link--active {
+            background: rgba(46,64,54,0.10);
+            color: var(--moss);
+        }
+
+        header.scrolled .dir-nav-link--active { color: var(--moss); }
+
+        .dir-nav-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: var(--clay);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            flex-shrink: 0;
+            transition: transform 220ms var(--ease-spring), box-shadow 220ms var(--ease-spring);
+            box-shadow: 0 4px 16px rgba(204,88,51,0.30);
+        }
+
+        .dir-nav-cta:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 24px rgba(204,88,51,0.40);
+        }
+
+        /* Page spacing for fixed nav */
+        .hero-container {
+            padding: 88px 24px 0;
+            margin-bottom: 16px;
+        }
+
+        /* ── Cinematic hero ──────────────────────────────────────────────── */
+        .hero {
+            background: linear-gradient(135deg, var(--moss) 0%, var(--moss-deep) 100%);
+            border-radius: 28px;
+            padding: 28px 32px 26px;
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            box-shadow: 0 24px 64px rgba(30,43,36,0.28);
+            animation: none;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            animation: none !important;
+        }
+
+        .hero::after { display: none; }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            color: var(--cream);
+        }
+
+        .hero-title {
+            font-family: var(--serif);
+            font-size: clamp(2rem, 3.2vw, 3rem);
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            line-height: 1.0;
+            color: var(--cream);
+            white-space: normal;
+            margin-bottom: 0;
+        }
+
+        .hero-title .word { color: var(--cream); }
+
+        .hero-desc {
+            color: rgba(242,240,233,0.72);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        }
+
+        .hero-stat {
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .hero-stat:hover { background: rgba(255,255,255,0.16); }
+
+        .hero-stat-value { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+        .hero-stat-label { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+
+        .hero-back {
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.16);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .hero-back:hover {
+            background: rgba(255,255,255,0.18);
+            border-color: rgba(255,255,255,0.24);
+        }
+
+        /* ── Filters ─────────────────────────────────────────────────────── */
+        .filters-shell {
+            background: #fff;
+            border: 1.5px solid rgba(26,26,26,0.07);
+            border-radius: 28px;
+            box-shadow: 0 4px 24px rgba(26,26,26,0.04), 0 1px 2px rgba(26,26,26,0.03);
+        }
+
+        .filters-section {
+            border-bottom: 1.5px solid rgba(26,26,26,0.07);
+        }
+
+        .section-kicker { color: var(--clay); }
+
+        .filters-title {
+            font-family: var(--serif);
+            color: var(--charcoal);
+            font-size: clamp(1.5rem, 2.2vw, 2rem);
+        }
+
+        .filters-subtitle { color: var(--ink-2); }
+
+        .scope-pill {
+            background: rgba(46,64,54,0.08);
+            border: 1px solid rgba(46,64,54,0.14);
+            color: var(--moss);
+        }
+
+        .results-pill {
+            border: 1.5px solid rgba(26,26,26,0.10);
+            color: var(--ink-2);
+        }
+
+        .filter-control {
+            border: 1.5px solid rgba(26,26,26,0.12);
+            border-radius: 14px;
+            background: var(--cream);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            color: var(--charcoal);
+            transition: border-color 0.15s var(--snappy-ease), box-shadow 0.15s var(--snappy-ease), transform 0.15s var(--snappy-ease);
+        }
+
+        .filter-control:focus {
+            border-color: var(--moss);
+            box-shadow: 0 0 0 3px rgba(46,64,54,0.12);
+            outline: none;
+        }
+
+        select.filter-control {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a7a72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+        }
+
+        .toggle-chip {
+            border: 1.5px solid rgba(26,26,26,0.12);
+            border-radius: 999px;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--cream);
+            color: var(--charcoal);
+        }
+
+        .toggle-chip.active {
+            background: var(--moss);
+            border-color: var(--moss);
+            color: var(--cream);
+            box-shadow: 0 4px 14px rgba(46,64,54,0.25);
+            animation: none;
+        }
+
+        .clear-filters { color: var(--clay); }
+
+        /* ── Cards ───────────────────────────────────────────────────────── */
+        .card {
+            background: #fff;
+            border: 1.5px solid rgba(26,26,26,0.07);
+            border-radius: 24px;
+            box-shadow: 0 2px 8px rgba(26,26,26,0.04), 0 10px 28px rgba(26,26,26,0.05);
+            transition: transform 0.22s var(--ease-spring), box-shadow 250ms ease, border-color 200ms ease;
+        }
+
+        .card:hover {
+            border-color: rgba(46,64,54,0.18);
+            box-shadow: 0 8px 24px rgba(26,26,26,0.07), 0 24px 56px rgba(46,64,54,0.10);
+        }
+
+        .card::before { background: var(--moss); }
+
+        .card-title {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--charcoal);
+            line-height: 1.3;
+        }
+
+        .card-org {
+            color: var(--moss);
+            font-size: 14px;
+        }
+
+        .card-location {
+            color: var(--ink-3);
+            font-size: 13px;
+        }
+
+        .card-footer {
+            border-top: 1.5px solid rgba(26,26,26,0.06);
+        }
+
+        .footer-label {
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            color: var(--ink-3);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .footer-val {
+            font-weight: 600;
+            color: var(--charcoal);
+            font-size: 14px;
+        }
+
+        .footer-val--alert {
+            background: linear-gradient(90deg, #b91c1c 0%, #fca5a5 50%, #b91c1c 100%);
+            background-size: 220% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .footer-val--positive {
+            background: linear-gradient(90deg, var(--moss) 0%, #52a87a 50%, var(--moss) 100%);
+            background-size: 220% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .tag {
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            padding: 5px 12px;
+        }
+
+        .tag.format {
+            background: rgba(26,26,26,0.06);
+            color: var(--ink-2);
+        }
+
+        /* ── Empty / error states ────────────────────────────────────────── */
+        .no-results {
+            border: 1.5px dashed rgba(26,26,26,0.12);
+            border-radius: 24px;
+            background: rgba(242,240,233,0.5);
+        }
+
+        .no-results h3 {
+            font-family: var(--serif);
+            font-size: 28px;
+            letter-spacing: -0.03em;
+            color: var(--charcoal);
+        }
+
+        .reset-btn {
+            background: var(--moss);
+            border-radius: 999px;
+            box-shadow: 0 4px 14px rgba(46,64,54,0.22);
+        }
+
+        .loading { color: var(--ink-3); }
+
+        /* ── Show more ───────────────────────────────────────────────────── */
+        .show-more-btn {
+            border-radius: 999px;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-weight: 600;
+            color: var(--moss);
+            border: 1.5px solid rgba(26,26,26,0.10);
+            box-shadow: 0 2px 8px rgba(26,26,26,0.04), 0 8px 24px rgba(26,26,26,0.05);
+        }
+
+        .show-more-btn:hover {
+            box-shadow: 0 8px 24px rgba(26,26,26,0.08), 0 16px 40px rgba(46,64,54,0.10);
+        }
+
+        /* ── Modal ───────────────────────────────────────────────────────── */
+        .modal {
+            border-radius: 28px;
+            box-shadow: 0 32px 80px rgba(26,26,26,0.20), 0 0 0 1px rgba(26,26,26,0.06);
+            background: #fff;
+        }
+
+        .modal-overlay {
+            background: rgba(26,26,26,0.42);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .modal-close {
+            color: var(--ink-3);
+            border-radius: 8px;
+        }
+
+        .modal-close:hover {
+            color: var(--charcoal);
+            background: var(--cream);
+        }
+
+        .modal-title {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: var(--charcoal);
+        }
+
+        .modal-meta-grid {
+            background: var(--cream);
+            border: 1.5px solid rgba(26,26,26,0.07);
+            border-radius: 16px;
+        }
+
+        .modal-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--charcoal);
+        }
+
+        .modal-desc {
+            color: var(--ink-2);
+            line-height: 1.65;
+        }
+
+        .modal-verified {
+            background: rgba(46,64,54,0.08);
+            border: 1px solid rgba(46,64,54,0.16);
+            color: var(--moss);
+        }
+
+        .apply-btn {
+            background: var(--moss);
+            border-radius: 14px;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .apply-disclosure-inner {
+            background: var(--cream);
+            border: 1.5px solid rgba(26,26,26,0.10);
+            border-radius: 16px;
+        }
+
+        .apply-disclosure-inner.warning {
+            background: #FEF3C7;
+            border-color: #FCD34D;
+        }
+
+        .report-btn {
+            background: rgba(220,38,38,0.07);
+            border: 1.5px solid rgba(220,38,38,0.18);
+            color: #DC2626;
+            border-radius: 999px;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-weight: 600;
+        }
+
+        .report-btn:hover {
+            background: rgba(220,38,38,0.12);
+        }
+
+        /* ── Feedback FAB ────────────────────────────────────────────────── */
+        .feedback-fab summary {
+            background: rgba(242,240,233,0.88);
+            border: 1px solid rgba(46,64,54,0.14);
+            color: var(--moss);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .feedback-fab-panel {
+            background: rgba(242,240,233,0.95);
+            border: 1px solid rgba(46,64,54,0.12);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .feedback-fab-label { color: var(--clay); }
+        .feedback-fab-link { background: var(--moss); }
+        .feedback-fab-link:hover { opacity: 0.92; }
+
+        /* ── Dark footer ─────────────────────────────────────────────────── */
+        .site-footer {
+            background: #1A1A1A;
+            border-radius: 48px 48px 0 0;
+        }
+
+        .footer-shell {
+            border-top: 1px solid rgba(242,240,233,0.08);
+        }
+
+        .footer-brand .logo-text { color: var(--cream); }
+        .footer-brand .logo-icon {
+            background: var(--moss);
+            box-shadow: none;
+        }
+
+        .footer-copy {
+            color: rgba(242,240,233,0.48);
+            font-size: 14px;
+            max-width: 22ch;
+        }
+
+        .footer-column-title {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .footer-links a,
+        .footer-links span {
+            color: rgba(242,240,233,0.48);
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            color: var(--cream);
+            transform: translateX(2px);
+        }
+
+        .footer-meta {
+            color: rgba(242,240,233,0.32);
+            margin-top: 40px;
+            font-size: 13px;
+        }
+
+        .footer-meta-dot { background: rgba(242,240,233,0.18); }
+
+        .footer-main {
+            grid-template-columns: 1.5fr repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        @media (max-width: 992px) {
+            .footer-main { grid-template-columns: 1fr 1fr; gap: 28px; }
+            .footer-brand { grid-column: 1 / -1; }
+        }
+
+        @media (max-width: 640px) {
+            .footer-main { grid-template-columns: 1fr; gap: 24px; }
+        }
+
+        /* ── Scroll-reveal ───────────────────────────────────────────────── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.55s var(--snappy-ease), transform 0.55s var(--snappy-ease);
+        }
+
+        .reveal.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Responsive ──────────────────────────────────────────────────── */
+        @media (max-width: 640px) {
+            .hero-container { padding: 80px 16px 0; }
+            header { top: 12px; }
+            .dir-nav-links { display: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
+            .hero::before { display: none; }
+        }
+    </style>
 </head>
 <body>
 
     <header>
         <div class="container header-content">
-            <a href="/" class="logo">
+            <a href="/" class="logo" aria-label="Pitchin home">
                 <div class="logo-icon">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                         <path d="M21.75 3.25 3.9 10.2c-.82.32-.78 1.5.07 1.76l4.96 1.52 1.52 4.96c.26.85 1.44.89 1.76.07L20.75 6.25c.26-.73-.47-1.46-1.2-1.2Z" fill="white"/>
@@ -1861,6 +2465,11 @@
                 </div>
                 <span class="logo-text">Pitchin</span>
             </a>
+            <nav class="dir-nav-links" aria-label="Main navigation">
+                <a href="/directory/" class="dir-nav-link dir-nav-link--active">Directory</a>
+                <a href="/newsroom/" class="dir-nav-link">Newsroom</a>
+            </nav>
+            <a href="https://tally.so/r/Me8bb0" class="dir-nav-cta" target="_blank" rel="noopener noreferrer" aria-label="Submit a listing (opens in new tab)">Submit Listing</a>
         </div>
     </header>
 
@@ -1981,7 +2590,7 @@
         <div class="container footer-shell">
             <div class="footer-main">
                 <div class="footer-brand">
-                    <a href="/" class="logo">
+                    <a href="/" class="logo" aria-label="Pitchin home">
                         <div class="logo-icon">
                             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M21.75 3.25 3.9 10.2c-.82.32-.78 1.5.07 1.76l4.96 1.52 1.52 4.96c.26.85 1.44.89 1.76.07L20.75 6.25c.26-.73-.47-1.46-1.2-1.2Z" fill="white"/>
@@ -1990,13 +2599,17 @@
                         <span class="logo-text">Pitchin</span>
                     </a>
                     <p class="footer-copy">Connecting Canadians to meaningful volunteer opportunities.</p>
+                    <div style="display:inline-flex;align-items:center;gap:8px;">
+                        <span style="width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 4px rgba(74,222,128,0.15);display:inline-block;" aria-hidden="true"></span>
+                        <span style="font-size:11px;color:rgba(74,222,128,0.80);letter-spacing:0.06em;text-transform:uppercase;font-weight:600;">System Operational</span>
+                    </div>
                 </div>
 
                 <div class="footer-column">
-                    <h3 class="footer-column-title">Follow us:</h3>
+                    <h3 class="footer-column-title">Follow us</h3>
                     <ul class="footer-links">
-                        <li><span>Instagram (soon!)</span></li>
-                        <li><span>LinkedIn (soon 👀)</span></li>
+                        <li><a href="https://www.instagram.com/pitchin.live" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                        <li><span style="color:rgba(242,240,233,0.28);font-size:14px;display:flex;align-items:center;gap:6px;">LinkedIn <span style="padding:2px 7px;border-radius:999px;background:rgba(242,240,233,0.08);font-size:10px;color:rgba(242,240,233,0.35);">soon</span></span></li>
                     </ul>
                 </div>
 
@@ -2004,13 +2617,22 @@
                     <h3 class="footer-column-title">Contact</h3>
                     <ul class="footer-links">
                         <li><a href="mailto:hello@pitchin.live">hello@pitchin.live</a></li>
-                        <li><span>Saskatchewan, CA</span></li>
+                        <li><span style="color:rgba(242,240,233,0.32);font-size:14px;">Saskatchewan, CA</span></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3 class="footer-column-title">Navigate</h3>
+                    <ul class="footer-links">
+                        <li><a href="/directory/">Directory</a></li>
+                        <li><a href="/newsroom/">Newsroom</a></li>
+                        <li><a href="https://tally.so/r/Me8bb0" target="_blank" rel="noopener noreferrer">Submit a Listing</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="footer-meta">
-                <span>All Rights Reserved, 2026</span>
+                <span>© 2026 Pitchin. All rights reserved.</span>
                 <span class="footer-meta-dot" aria-hidden="true"></span>
                 <span>Made with love in The Prairies 🌾</span>
             </div>
@@ -3349,6 +3971,26 @@
                 });
             });
         }
+
+        // ── Floating nav scroll state ──────────────────────────────────────
+        (function () {
+            const headerEl = document.querySelector('header');
+            if (!headerEl) return;
+            const update = () => headerEl.classList.toggle('scrolled', window.scrollY > 60);
+            update();
+            window.addEventListener('scroll', update, { passive: true });
+        })();
+
+        // ── Scroll-reveal ──────────────────────────────────────────────────
+        (function () {
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+            }, { threshold: 0.08 });
+            document.querySelectorAll('.filters-shell, .site-footer').forEach(el => {
+                el.classList.add('reveal');
+                io.observe(el);
+            });
+        })();
 
         // Start App
         document.addEventListener('DOMContentLoaded', init);

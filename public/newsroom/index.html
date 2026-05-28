@@ -7,7 +7,7 @@
     <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="%2330514d"/><path d="M49 15 15 29c-2 1-2 4 .2 4.7l10.1 3.1 3.1 10.1c.7 2.2 3.7 2.3 4.7.2L49 15Z" fill="white"/></svg>'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #30514d;
@@ -790,35 +790,448 @@
             }
         }
     </style>
+
+    <!-- ─── Pitchin design-system overrides ─────────────────────────────────── -->
+    <style>
+        /* Design tokens */
+        :root {
+            --moss:       #2E4036;
+            --moss-deep:  #1e2b24;
+            --clay:       #CC5833;
+            --cream:      #F2F0E9;
+            --cream-dim:  #e8e5dc;
+            --charcoal:   #1A1A1A;
+            --ink-2:      #4a4a45;
+            --ink-3:      #7a7a72;
+            --line:       rgba(26,26,26,0.10);
+            --primary:    #2E4036;
+            --primary-deep: #1e2b24;
+            --serif:      'Cormorant Garamond', Georgia, serif;
+            --snappy-ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --radius-xl:  36px;
+            --radius-lg:  24px;
+            --radius-md:  18px;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--cream);
+        }
+
+        /* ── Page shell — push content below fixed nav ───────────────────── */
+        .page-shell {
+            padding-top: 100px;
+        }
+
+        /* ── Floating pill nav (replaces newsroom-header) ────────────────── */
+        .newsroom-nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            width: min(calc(100% - 32px), 1260px);
+            border-radius: 999px;
+            border: 1px solid transparent;
+            background: transparent;
+            padding: 0;
+            transition: background 300ms ease, border-color 300ms ease, backdrop-filter 300ms ease, box-shadow 300ms ease;
+        }
+
+        .newsroom-nav.scrolled {
+            background: rgba(242, 240, 233, 0.88);
+            border-color: var(--line);
+            backdrop-filter: blur(18px) saturate(160%);
+            -webkit-backdrop-filter: blur(18px) saturate(160%);
+            box-shadow: 0 8px 40px rgba(26,26,26,0.10);
+        }
+
+        .newsroom-nav-inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 10px 10px 20px;
+        }
+
+        .newsroom-nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            text-decoration: none;
+            color: rgba(242,240,233,0.92);
+            transition: opacity 200ms ease;
+        }
+
+        .newsroom-nav.scrolled .newsroom-nav-brand { color: var(--charcoal); }
+
+        .newsroom-nav-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: var(--moss);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .newsroom-nav-icon svg { width: 18px; height: 18px; display: block; }
+
+        .newsroom-nav-name {
+            font-family: var(--serif);
+            font-size: 1.38rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1;
+        }
+
+        .newsroom-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+        }
+
+        .newsroom-nav-link {
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(242,240,233,0.80);
+            text-decoration: none;
+            transition: background 200ms ease, color 200ms ease;
+        }
+
+        .newsroom-nav.scrolled .newsroom-nav-link { color: var(--ink-2); }
+
+        .newsroom-nav-link:hover {
+            background: rgba(46,64,54,0.08);
+            color: var(--moss);
+        }
+
+        .newsroom-nav-link--active {
+            background: rgba(46,64,54,0.10);
+            color: var(--moss);
+        }
+
+        .newsroom-nav.scrolled .newsroom-nav-link--active { color: var(--moss); }
+
+        .newsroom-nav-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: var(--clay);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            flex-shrink: 0;
+            transition: transform 220ms var(--ease-spring), box-shadow 220ms var(--ease-spring);
+            box-shadow: 0 4px 16px rgba(204,88,51,0.30);
+        }
+
+        .newsroom-nav-cta:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 24px rgba(204,88,51,0.40);
+        }
+
+        /* Hide old header */
+        .newsroom-header { display: none; }
+
+        @media (max-width: 640px) {
+            .page-shell { padding-top: 88px; }
+            .newsroom-nav { top: 12px; }
+            .newsroom-nav-links { display: none; }
+        }
+
+        /* ── Featured story — cinematic ──────────────────────────────────── */
+        .featured-news {
+            border-radius: var(--radius-xl);
+            background: linear-gradient(135deg, var(--moss) 0%, var(--moss-deep) 100%);
+            border: 1px solid rgba(46,64,54,0.12);
+            box-shadow: 0 32px 80px rgba(30,43,36,0.28);
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .featured-news::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .featured-news::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .featured-layout { position: relative; z-index: 2; }
+
+        .featured-panel {
+            background: rgba(255,255,255,0.97);
+            border-radius: 28px 0 0 28px;
+        }
+
+        .featured-image {
+            border-radius: 0 28px 28px 0;
+        }
+
+        .featured-pill {
+            background: rgba(46,64,54,0.08);
+            border: 1px solid rgba(46,64,54,0.16);
+            color: var(--moss);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .featured-pill-date { color: var(--ink-3); }
+        .featured-pill-divider { color: rgba(26,26,26,0.25); }
+
+        .featured-title {
+            font-family: var(--serif);
+            letter-spacing: -0.05em;
+            color: #111315;
+            line-height: 0.93;
+        }
+
+        .featured-body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            color: var(--ink-2);
+            line-height: 1.68;
+        }
+
+        .cta {
+            background: var(--moss);
+            box-shadow: 0 16px 28px rgba(46,64,54,0.22);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-weight: 700;
+            border-radius: 999px;
+        }
+
+        .cta:hover {
+            box-shadow: 0 22px 36px rgba(46,64,54,0.30);
+        }
+
+        /* ── Archive section header ───────────────────────────────────────── */
+        .section-title {
+            font-family: var(--serif);
+            letter-spacing: -0.04em;
+            color: var(--charcoal);
+        }
+
+        /* ── Archive cards ───────────────────────────────────────────────── */
+        .archive-card {
+            background: linear-gradient(135deg, var(--moss) 0%, var(--moss-deep) 100%);
+            border: 1.5px solid rgba(46,64,54,0.10);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 12px 40px rgba(30,43,36,0.18), 0 2px 8px rgba(30,43,36,0.10);
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            transition: transform 0.22s var(--snappy-ease), box-shadow 0.22s ease;
+        }
+
+        .archive-card::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .archive-card > * { position: relative; z-index: 1; }
+
+        .archive-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 56px rgba(30,43,36,0.24), 0 4px 16px rgba(30,43,36,0.12);
+        }
+
+        .archive-date {
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.16);
+            color: rgba(242,240,233,0.85);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .archive-title {
+            font-family: var(--serif);
+            letter-spacing: -0.04em;
+            color: var(--cream);
+        }
+
+        .archive-summary {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            color: rgba(242,240,233,0.75);
+            line-height: 1.62;
+        }
+
+        .archive-expand {
+            background: rgba(255,255,255,0.10);
+            border: 1.5px solid rgba(255,255,255,0.16);
+            color: rgba(242,240,233,0.92);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-weight: 600;
+            border-radius: 999px;
+            transition: background 0.15s var(--snappy-ease), transform 0.15s var(--snappy-ease), border-color 0.15s var(--snappy-ease);
+        }
+
+        .archive-expand:hover {
+            background: rgba(255,255,255,0.16);
+            border-color: rgba(255,255,255,0.24);
+            transform: translateY(-1px);
+        }
+
+        .archive-panel-inner {
+            background: linear-gradient(180deg, rgba(242,240,233,0.97) 0%, rgba(235,232,223,0.99) 100%);
+            border-radius: 16px;
+            border-top: 1px solid rgba(255,255,255,0.12);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+        }
+
+        .archive-body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            color: var(--ink-2);
+            line-height: 1.7;
+        }
+
+        .archive-cta {
+            color: var(--moss);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-weight: 700;
+        }
+
+        .archive-cta:hover { opacity: 0.80; }
+
+        /* ── Dark footer ─────────────────────────────────────────────────── */
+        .site-footer {
+            background: #1A1A1A;
+            border-radius: 48px 48px 0 0;
+            padding-top: 64px;
+        }
+
+        .footer-shell {
+            border-top: 1px solid rgba(242,240,233,0.08);
+            padding-top: 34px;
+        }
+
+        .footer-logo-text {
+            font-family: var(--serif);
+            color: var(--cream);
+        }
+
+        .footer-logo-icon {
+            background: var(--moss);
+            box-shadow: none;
+        }
+
+        .footer-copy {
+            color: rgba(242,240,233,0.48);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-size: 14px;
+        }
+
+        .footer-column-title {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .footer-links a,
+        .footer-links span {
+            color: rgba(242,240,233,0.48);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            color: var(--cream);
+        }
+
+        .footer-meta {
+            color: rgba(242,240,233,0.32);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-size: 13px;
+            margin-top: 40px;
+        }
+
+        .footer-meta-dot { background: rgba(242,240,233,0.18); }
+
+        .footer-main {
+            grid-template-columns: 1.5fr repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        @media (max-width: 920px) {
+            .footer-main { grid-template-columns: 1fr 1fr; gap: 28px; }
+            .footer-brand { grid-column: 1 / -1; }
+        }
+
+        @media (max-width: 640px) {
+            .footer-main { grid-template-columns: 1fr; gap: 24px; }
+        }
+
+        /* ── Scroll-reveal ───────────────────────────────────────────────── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s var(--snappy-ease), transform 0.6s var(--snappy-ease);
+        }
+
+        .reveal.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
+            .featured-news::before { display: none; }
+            .archive-card::before { display: none; }
+        }
+    </style>
 </head>
 <body>
-    <main class="page-shell">
-        <header class="newsroom-header load-in" style="--stagger-delay: 0ms;">
-            <a class="brand" href="/" aria-label="Go to Pitchin">
-                <span class="brand-icon" aria-hidden="true">
+    <!-- Floating pill nav -->
+    <nav class="newsroom-nav" aria-label="Main navigation">
+        <div class="newsroom-nav-inner">
+            <a href="/" class="newsroom-nav-brand" aria-label="Pitchin home">
+                <span class="newsroom-nav-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M21.75 3.25 3.9 10.2c-.82.32-.78 1.5.07 1.76l4.96 1.52 1.52 4.96c.26.85 1.44.89 1.76.07L20.75 6.25c.26-.73-.47-1.46-1.2-1.2Z" fill="white"/>
                     </svg>
                 </span>
-                <span class="brand-copy">
-                    <span class="brand-text">Pitchin</span>
-                    <span class="brand-separator" aria-hidden="true">|</span>
-                    <span class="brand-kicker">Newsroom</span>
-                </span>
+                <span class="newsroom-nav-name">Pitchin</span>
             </a>
-            <div class="header-actions">
-                <div class="page-intro">All your Pitchin news, here.</div>
-                <a class="back-home" href="/">
-                    <span class="back-home-arrow" aria-hidden="true">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 12H5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-                            <path d="m12 19-7-7 7-7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
-                    <span>Back to Pitchin</span>
-                </a>
+            <div class="newsroom-nav-links">
+                <a href="/directory/" class="newsroom-nav-link">Directory</a>
+                <a href="/newsroom/" class="newsroom-nav-link newsroom-nav-link--active">Newsroom</a>
             </div>
-        </header>
+            <a href="https://tally.so/r/Me8bb0" class="newsroom-nav-cta" target="_blank" rel="noopener noreferrer" aria-label="Submit a listing (opens in new tab)">Submit Listing</a>
+        </div>
+    </nav>
+
+    <main class="page-shell">
+        <!-- old header hidden via CSS -->
+        <header class="newsroom-header load-in" style="--stagger-delay: 0ms;" aria-hidden="true"></header>
 
         <section class="featured-news load-in" style="--stagger-delay: 60ms;" aria-labelledby="featured-title">
             <div class="featured-layout">
@@ -922,7 +1335,7 @@
         <div class="page-shell footer-shell">
             <div class="footer-main">
                 <div class="footer-brand">
-                    <a href="/" class="footer-logo">
+                    <a href="/" class="footer-logo" aria-label="Pitchin home">
                         <span class="footer-logo-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M21.75 3.25 3.9 10.2c-.82.32-.78 1.5.07 1.76l4.96 1.52 1.52 4.96c.26.85 1.44.89 1.76.07L20.75 6.25c.26-.73-.47-1.46-1.2-1.2Z" fill="white"/>
@@ -931,13 +1344,17 @@
                         <span class="footer-logo-text">Pitchin</span>
                     </a>
                     <p class="footer-copy">Connecting Canadians to meaningful volunteer opportunities.</p>
+                    <div style="display:inline-flex;align-items:center;gap:8px;">
+                        <span style="width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 4px rgba(74,222,128,0.15);display:inline-block;" aria-hidden="true"></span>
+                        <span style="font-size:11px;color:rgba(74,222,128,0.80);letter-spacing:0.06em;text-transform:uppercase;font-weight:600;">System Operational</span>
+                    </div>
                 </div>
 
                 <div class="footer-column">
-                    <h3 class="footer-column-title">Follow us:</h3>
+                    <h3 class="footer-column-title">Follow us</h3>
                     <ul class="footer-links">
-                        <li><span>Instagram (soon!)</span></li>
-                        <li><span>LinkedIn (soon 👀)</span></li>
+                        <li><a href="https://www.instagram.com/pitchin.live" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                        <li><span style="color:rgba(242,240,233,0.28);font-size:14px;display:flex;align-items:center;gap:6px;">LinkedIn <span style="padding:2px 7px;border-radius:999px;background:rgba(242,240,233,0.08);font-size:10px;color:rgba(242,240,233,0.35);">soon</span></span></li>
                     </ul>
                 </div>
 
@@ -945,13 +1362,22 @@
                     <h3 class="footer-column-title">Contact</h3>
                     <ul class="footer-links">
                         <li><a href="mailto:hello@pitchin.live">hello@pitchin.live</a></li>
-                        <li><span>Saskatchewan, CA</span></li>
+                        <li><span style="color:rgba(242,240,233,0.32);font-size:14px;">Saskatchewan, CA</span></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3 class="footer-column-title">Navigate</h3>
+                    <ul class="footer-links">
+                        <li><a href="/directory/">Directory</a></li>
+                        <li><a href="/newsroom/">Newsroom</a></li>
+                        <li><a href="https://tally.so/r/Me8bb0" target="_blank" rel="noopener noreferrer">Submit a Listing</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="footer-meta">
-                <span>All Rights Reserved, 2026</span>
+                <span>© 2026 Pitchin. All rights reserved.</span>
                 <span class="footer-meta-dot" aria-hidden="true"></span>
                 <span>Made with love in The Prairies 🌾</span>
             </div>
@@ -959,6 +1385,32 @@
     </footer>
 
     <script>
+        // ── Floating nav scroll state ──────────────────────────────────────
+        (function () {
+            const nav = document.querySelector('.newsroom-nav');
+            if (!nav) return;
+            const update = () => nav.classList.toggle('scrolled', window.scrollY > 60);
+            update();
+            window.addEventListener('scroll', update, { passive: true });
+        })();
+
+        // ── Scroll-reveal ──────────────────────────────────────────────────
+        (function () {
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('in-view');
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.06 });
+            document.querySelectorAll('.archive-card, .site-footer').forEach((el, i) => {
+                el.classList.add('reveal');
+                el.style.transitionDelay = `${i * 60}ms`;
+                io.observe(el);
+            });
+        })();
+
         const expandableCards = Array.from(document.querySelectorAll('[data-expand-card]'));
 
         requestAnimationFrame(() => {
