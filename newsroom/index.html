@@ -224,7 +224,7 @@
             display: grid;
             grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
             align-items: stretch;
-            min-height: 520px;
+            min-height: 400px;
             overflow: hidden;
             border-radius: 28px;
         }
@@ -859,11 +859,9 @@
             align-items: center;
             gap: 9px;
             text-decoration: none;
-            color: rgba(242,240,233,0.92);
+            color: var(--charcoal);
             transition: opacity 200ms ease;
         }
-
-        .newsroom-nav.scrolled .newsroom-nav-brand { color: var(--charcoal); }
 
         .newsroom-nav-icon {
             width: 34px;
@@ -898,12 +896,10 @@
             border-radius: 999px;
             font-size: 14px;
             font-weight: 500;
-            color: rgba(242,240,233,0.80);
+            color: var(--ink-2);
             text-decoration: none;
             transition: background 200ms ease, color 200ms ease;
         }
-
-        .newsroom-nav.scrolled .newsroom-nav-link { color: var(--ink-2); }
 
         .newsroom-nav-link:hover {
             background: rgba(46,64,54,0.08);
