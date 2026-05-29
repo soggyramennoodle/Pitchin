@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -30,8 +30,75 @@ function NoiseSVG() {
   )
 }
 
+// ─── Submit-listing modal ─────────────────────────────────────────────────────
+function SubmitModal({ open, onClose }) {
+  const [iframeH, setIframeH] = useState(580)
+
+  // Listen to Tally dynamic-height messages
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data?.type === 'tally-height') {
+        setIframeH(Math.max(400, e.data.height + 24))
+      }
+    }
+    window.addEventListener('message', handler)
+    return () => window.removeEventListener('message', handler)
+  }, [])
+
+  // Lock body scroll
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [open])
+
+  // Close on Escape
+  const handleKey = useCallback((e) => {
+    if (e.key === 'Escape') onClose()
+  }, [onClose])
+
+  useEffect(() => {
+    if (open) window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [open, handleKey])
+
+  return (
+    <div
+      className={`submit-overlay${open ? ' open' : ''}`}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+      aria-hidden={!open}
+      role="presentation"
+    >
+      <div
+        className="submit-card"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Submit a volunteer listing"
+      >
+        <div className="submit-card-head">
+          <span className="submit-card-title">Submit a Listing</span>
+          <button className="submit-card-close" onClick={onClose} aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 6 6 18M6 6l12 12" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div className="submit-card-body">
+          {open && (
+            <iframe
+              src="https://tally.so/embed/Me8bb0?alignLeft=1&hideTitle=1&dynamicHeight=1&formEventsForwarding=1"
+              width="100%"
+              height={iframeH}
+              title="Submit a volunteer listing"
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Navbar ───────────────────────────────────────────────────────────────────
-function Navbar() {
+function Navbar({ onSubmit }) {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -53,16 +120,14 @@ function Navbar() {
           <a href="/newsroom/" className="nav-link">Newsroom</a>
           <span className="nav-badge" aria-label="Beta version">Beta</span>
         </nav>
-        <a
-          href="https://tally.so/r/Me8bb0"
+        <button
           className="nav-cta"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Submit a volunteer listing (opens in new tab)"
+          onClick={onSubmit}
+          aria-label="Submit a volunteer listing"
         >
           Submit Listing
           <span className="nav-cta-icon"><ArrowRight/></span>
-        </a>
+        </button>
       </div>
     </header>
   )
@@ -670,7 +735,7 @@ function FAQ() {
 }
 
 // ─── CTA ──────────────────────────────────────────────────────────────────────
-function CTA() {
+function CTA({ onSubmit }) {
   const ref = useRef(null)
 
   useEffect(() => {
@@ -702,16 +767,14 @@ function CTA() {
               Browse Opportunities
               <span className="btn-icon"><ArrowRight/></span>
             </a>
-            <a
-              href="https://tally.so/r/Me8bb0"
+            <button
               className="btn"
               style={{ background: 'rgba(242,240,233,0.14)', color: '#F2F0E9', border: '1.5px solid rgba(242,240,233,0.28)' }}
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={onSubmit}
             >
               Submit an Opportunity
               <span className="btn-icon"><ArrowRight/></span>
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -720,7 +783,7 @@ function CTA() {
 }
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
-function Footer() {
+function Footer({ onSubmit }) {
   return (
     <footer className="footer" role="contentinfo">
       <div className="shell footer-inner">
@@ -759,7 +822,7 @@ function Footer() {
           <ul className="footer-links">
             <li><a href="/directory/">Directory</a></li>
             <li><a href="/newsroom/">Newsroom</a></li>
-            <li><a href="https://tally.so/r/Me8bb0" target="_blank" rel="noopener noreferrer">Submit a Listing</a></li>
+            <li><button className="footer-submit-btn" onClick={onSubmit}>Submit a Listing</button></li>
           </ul>
         </div>
       </div>
@@ -774,10 +837,14 @@ function Footer() {
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
+  const [submitOpen, setSubmitOpen] = useState(false)
+  const openSubmit  = useCallback(() => setSubmitOpen(true),  [])
+  const closeSubmit = useCallback(() => setSubmitOpen(false), [])
+
   return (
     <>
       <NoiseSVG/>
-      <Navbar/>
+      <Navbar onSubmit={openSubmit}/>
       <main id="main-content">
         <Hero/>
         <LogoStrip/>
@@ -787,9 +854,10 @@ export default function App() {
         <Protocol/>
         <Stats/>
         <FAQ/>
-        <CTA/>
+        <CTA onSubmit={openSubmit}/>
       </main>
-      <Footer/>
+      <Footer onSubmit={openSubmit}/>
+      <SubmitModal open={submitOpen} onClose={closeSubmit}/>
     </>
   )
 }
