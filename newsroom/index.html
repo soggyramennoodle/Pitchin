@@ -7,7 +7,7 @@
     <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="%2330514d"/><path d="M49 15 15 29c-2 1-2 4 .2 4.7l10.1 3.1 3.1 10.1c.7 2.2 3.7 2.3 4.7.2L49 15Z" fill="white"/></svg>'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #30514d;
@@ -793,6 +793,20 @@
 
     <!-- ─── Pitchin design-system overrides ─────────────────────────────────── -->
     <style>
+        /* ── Global noise overlay ───────────────────────────────────────── */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.04;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+        }
+
         /* Design tokens */
         :root {
             --moss:       #2E4036;
@@ -1186,7 +1200,58 @@
             .footer-main { grid-template-columns: 1fr; gap: 24px; }
         }
 
-        /* ── Scroll-reveal ───────────────────────────────────────────────── */
+        /* ── IBM Plex Mono for meta/date labels ─────────────────────────── */
+        .archive-date,
+        .featured-pill-date,
+        .footer-status-text {
+            font-family: 'IBM Plex Mono', 'Courier New', monospace;
+            letter-spacing: 0.03em;
+        }
+
+        /* ── GSAP initial states (overridden on animate) ─────────────────── */
+        .newsroom-nav,
+        .featured-news,
+        .newsroom-section,
+        .archive-card {
+            will-change: transform, opacity;
+        }
+
+        /* ── Premium button micro-interaction ────────────────────────────── */
+        .newsroom-nav-cta,
+        .cta {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .newsroom-nav-cta::before,
+        .cta::before {
+            content: '';
+            position: absolute;
+            inset: -50% auto -50% -100%;
+            width: 55%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+            transform: skewX(-18deg);
+            pointer-events: none;
+            transition: none;
+        }
+
+        .newsroom-nav-cta:hover::before,
+        .cta:hover::before {
+            left: 120%;
+            transition: left 600ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* ── Featured panel improvements ────────────────────────────────── */
+        .featured-panel {
+            border-radius: 28px 0 0 28px;
+        }
+
+        /* ── Archive card open state ─────────────────────────────────────── */
+        .archive-card.open {
+            border-color: rgba(46,64,54,0.22);
+        }
+
+        /* ── Scroll-reveal (CSS fallback / reduced motion) ───────────────── */
         .reveal {
             opacity: 0;
             transform: translateY(24px);
@@ -1380,6 +1445,9 @@
         </div>
     </footer>
 
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script>
         // ── Floating nav scroll state ──────────────────────────────────────
         (function () {
@@ -1390,30 +1458,90 @@
             window.addEventListener('scroll', update, { passive: true });
         })();
 
-        // ── Scroll-reveal ──────────────────────────────────────────────────
+        // ── GSAP page animations ───────────────────────────────────────────
         (function () {
-            const io = new IntersectionObserver((entries) => {
-                entries.forEach(e => {
-                    if (e.isIntersecting) {
-                        e.target.classList.add('in-view');
-                        io.unobserve(e.target);
-                    }
-                });
-            }, { threshold: 0.06 });
-            document.querySelectorAll('.archive-card, .site-footer').forEach((el, i) => {
-                el.classList.add('reveal');
-                el.style.transitionDelay = `${i * 60}ms`;
-                io.observe(el);
+            // CSS fallback: set page-ready so load-in elements become visible
+            document.body.classList.add('page-ready');
+
+            if (typeof gsap === 'undefined') return;
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            gsap.registerPlugin(ScrollTrigger);
+
+            const ease = 'power3.out';
+
+            // ── Page entrance timeline (fromTo = explicit from + to, no CSS dependency) ──
+            const tl = gsap.timeline({ delay: 0.08, defaults: { ease, clearProps: 'transform' } });
+
+            tl
+                .fromTo('.newsroom-nav',
+                    { y: -28, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.75 }
+                )
+                .fromTo('.featured-news',
+                    { y: 64, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 1.0 },
+                    '-=0.40'
+                )
+                .fromTo('.featured-meta',
+                    { y: 20, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.6 },
+                    '-=0.72'
+                )
+                .fromTo('.featured-title',
+                    { y: 40, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.85 },
+                    '-=0.55'
+                )
+                .fromTo('.featured-body',
+                    { y: 22, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.65 },
+                    '-=0.55'
+                )
+                .fromTo('.cta',
+                    { y: 18, opacity: 0, scale: 0.97 },
+                    { y: 0, opacity: 1, scale: 1, duration: 0.55 },
+                    '-=0.45'
+                )
+                .fromTo('.featured-image-media',
+                    { scale: 1.07 },
+                    { scale: 1, duration: 1.3, ease: 'power2.out' },
+                    '<-=0.85'
+                );
+
+            // ── Newsroom section heading ───────────────────────────────────
+            gsap.fromTo('.newsroom-section',
+                { y: 28, opacity: 0 },
+                {
+                    y: 0, opacity: 1, duration: 0.75, ease,
+                    scrollTrigger: { trigger: '.newsroom-section', start: 'top 88%', once: true },
+                }
+            );
+
+            // ── Archive cards stagger ──────────────────────────────────────
+            ScrollTrigger.batch('.archive-card', {
+                onEnter: batch => {
+                    gsap.fromTo(batch,
+                        { y: 56, opacity: 0 },
+                        { y: 0, opacity: 1, duration: 0.88, stagger: 0.15, ease, clearProps: 'transform' }
+                    );
+                },
+                start: 'top 90%',
+                once: true,
             });
+
+            // ── Footer reveal ──────────────────────────────────────────────
+            gsap.fromTo('.site-footer',
+                { y: 32, opacity: 0 },
+                {
+                    y: 0, opacity: 1, duration: 0.9, ease: 'power2.out',
+                    scrollTrigger: { trigger: '.site-footer', start: 'top 92%', once: true },
+                }
+            );
         })();
 
+        // ── Archive card expand/collapse ───────────────────────────────────
         const expandableCards = Array.from(document.querySelectorAll('[data-expand-card]'));
-
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                document.body.classList.add('page-ready');
-            });
-        });
 
         expandableCards.forEach((card) => {
             const expandTrigger = card.querySelector('[data-expand-trigger]');
@@ -1425,7 +1553,19 @@
                 card.classList.toggle('open', isOpen);
                 expandTrigger.setAttribute('aria-expanded', String(isOpen));
                 expandTrigger.textContent = isOpen ? 'Read less' : 'Read more';
-                panel.style.maxHeight = isOpen ? `${panel.scrollHeight}px` : '0px';
+                if (isOpen) {
+                    panel.style.maxHeight = `${panel.scrollHeight}px`;
+                    if (typeof gsap !== 'undefined') {
+                        gsap.from(panel.querySelector('.archive-panel-inner'), {
+                            y: 12,
+                            opacity: 0,
+                            duration: 0.45,
+                            ease: 'power3.out',
+                        });
+                    }
+                } else {
+                    panel.style.maxHeight = '0px';
+                }
             };
 
             expandTrigger.addEventListener('click', () => {
