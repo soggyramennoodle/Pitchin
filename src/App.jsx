@@ -802,12 +802,7 @@ function Footer({ onSubmit }) {
           <h3 className="footer-col-heading">Follow us</h3>
           <ul className="footer-links">
             <li><a href="https://www.instagram.com/pitchin.live" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-            <li>
-              <span className="footer-soon">
-                LinkedIn
-                <span className="footer-soon-badge">soon</span>
-              </span>
-            </li>
+            <li><a href="https://www.linkedin.com/company/pitchinvolunteer/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
           </ul>
         </div>
         <div>
