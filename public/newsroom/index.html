@@ -1269,6 +1269,203 @@
             .archive-card::before { display: none; }
         }
     </style>
+
+    <!-- ─── Newsroom editorial overrides ─────────────────────────────────── -->
+    <style>
+        /* ── Featured: edge-to-edge, much taller ──────────────────────── */
+        .featured-news {
+            margin-left: -24px !important;
+            margin-right: -24px !important;
+            margin-bottom: 56px !important;
+            border-radius: 0 !important;
+            border-left: none !important;
+            border-right: none !important;
+            min-height: 600px !important;
+            padding: 0 !important;
+        }
+
+        .featured-layout {
+            min-height: 600px !important;
+            border-radius: 0 !important;
+        }
+
+        .featured-panel {
+            border-radius: 0 !important;
+            padding: 56px 52px 52px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .featured-image {
+            border-radius: 0 !important;
+        }
+
+        /* Larger, more dramatic featured title */
+        .featured-title {
+            font-size: clamp(3.5rem, 8vw, 6.8rem) !important;
+            max-width: 12ch !important;
+            line-height: 0.9 !important;
+            letter-spacing: -0.07em !important;
+            margin-bottom: 24px !important;
+        }
+
+        .featured-body {
+            font-size: clamp(1rem, 1.8vw, 1.1rem) !important;
+            max-width: 44ch !important;
+            line-height: 1.68 !important;
+        }
+
+        .featured-pill {
+            background: rgba(46,64,54,0.07) !important;
+            border: 1.5px solid rgba(46,64,54,0.14) !important;
+            backdrop-filter: none !important;
+        }
+
+        /* ── Newsroom section header — editorial divider ──────────────── */
+        .newsroom-section {
+            margin-top: 0 !important;
+            margin-bottom: 30px !important;
+            padding-bottom: 22px !important;
+            border-bottom: 1.5px solid rgba(26,26,26,0.10) !important;
+        }
+
+        .section-title {
+            font-size: clamp(1.9rem, 3.2vw, 2.6rem) !important;
+            letter-spacing: -0.05em !important;
+        }
+
+        /* ── Archive grid — editorial layout ─────────────────────────── */
+        .archive-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 20px !important;
+        }
+
+        /* First card: full-width, more prominent */
+        .archive-grid > .archive-card:first-child {
+            grid-column: 1 / -1;
+            padding: 36px 40px !important;
+        }
+        .archive-grid > .archive-card:first-child .archive-title {
+            font-size: clamp(2.4rem, 5vw, 3.4rem) !important;
+            max-width: 18ch;
+        }
+        .archive-grid > .archive-card:first-child .archive-summary {
+            max-width: 58ch;
+            font-size: 1.02rem !important;
+        }
+
+        /* ── Archive cards: light editorial style ─────────────────────── */
+        .archive-card {
+            background: #ffffff !important;
+            color: var(--charcoal) !important;
+            border: 1.5px solid rgba(26,26,26,0.08) !important;
+            box-shadow: 0 4px 16px rgba(26,26,26,0.06), 0 1px 3px rgba(26,26,26,0.04) !important;
+        }
+
+        /* Remove noise overlay on light cards */
+        .archive-card::before {
+            display: none !important;
+        }
+
+        .archive-card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 18px 48px rgba(26,26,26,0.11), 0 4px 16px rgba(26,26,26,0.07) !important;
+            border-color: rgba(46,64,54,0.20) !important;
+        }
+
+        .archive-date {
+            background: rgba(46,64,54,0.07) !important;
+            border: 1.5px solid rgba(46,64,54,0.13) !important;
+            color: var(--moss) !important;
+        }
+
+        .archive-title {
+            color: var(--charcoal) !important;
+            font-size: clamp(1.7rem, 2.8vw, 2.1rem) !important;
+            letter-spacing: -0.045em !important;
+        }
+
+        .archive-summary {
+            color: rgba(26,26,26,0.52) !important;
+            font-size: 0.97rem !important;
+        }
+
+        .archive-expand {
+            background: rgba(46,64,54,0.07) !important;
+            border: 1.5px solid rgba(46,64,54,0.13) !important;
+            color: var(--moss) !important;
+        }
+
+        .archive-expand:hover {
+            background: rgba(46,64,54,0.12) !important;
+            border-color: rgba(46,64,54,0.22) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        .archive-card.open {
+            border-color: rgba(46,64,54,0.22) !important;
+        }
+
+        .archive-panel-inner {
+            background: var(--cream, #F2F0E9) !important;
+            border-radius: 14px !important;
+            border-top: none !important;
+            box-shadow: none !important;
+        }
+
+        .archive-body {
+            color: rgba(26,26,26,0.70) !important;
+        }
+
+        .archive-cta {
+            color: var(--moss) !important;
+            font-weight: 700 !important;
+        }
+
+        /* ── Submit modal fix ──────────────────────────────────────────── */
+        .p-submit-card {
+            max-height: min(94vh, 840px) !important;
+        }
+        .p-submit-body {
+            flex: 1 1 0% !important;
+            overflow-y: auto !important;
+            min-height: 0 !important;
+        }
+        .p-submit-body iframe {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 520px !important;
+            border: none !important;
+        }
+
+        /* ── Responsive ────────────────────────────────────────────────── */
+        @media (max-width: 920px) {
+            .featured-news {
+                margin-left: -18px !important;
+                margin-right: -18px !important;
+                min-height: 480px !important;
+            }
+            .featured-layout { min-height: 480px !important; }
+            .featured-panel { padding: 40px 32px 36px !important; }
+            .archive-grid { grid-template-columns: 1fr !important; }
+            .archive-grid > .archive-card:first-child { padding: 28px 28px !important; }
+            .archive-grid > .archive-card:first-child .archive-title {
+                font-size: clamp(2rem, 6vw, 2.8rem) !important;
+            }
+        }
+        @media (max-width: 640px) {
+            .featured-news {
+                margin-left: -14px !important;
+                margin-right: -14px !important;
+                min-height: 0 !important;
+            }
+            .featured-panel { padding: 28px 20px 24px !important; }
+            .featured-title { font-size: clamp(3rem, 14vw, 5rem) !important; }
+        }
+    </style>
 </head>
 <body>
     <!-- Floating pill nav -->
@@ -1731,7 +1928,7 @@
                     iframe = document.createElement('iframe');
                     iframe.src = 'https://tally.so/embed/Me8bb0?alignLeft=1&hideTitle=1&dynamicHeight=1&formEventsForwarding=1';
                     iframe.width  = '100%';
-                    iframe.height = '580';
+                    iframe.style.cssText = 'display:block;width:100%;height:100%;min-height:520px;border:none;';
                     iframe.title  = 'Submit a volunteer listing';
                     body.appendChild(iframe);
                 }
@@ -1767,7 +1964,7 @@
             // Tally dynamic height
             window.addEventListener('message', function (e) {
                 if (e.data && e.data.type === 'tally-height' && iframe) {
-                    iframe.height = Math.max(400, e.data.height + 24);
+                    iframe.style.minHeight = Math.max(400, e.data.height + 24) + 'px';
                 }
             });
         })();
