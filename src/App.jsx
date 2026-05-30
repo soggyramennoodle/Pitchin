@@ -30,21 +30,14 @@ function NoiseSVG() {
   )
 }
 
-// ─── Submit-listing modal ─────────────────────────────────────────────────────
+// ─── Submit-listing full-screen takeover ──────────────────────────────────────
+const CHECK_ITEMS = [
+  'Every listing is manually reviewed before going live',
+  'Approved listings appear in the directory within a few days',
+  'Completely free — no fees, no account required',
+]
+
 function SubmitModal({ open, onClose }) {
-  const [iframeH, setIframeH] = useState(580)
-
-  // Listen to Tally dynamic-height messages
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.data?.type === 'tally-height') {
-        setIframeH(Math.max(400, e.data.height + 24))
-      }
-    }
-    window.addEventListener('message', handler)
-    return () => window.removeEventListener('message', handler)
-  }, [])
-
   // Lock body scroll
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
@@ -63,35 +56,64 @@ function SubmitModal({ open, onClose }) {
 
   return (
     <div
-      className={`submit-overlay${open ? ' open' : ''}`}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+      className={`submit-screen${open ? ' open' : ''}`}
       aria-hidden={!open}
-      role="presentation"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Submit a volunteer listing"
     >
-      <div
-        className="submit-card"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Submit a volunteer listing"
-      >
-        <div className="submit-card-head">
-          <span className="submit-card-title">Submit a Listing</span>
-          <button className="submit-card-close" onClick={onClose} aria-label="Close">
+      {/* ── Sidebar ── */}
+      <aside className="submit-screen-sidebar">
+        <div className="submit-screen-sidebar-noise" aria-hidden="true"/>
+        <div className="submit-screen-sidebar-inner">
+          <button className="submit-screen-back" onClick={onClose} aria-label="Back to site">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M18 6 6 18M6 6l12 12" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"/>
+              <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
+            Back
           </button>
+
+          <div className="submit-screen-brand">
+            <span className="submit-screen-mark"><PitchinMark size={22}/></span>
+            <span className="submit-screen-brand-name">Pitchin</span>
+          </div>
+
+          <h2 className="submit-screen-title">Submit a<br/>Listing</h2>
+          <p className="submit-screen-desc">
+            Share a volunteer opportunity with thousands of Canadians actively looking to give back.
+          </p>
+
+          <ul className="submit-screen-checklist" aria-label="What to expect">
+            {CHECK_ITEMS.map((item) => (
+              <li key={item} className="submit-screen-check-item">
+                <span className="submit-screen-check-icon" aria-hidden="true">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 6 9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+
+          <div className="submit-screen-note">
+            Submitting 2–3+ opportunities?{' '}
+            <a href="mailto:support@pitchin.live">Contact us</a> and an agent will handle the rest.
+          </div>
         </div>
-        <div className="submit-card-body">
-          {open && (
-            <iframe
-              src="https://tally.so/embed/Me8bb0?alignLeft=1&hideTitle=1&dynamicHeight=1&formEventsForwarding=1"
-              width="100%"
-              height={iframeH}
-              title="Submit a volunteer listing"
-            />
-          )}
-        </div>
+      </aside>
+
+      {/* ── Form pane ── */}
+      <div className="submit-screen-form">
+        {open && (
+          <iframe
+            src="https://tally.so/embed/Me8bb0?alignLeft=1&hideTitle=1&dynamicHeight=1&formEventsForwarding=1"
+            width="100%"
+            height="100%"
+            title="Submit a volunteer listing"
+            style={{ display: 'block', border: 'none', minHeight: '100%' }}
+          />
+        )}
       </div>
     </div>
   )
