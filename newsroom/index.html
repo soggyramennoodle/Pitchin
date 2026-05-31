@@ -771,98 +771,175 @@
         }
         .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(242,240,233,0.15); flex-shrink: 0; }
 
-        /* ── Submit Modal ───────────────────────────────────────────────────────── */
-        .modal-overlay {
+        /* ── Submit full-screen takeover ────────────────────────────────────────── */
+        .submit-screen {
             position: fixed;
             inset: 0;
             z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: rgba(26,26,26,0);
-            backdrop-filter: blur(0px);
-            -webkit-backdrop-filter: blur(0px);
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            transform: translateY(100%);
+            transition: transform 520ms cubic-bezier(0.32, 0.72, 0, 1);
+            will-change: transform;
             pointer-events: none;
-            transition: background 300ms ease, backdrop-filter 300ms ease;
         }
-        .modal-overlay.open {
-            background: rgba(26,26,26,0.55);
-            backdrop-filter: blur(12px) saturate(160%);
-            -webkit-backdrop-filter: blur(12px) saturate(160%);
+        .submit-screen.open {
+            transform: translateY(0);
             pointer-events: auto;
         }
-        .modal-card {
-            width: 100%;
-            max-width: 660px;
-            max-height: min(92vh, 820px);
+        .submit-screen-sidebar {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(160deg, var(--moss) 0%, var(--moss-deep) 100%);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            border-radius: 24px;
-            background: #fff;
-            box-shadow: 0 0 0 1px rgba(26,26,26,0.07), 0 8px 24px rgba(26,26,26,0.10), 0 32px 80px rgba(26,26,26,0.28);
-            opacity: 0;
-            transform: scale(0.94) translateY(20px);
-            transition: opacity 320ms var(--ease-snappy), transform 380ms var(--ease-spring);
-            will-change: transform, opacity;
         }
-        .modal-overlay.open .modal-card { opacity: 1; transform: scale(1) translateY(0); }
-        .modal-head {
-            flex-shrink: 0;
-            background: linear-gradient(135deg, var(--moss) 0%, var(--moss-deep) 100%);
-            padding: 20px 24px;
+        .submit-screen-sidebar-noise {
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.045'/%3E%3C/svg%3E");
+            pointer-events: none;
+            mix-blend-mode: overlay;
+        }
+        .submit-screen-sidebar-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            padding: 36px 40px 48px;
+            height: 100%;
+        }
+        .submit-screen-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: rgba(242, 240, 233, 0.55);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            padding: 0;
+            transition: color 180ms ease, gap 200ms ease;
+            align-self: flex-start;
+            margin-bottom: 56px;
+        }
+        .submit-screen-back:hover { color: var(--cream); gap: 12px; }
+        .submit-screen-brand {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            position: relative;
-            overflow: hidden;
+            gap: 10px;
+            margin-bottom: 28px;
         }
-        .modal-head::before {
-            content: '';
-            position: absolute;
-            inset: -50%;
-            width: 200%;
-            height: 200%;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-            pointer-events: none;
-        }
-        .modal-title {
-            font-family: var(--serif);
-            font-size: 1.45rem;
-            font-weight: 400;
-            color: var(--cream);
-            letter-spacing: -0.03em;
-            line-height: 1;
-            position: relative;
-            z-index: 1;
-        }
-        .modal-close {
-            position: relative;
-            z-index: 1;
+        .submit-screen-mark {
             display: grid;
             place-items: center;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: rgba(242,240,233,0.12);
-            border: 1px solid rgba(242,240,233,0.20);
-            color: rgba(242,240,233,0.85);
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: background 180ms ease, transform 200ms var(--ease-spring);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(242, 240, 233, 0.10);
+            border: 1px solid rgba(242, 240, 233, 0.15);
         }
-        .modal-close:hover { background: rgba(242,240,233,0.22); color: var(--cream); transform: scale(1.08); }
-        .modal-close:active { transform: scale(0.94); }
-        .modal-body {
-            flex: 1;
+        .submit-screen-brand-name {
+            font-family: var(--serif);
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--cream);
+            letter-spacing: -0.02em;
+            opacity: 0.7;
+        }
+        .submit-screen-title {
+            font-family: var(--serif);
+            font-size: clamp(2.4rem, 3.5vw, 3.2rem);
+            font-weight: 600;
+            color: var(--cream);
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            margin: 0 0 20px;
+        }
+        .submit-screen-desc {
+            font-size: 0.95rem;
+            line-height: 1.65;
+            color: rgba(242, 240, 233, 0.6);
+            max-width: 300px;
+            margin-bottom: 36px;
+        }
+        .submit-screen-checklist {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: auto;
+            padding-bottom: 48px;
+        }
+        .submit-screen-check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            color: rgba(242, 240, 233, 0.75);
+        }
+        .submit-screen-check-icon {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(242, 240, 233, 0.10);
+            border: 1px solid rgba(242, 240, 233, 0.18);
+            color: var(--cream);
+            margin-top: 1px;
+        }
+        .submit-screen-note {
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: rgba(242, 240, 233, 0.38);
+            border-top: 1px solid rgba(242, 240, 233, 0.10);
+            padding-top: 20px;
+        }
+        .submit-screen-note a {
+            color: rgba(242, 240, 233, 0.65);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color 160ms ease;
+        }
+        .submit-screen-note a:hover { color: var(--cream); }
+        .submit-screen-form {
+            background: #f7f5f0;
             overflow-y: auto;
             overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
-            min-height: 0;
+            position: relative;
         }
-        .modal-body iframe { display: block; width: 100%; border: none; min-height: 520px; }
+        .submit-screen-form iframe {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            border: none;
+        }
+        @media (max-width: 760px) {
+            .submit-screen { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+            .submit-screen-sidebar { overflow: visible; }
+            .submit-screen-sidebar-inner { padding: 28px 24px; }
+            .submit-screen-back { margin-bottom: 28px; }
+            .submit-screen-brand { margin-bottom: 16px; }
+            .submit-screen-title { font-size: 2rem; margin-bottom: 12px; }
+            .submit-screen-desc { font-size: 0.88rem; margin-bottom: 20px; max-width: none; }
+            .submit-screen-checklist { display: none; }
+            .submit-screen-note { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .submit-screen { transition: none !important; }
+        }
 
         /* ── Responsive ─────────────────────────────────────────────────────────── */
         @media (max-width: 960px) {
@@ -1183,19 +1260,53 @@
         </footer>
     </div>
 
-    <!-- ── SUBMIT MODAL ───────────────────────────────────────────────────────── -->
-    <div class="modal-overlay" id="modalOverlay" role="presentation" aria-hidden="true">
-        <div class="modal-card" role="dialog" aria-modal="true" aria-label="Submit a volunteer listing">
-            <div class="modal-head">
-                <span class="modal-title">Submit a Listing</span>
-                <button class="modal-close" id="modalClose" aria-label="Close dialog">
+    <!-- ── SUBMIT FULL-SCREEN TAKEOVER ─────────────────────────────────────── -->
+    <div class="submit-screen" id="submitScreen" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Submit a volunteer listing">
+        <aside class="submit-screen-sidebar">
+            <div class="submit-screen-sidebar-noise" aria-hidden="true"></div>
+            <div class="submit-screen-sidebar-inner">
+                <button class="submit-screen-back" id="submitClose" aria-label="Back to site">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/>
+                        <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
+                    Back
                 </button>
+                <div class="submit-screen-brand">
+                    <span class="submit-screen-mark">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M21.75 3.25 3.9 10.2c-.82.32-.78 1.5.07 1.76l4.96 1.52 1.52 4.96c.26.85 1.44.89 1.76.07L20.75 6.25c.26-.73-.47-1.46-1.2-1.2Z" fill="#F2F0E9"/>
+                        </svg>
+                    </span>
+                    <span class="submit-screen-brand-name">Pitchin</span>
+                </div>
+                <h2 class="submit-screen-title">Submit a<br>Listing</h2>
+                <p class="submit-screen-desc">Share a volunteer opportunity with thousands of Canadians actively looking to give back.</p>
+                <ul class="submit-screen-checklist" aria-label="What to expect">
+                    <li class="submit-screen-check-item">
+                        <span class="submit-screen-check-icon" aria-hidden="true">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        Every listing is manually reviewed before going live
+                    </li>
+                    <li class="submit-screen-check-item">
+                        <span class="submit-screen-check-icon" aria-hidden="true">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        Approved listings appear in the directory within a few days
+                    </li>
+                    <li class="submit-screen-check-item">
+                        <span class="submit-screen-check-icon" aria-hidden="true">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        Completely free — no fees, no account required
+                    </li>
+                </ul>
+                <div class="submit-screen-note">
+                    Submitting 2–3+ opportunities? <a href="mailto:support@pitchin.live">Contact us</a> and an agent will handle the rest.
+                </div>
             </div>
-            <div class="modal-body" id="modalBody"></div>
-        </div>
+        </aside>
+        <div class="submit-screen-form" id="submitBody"></div>
     </div>
 
     <!-- ── GSAP ───────────────────────────────────────────────────────────────── -->
@@ -1317,46 +1428,41 @@
 
     })();
 
-    /* ── Submit modal ────────────────────────────────────────────────────────── */
+    /* ── Submit full-screen takeover ────────────────────────────────────────── */
     (function () {
-        const overlay  = document.getElementById('modalOverlay');
-        const body     = document.getElementById('modalBody');
-        const closeBtn = document.getElementById('modalClose');
+        const screen   = document.getElementById('submitScreen');
+        const body     = document.getElementById('submitBody');
+        const closeBtn = document.getElementById('submitClose');
         let iframe = null;
 
-        function openModal() {
+        function openScreen() {
             if (!iframe) {
                 iframe = document.createElement('iframe');
                 iframe.src = 'https://tally.so/embed/Me8bb0?alignLeft=1&hideTitle=1&dynamicHeight=1&formEventsForwarding=1';
                 iframe.title = 'Submit a volunteer listing';
-                iframe.style.cssText = 'display:block;width:100%;border:none;min-height:520px;';
+                iframe.width = '100%';
+                iframe.height = '100%';
+                iframe.style.cssText = 'display:block;width:100%;height:100%;min-height:100%;border:none;';
                 body.appendChild(iframe);
             }
-            overlay.classList.add('open');
-            overlay.setAttribute('aria-hidden', 'false');
+            screen.classList.add('open');
+            screen.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
-            closeBtn.focus();
         }
 
-        function closeModal() {
-            overlay.classList.remove('open');
-            overlay.setAttribute('aria-hidden', 'true');
+        function closeScreen() {
+            screen.classList.remove('open');
+            screen.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
         }
 
         document.querySelectorAll('[data-submit-trigger]').forEach(btn => {
-            btn.addEventListener('click', openModal);
+            btn.addEventListener('click', openScreen);
         });
 
-        closeBtn.addEventListener('click', closeModal);
-        overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+        closeBtn.addEventListener('click', closeScreen);
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
-        });
-        window.addEventListener('message', e => {
-            if (e.data?.type === 'tally-height' && iframe) {
-                iframe.style.minHeight = Math.max(400, e.data.height + 24) + 'px';
-            }
+            if (e.key === 'Escape' && screen.classList.contains('open')) closeScreen();
         });
     })();
 
