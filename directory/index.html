@@ -2499,7 +2499,224 @@
         }
     </style>
 
+    <!-- ─── Renovation: Control Band + Card Redesign ────────────────────── -->
+    <style>
+        /* ── Control Band (replaces filters-shell white box) ───────────── */
+        .control-band {
+            padding: 44px 0 30px;
+            margin-bottom: 48px;
+            border-bottom: 1.5px solid rgba(26,26,26,0.07);
+        }
+
+        .cb-top {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .cb-count-group {
+            display: flex;
+            align-items: flex-end;
+            gap: 18px;
+        }
+
+        .cb-count {
+            font-family: 'Hedvig Letters Serif', Georgia, serif;
+            font-size: clamp(3.6rem, 8vw, 6rem);
+            font-weight: 400;
+            color: var(--charcoal);
+            letter-spacing: -0.07em;
+            line-height: 0.9;
+            display: block;
+        }
+
+        .cb-count-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-bottom: 8px;
+        }
+
+        .cb-count-label {
+            font-family: 'IBM Plex Mono', 'Courier New', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-3);
+            line-height: 1;
+        }
+
+        .cb-top .clear-filters {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--clay);
+            background: none;
+            border: 0;
+            cursor: pointer;
+            padding: 0;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            align-self: center;
+        }
+
+        .cb-top .clear-filters:hover { opacity: 0.70; transform: translateX(1px); }
+        .cb-top .clear-filters[hidden] { display: none; }
+
+        .cb-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .cb-search-group {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .cb-search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink-3);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .cb-search-group .filter-control {
+            padding-left: 40px;
+            width: 100%;
+        }
+
+        .cb-bar .filter-control {
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: 999px;
+            border: 1.5px solid rgba(26,26,26,0.11);
+            background: #fff;
+            font-size: 13px;
+            color: var(--charcoal);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            outline: none;
+            appearance: none;
+            width: auto;
+            flex-shrink: 0;
+        }
+
+        .cb-bar .filter-control:focus {
+            border-color: var(--moss);
+            box-shadow: 0 0 0 3px rgba(46,64,54,0.10);
+        }
+
+        .cb-bar .filter-control:hover { border-color: rgba(26,26,26,0.22); }
+
+        .cb-bar select.filter-control {
+            padding-right: 34px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7a72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
+            cursor: pointer;
+        }
+
+        .cb-bar .toggle-chip {
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: 999px;
+            border: 1.5px solid rgba(26,26,26,0.11);
+            background: #fff;
+            color: var(--charcoal);
+            font: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            white-space: nowrap;
+        }
+
+        .cb-bar .toggle-chip:hover { transform: translateY(-1px); border-color: rgba(26,26,26,0.22); }
+
+        .cb-bar .toggle-chip.active {
+            background: var(--moss);
+            border-color: var(--moss);
+            color: var(--cream);
+            box-shadow: 0 4px 14px rgba(46,64,54,0.24);
+            transform: none;
+        }
+
+        .cb-bar .toggle-chip.active:hover {
+            background: var(--moss-deep);
+            border-color: var(--moss-deep);
+        }
+
+        /* ── Card top-stripe (replaces left-bar-on-hover) ──────────────── */
+        .card { padding-top: 24px; }
+
+        .card::before {
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: auto;
+            width: 100%;
+            height: 3px;
+            border-radius: 0;
+            transform: none;
+            transition: opacity 220ms ease;
+            opacity: 0.60;
+            background: var(--accent-color);
+        }
+
+        .card:hover::before { transform: none; opacity: 1; }
+
+        /* ── Card org mark ──────────────────────────────────────────────── */
+        .card-org {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ink-3);
+        }
+
+        .card-org-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            flex-shrink: 0;
+        }
+
+        /* ── Control band responsive ────────────────────────────────────── */
+        @media (max-width: 992px) {
+            .control-band { padding: 30px 0 22px; margin-bottom: 36px; }
+            .cb-count { font-size: clamp(3rem, 10vw, 4.8rem); }
+            .cb-bar .filter-control,
+            .cb-bar .toggle-chip { font-size: 12px; min-height: 40px; }
+        }
+
+        @media (max-width: 640px) {
+            .control-band { padding: 22px 0 18px; margin-bottom: 28px; }
+            .cb-top { margin-bottom: 14px; align-items: center; }
+            .cb-count { font-size: clamp(2.8rem, 16vw, 4rem); }
+            .cb-count-detail { display: none; }
+            .cb-search-group { flex: 0 0 100%; }
+        }
+    </style>
+
     <!-- ─── Cinematic hero & editorial overrides ─────────────────────────── -->
+
     <style>
         /* ── Hero: edge-to-edge, tall, cinematic ────────────────────────── */
         .hero-container {
@@ -2601,7 +2818,7 @@
             font-size: clamp(1.6rem, 2.8vw, 2.6rem);
             font-weight: 800;
             letter-spacing: -0.04em;
-            color: rgba(242,240,233,0.62);
+            color: rgba(242,240,233,0.84);
             line-height: 1.15;
         }
         .dir-hero-drama {
@@ -2619,7 +2836,7 @@
         .hero-copy { display: flex; flex-direction: column; gap: 6px; }
 
         .hero-desc {
-            color: rgba(242,240,233,0.58) !important;
+            color: rgba(242,240,233,0.76) !important;
             font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
             font-size: 15px !important;
             max-width: 50ch !important;
@@ -2632,7 +2849,7 @@
         }
         .hero-stat:hover { background: rgba(242,240,233,0.14) !important; }
         .hero-stat-value { color: var(--cream) !important; }
-        .hero-stat-label { color: rgba(242,240,233,0.60) !important; }
+        .hero-stat-label { color: rgba(242,240,233,0.74) !important; }
 
         .hero-back {
             background: rgba(242,240,233,0.10) !important;
@@ -2748,72 +2965,57 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="filters-shell">
-            <div class="filters-section">
-                <div class="filters-inner">
-                    <div class="filters-heading">
-                        <div class="filters-heading-main">
-                            <h2 class="filters-title">Search the opportunity board.</h2>
-                            <div class="scope-pill" id="locationScope">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                    <circle cx="12" cy="10" r="3"></circle>
-                                </svg>
-                                <span>Viewing Canada-wide</span>
-                            </div>
-                        </div>
-                        <div class="results-pill"><span id="resultsCount">0</span> roles loaded</div>
-                    </div>
-                    <div class="filters-bar">
-                        <div class="filter-group filter-group--search">
-                            <label for="search" class="sr-only">Search</label>
-                            <input type="text" id="search" class="filter-control" placeholder="Search title or organization...">
-                        </div>
-                        <div class="filter-group">
-                            <label for="category" class="sr-only">Category</label>
-                            <select id="category" class="filter-control">
-                                <option value="">All Categories</option>
-                                <!-- Options generated by JS -->
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="province" class="sr-only">Province</label>
-                            <select id="province" class="filter-control">
-                                <option value="">All Provinces</option>
-                                <!-- Options generated by JS -->
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="city" class="sr-only">City</label>
-                            <select id="city" class="filter-control">
-                                <option value="">All Cities</option>
-                                <!-- Options generated by JS -->
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="commitment" class="sr-only">Commitment Type</label>
-                            <select id="commitment" class="filter-control">
-                                <option value="">All Commitment Types</option>
-                                <!-- Options generated by JS -->
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="format" class="sr-only">Format</label>
-                            <select id="format" class="filter-control">
-                                <option value="">All Formats</option>
-                                <!-- Options generated by JS -->
-                            </select>
-                        </div>
-                        <div class="filters-actions">
-                            <button type="button" class="toggle-chip" id="studentFriendlyToggle" aria-pressed="false">Student Friendly</button>
-                            <button type="button" class="clear-filters" id="clearFilters" hidden>Clear all filters</button>
+    <section class="control-band" aria-label="Filter opportunities">
+        <div class="container">
+            <div class="cb-top">
+                <div class="cb-count-group">
+                    <span class="cb-count" id="resultsCount">0</span>
+                    <div class="cb-count-detail">
+                        <span class="cb-count-label">roles found</span>
+                        <div class="scope-pill" id="locationScope">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <span>Viewing Canada-wide</span>
                         </div>
                     </div>
                 </div>
+                <button type="button" class="clear-filters" id="clearFilters" hidden>Clear all filters</button>
+            </div>
+            <div class="cb-bar">
+                <div class="cb-search-group">
+                    <svg class="cb-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <label for="search" class="sr-only">Search</label>
+                    <input type="text" id="search" class="filter-control" placeholder="Search title or organization...">
+                </div>
+                <label for="category" class="sr-only">Category</label>
+                <select id="category" class="filter-control">
+                    <option value="">All Categories</option>
+                </select>
+                <label for="province" class="sr-only">Province</label>
+                <select id="province" class="filter-control">
+                    <option value="">All Provinces</option>
+                </select>
+                <label for="city" class="sr-only">City</label>
+                <select id="city" class="filter-control">
+                    <option value="">All Cities</option>
+                </select>
+                <label for="commitment" class="sr-only">Commitment Type</label>
+                <select id="commitment" class="filter-control">
+                    <option value="">All Commitment Types</option>
+                </select>
+                <label for="format" class="sr-only">Format</label>
+                <select id="format" class="filter-control">
+                    <option value="">All Formats</option>
+                </select>
+                <button type="button" class="toggle-chip" id="studentFriendlyToggle" aria-pressed="false">Student-Friendly</button>
             </div>
         </div>
-    </div>
+    </section>
 
     <main class="container">
         <div id="grid" class="opportunities-grid">
@@ -3076,11 +3278,11 @@
                 .to('.hero-desc',       { y: 0, opacity: 1, duration: 0.65 }, '-=0.52')
                 .to('.hero-stat',       { y: 0, opacity: 1, stagger: 0.08, duration: 0.55 }, '-=0.40');
 
-            // Filter shell scroll reveal
-            gsap.fromTo('.filters-shell',
+            // Control band scroll reveal
+            gsap.fromTo('.control-band',
                 { y: 28, opacity: 0 },
                 { y: 0, opacity: 1, duration: 0.85, ease,
-                  scrollTrigger: { trigger: '.filters-shell', start: 'top 88%', once: true } }
+                  scrollTrigger: { trigger: '.control-band', start: 'top 88%', once: true } }
             );
 
             // Footer scroll reveal
@@ -3999,15 +4201,16 @@
             const accentColor = categoryStyle.text;
             card.style.setProperty('--accent-color', accentColor);
 
+            const orgInitial = org.charAt(0).toUpperCase();
             card.innerHTML = `
                 <div class="card-header">
-                    <div class="card-title">${title}</div>
                     <div class="card-org">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/></svg>
-                        ${org}
+                        <span class="card-org-mark" style="background-color:${categoryStyle.bg};color:${categoryStyle.text};">${escapeHtml(orgInitial)}</span>
+                        <span>${org}</span>
                     </div>
+                    <div class="card-title">${title}</div>
                     <div class="card-location">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                         ${location}
                     </div>
                 </div>
@@ -4022,7 +4225,7 @@
                         <span class="footer-val">${escapeHtml(commitment || 'Unknown')}</span>
                     </div>
                     <div class="footer-item" style="text-align: right;">
-                        <span class="footer-label">Student suitable?</span>
+                        <span class="footer-label">Student OK?</span>
                         ${studentFriendlyCardMarkup}
                     </div>
                 </div>
@@ -4310,7 +4513,7 @@
             const io = new IntersectionObserver((entries) => {
                 entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
             }, { threshold: 0.08 });
-            document.querySelectorAll('.filters-shell, .site-footer').forEach(el => {
+            document.querySelectorAll('.control-band, .site-footer').forEach(el => {
                 el.classList.add('reveal');
                 io.observe(el);
             });
