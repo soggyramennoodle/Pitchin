@@ -2900,6 +2900,248 @@
             .dir-hero-line1 { font-size: clamp(1.3rem, 5vw, 1.9rem); }
         }
     </style>
+
+    <!-- ─── Right-side drawer modal ──────────────────────────────────────── -->
+    <style>
+        /* ── Drawer: position & animation shell ─────────────────────────── */
+        .modal-overlay {
+            align-items: stretch !important;
+            justify-content: flex-end !important;
+            padding: 0 !important;
+        }
+
+        .modal {
+            width: min(500px, 100vw) !important;
+            max-width: none !important;
+            height: 100% !important;
+            max-height: none !important;
+            border-radius: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+            contain: none !important;
+            box-shadow: -24px 0 64px rgba(26,26,26,0.14) !important;
+        }
+
+        .modal.modal--fallback-actions {
+            max-width: none !important;
+            max-height: none !important;
+        }
+
+        .modal-content {
+            padding: 0 !important;
+            flex: 1 1 0% !important;
+            overflow-y: auto !important;
+            contain: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        .modal-actions {
+            flex-shrink: 0;
+            padding: 18px 28px 28px;
+            border-top: 1.5px solid rgba(26,26,26,0.07);
+            background: #fff;
+        }
+
+        .modal-close {
+            position: absolute !important;
+            top: 16px !important;
+            right: 20px !important;
+            width: 30px !important;
+            height: 30px !important;
+            border-radius: 999px !important;
+            background: rgba(26,26,26,0.06) !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 18px !important;
+            line-height: 1 !important;
+            padding: 0 !important;
+            color: var(--ink-2) !important;
+            transition: background 0.15s ease, color 0.15s ease !important;
+            z-index: 10 !important;
+        }
+
+        .modal-close:hover {
+            background: rgba(26,26,26,0.12) !important;
+            color: var(--charcoal) !important;
+        }
+
+        /* ── Drawer interior ─────────────────────────────────────────────── */
+        .dr-stripe {
+            height: 4px;
+            width: 100%;
+            flex-shrink: 0;
+            opacity: 0.80;
+        }
+
+        .dr-header {
+            padding: 48px 28px 22px;
+            border-bottom: 1.5px solid rgba(26,26,26,0.07);
+        }
+
+        .dr-org-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .dr-org-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            flex-shrink: 0;
+        }
+
+        .dr-org-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .dr-org-name,
+        .dr-org-name a {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--charcoal);
+            text-decoration: none;
+            letter-spacing: -0.015em;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dr-org-name a:hover { text-decoration: underline; text-decoration-color: rgba(26,26,26,0.3); }
+
+        .dr-location {
+            font-size: 12px;
+            color: var(--ink-3);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .dr-title {
+            font-family: 'Hedvig Letters Serif', Georgia, serif;
+            font-size: clamp(1.65rem, 3.5vw, 2.1rem);
+            font-weight: 400;
+            color: var(--charcoal);
+            letter-spacing: -0.04em;
+            line-height: 1.15;
+            margin-bottom: 14px;
+        }
+
+        /* ── 3-column meta grid ──────────────────────────────────────────── */
+        .dr-meta {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-bottom: 1.5px solid rgba(26,26,26,0.07);
+            background: var(--cream);
+        }
+
+        .dr-meta-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 14px 20px;
+            border-right: 1.5px solid rgba(26,26,26,0.07);
+        }
+
+        .dr-meta-cell:nth-child(3n) { border-right: none; }
+        .dr-meta-cell:nth-child(n+4) { border-top: 1.5px solid rgba(26,26,26,0.07); }
+
+        .dr-meta-label {
+            font-family: 'IBM Plex Mono', 'Courier New', monospace;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: var(--ink-3);
+            line-height: 1;
+        }
+
+        .dr-meta-cell .footer-val {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--charcoal);
+        }
+
+        /* ── Body ────────────────────────────────────────────────────────── */
+        .dr-body {
+            padding: 26px 28px;
+            flex: 1;
+        }
+
+        .dr-section-title {
+            font-family: 'IBM Plex Mono', 'Courier New', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: var(--ink-3);
+            margin-bottom: 12px;
+        }
+
+        .dr-body .modal-desc {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--ink-2);
+            white-space: pre-wrap;
+        }
+
+        /* ── Callout boxes inside body ───────────────────────────────────── */
+        .dr-body .issue-detail-box,
+        .dr-body .info-detail-box {
+            margin-top: 18px;
+        }
+
+        /* Callouts outside dr-body (direct children of modal-content) */
+        .modal-content > .issue-detail-box,
+        .modal-content > .info-detail-box {
+            margin: 0 28px 0;
+        }
+
+        /* ── Actions footer ──────────────────────────────────────────────── */
+        .modal-actions .modal-action-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modal-actions .apply-btn {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 14px !important;
+        }
+
+        .modal-actions .report-btn {
+            align-self: center;
+        }
+
+        /* ── Responsive ──────────────────────────────────────────────────── */
+        @media (max-width: 640px) {
+            .modal { width: 100vw !important; }
+            .dr-header { padding: 44px 20px 18px; }
+            .dr-meta { grid-template-columns: repeat(2, 1fr); }
+            .dr-meta-cell:nth-child(3n) { border-right: 1.5px solid rgba(26,26,26,0.07); }
+            .dr-meta-cell:nth-child(2n) { border-right: none; }
+            .dr-meta-cell:nth-child(n+3) { border-top: 1.5px solid rgba(26,26,26,0.07); }
+            .dr-body { padding: 20px; }
+            .modal-actions { padding: 14px 20px 24px; }
+        }
+    </style>
 </head>
 <body>
 
@@ -3108,13 +3350,12 @@
         </details>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal drawer -->
     <div class="modal-overlay" id="modalOverlay">
-        <div class="modal" id="modal">
-            <button class="modal-close" id="modalClose">&times;</button>
-            <div class="modal-content" id="modalContent">
-                <!-- Content generated dynamically -->
-            </div>
+        <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Opportunity detail">
+            <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+            <div class="modal-content" id="modalContent"></div>
+            <div class="modal-actions" id="modalActions"></div>
         </div>
     </div>
 
@@ -3178,6 +3419,7 @@
         const modalOverlay = document.getElementById('modalOverlay');
         const modalCloseBtn = document.getElementById('modalClose');
         const modalContent = document.getElementById('modalContent');
+        const modalActionsEl = document.getElementById('modalActions');
         const resultsCountEl = document.getElementById('resultsCount');
         const locationScopeEl = document.getElementById('locationScope');
         const heroOpportunityCountEl = document.getElementById('heroOpportunityCount');
@@ -3581,9 +3823,8 @@
 
         function resetModalAnimationState() {
             cancelModalAnimations();
-            modal.style.transform = 'translateZ(0) scale(0.08)';
-            modal.style.opacity = '0';
-            modal.style.transformOrigin = 'center center';
+            modal.style.transform = 'translateX(100%)';
+            modal.style.opacity = '1';
             modalOverlay.style.opacity = '0';
         }
 
@@ -3823,10 +4064,10 @@
         }
 
         function bindApplyDisclosure() {
-            const disclosure = modalContent.querySelector('[data-apply-disclosure]');
-            const toggle = modalContent.querySelector('[data-apply-toggle]');
-            const panel = modalContent.querySelector('[data-apply-panel]');
-            const close = modalContent.querySelector('[data-apply-close]');
+            const disclosure = modalEl.querySelector('[data-apply-disclosure]');
+            const toggle = modalEl.querySelector('[data-apply-toggle]');
+            const panel = modalEl.querySelector('[data-apply-panel]');
+            const close = modalEl.querySelector('[data-apply-close]');
 
             if (!disclosure || !toggle || !panel || !close) return;
 
@@ -4302,79 +4543,83 @@
             const issueDetailMarkup = getIssueDetailMarkup(fields);
             const additionalApplicationInfoMarkup = getAdditionalApplicationInfoMarkup(fields);
             const contactInfo = getContactDetails(fields);
+            const orgInitial = org.charAt(0).toUpperCase();
+            const accentColor = categoryStyle.text;
             const orgMarkup = orgWebsite
                 ? `<a href="${orgWebsite}" target="_blank" rel="noopener noreferrer" class="modal-org-link">${org}</a>`
                 : org;
 
-            modalEl.classList.toggle('modal--fallback-actions', !hasApplyLink);
-            modalContent.classList.toggle('modal-content--fallback-actions', !hasApplyLink);
-
             modalContent.innerHTML = `
-                <div class="modal-header modal-stagger" style="--stagger-index: 0;">
-                    <h2 class="modal-title">${title}</h2>
-                    <div class="card-org" style="font-size: 16px; margin-bottom: 8px;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/></svg>
-                        ${orgMarkup}
+                <div class="dr-stripe" style="background:${accentColor};" aria-hidden="true"></div>
+
+                <div class="dr-header modal-stagger" style="--stagger-index:0;">
+                    <div class="dr-org-row">
+                        <span class="dr-org-mark" style="background-color:${categoryStyle.bg};color:${categoryStyle.text};">${escapeHtml(orgInitial)}</span>
+                        <div class="dr-org-info">
+                            <div class="dr-org-name">${orgMarkup}</div>
+                            <div class="dr-location">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                ${location}
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-location" style="font-size: 14px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                        ${location}
-                    </div>
+                    <h2 class="dr-title">${title}</h2>
                     ${verifiedDate ? `
-                        <div class="modal-verified">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="M20 6 9 17l-5-5"></path>
-                            </svg>
+                        <div class="modal-verified" style="margin-bottom:12px;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
                             <span>Last verified: ${verifiedDate}</span>
                         </div>
                     ` : ''}
-                    <div class="card-tags" style="margin-top: 16px;">
-                        ${category ? `<span class="tag" style="background-color: ${categoryStyle.bg}; color: ${categoryStyle.text};">${category}</span>` : ''}
+                    <div class="card-tags">
+                        ${category ? `<span class="tag" style="background-color:${categoryStyle.bg};color:${categoryStyle.text};">${category}</span>` : ''}
                         ${format ? `<span class="tag format">${format}</span>` : ''}
                         ${issuePillMarkup}
                     </div>
                 </div>
 
-                <div class="modal-meta-grid modal-stagger" style="--stagger-index: 1;">
-                    <div class="modal-meta-item">
-                        <span class="footer-label">Category</span>
-                        ${getModalMetaValueMarkup(category, 'Unknown')}
+                <div class="dr-meta modal-stagger" style="--stagger-index:1;" aria-label="Key details">
+                    <div class="dr-meta-cell">
+                        <span class="dr-meta-label">Commitment</span>
+                        ${getModalMetaValueMarkup(commitment, '—')}
                     </div>
-                    <div class="modal-meta-item">
-                        <span class="footer-label">Commitment Type</span>
-                        ${getModalMetaValueMarkup(commitment, 'Not specified')}
+                    <div class="dr-meta-cell">
+                        <span class="dr-meta-label">Format</span>
+                        ${getModalMetaValueMarkup(format, '—')}
                     </div>
-                    <div class="modal-meta-item">
-                        <span class="footer-label">Time Commitment</span>
-                        ${getModalMetaValueMarkup(timeCommitment, 'Not specified')}
+                    <div class="dr-meta-cell">
+                        <span class="dr-meta-label">Time</span>
+                        ${getModalMetaValueMarkup(timeCommitment, '—')}
                     </div>
-                    <div class="modal-meta-item">
-                        <span class="footer-label">Student Friendly</span>
+                    <div class="dr-meta-cell">
+                        <span class="dr-meta-label">Student OK</span>
                         ${studentFriendly === 'Unknown'
                             ? getModalMetaValueMarkup('', 'Unknown')
                             : `<span class="footer-val">${escapeHtml(studentFriendly)}</span>`}
                     </div>
-                    <div class="modal-meta-item">
-                        <span class="footer-label">Application Deadline</span>
+                    <div class="dr-meta-cell">
+                        <span class="dr-meta-label">Deadline</span>
                         ${getApplicationDeadlineMarkup(deadlineStr)}
+                    </div>
+                    <div class="dr-meta-cell">
+                        <span class="dr-meta-label">Category</span>
+                        ${getModalMetaValueMarkup(category, '—')}
                     </div>
                 </div>
 
-                <div class="modal-section modal-stagger" style="--stagger-index: 2;">
-                    <h3 class="modal-section-title">About the Role</h3>
+                <div class="dr-body modal-stagger" style="--stagger-index:2;">
+                    <h3 class="dr-section-title">About the Role</h3>
                     <div class="modal-desc">${desc}</div>
                 </div>
 
                 ${issueDetailMarkup}
                 ${additionalApplicationInfoMarkup}
+            `;
 
-                <div class="modal-action-stack modal-stagger" style="--stagger-index: 3;">
+            modalActionsEl.innerHTML = `
+                <div class="modal-action-stack modal-stagger" style="--stagger-index:3;">
                     ${hasApplyLink ? `
-                        <a href="${applyLink}" target="_blank" rel="noopener noreferrer" class="apply-btn">
-                            Apply Now
-                        </a>
+                        <a href="${applyLink}" target="_blank" rel="noopener noreferrer" class="apply-btn">Apply Now</a>
                     ` : getApplyDisclosureMarkup(contactInfo)}
-
                     <a href="${REPORT_FORM_URL}" target="_blank" rel="noopener noreferrer" class="report-btn">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M12 3 2.6 19a1 1 0 0 0 .87 1.5h17.06a1 1 0 0 0 .87-1.5L12 3Z"></path>
@@ -4393,56 +4638,34 @@
             modalOverlay.classList.add('active');
             modal.scrollTop = 0;
             modalContent.scrollTop = 0;
-            modal.style.transform = 'translateZ(0) scale(1)';
-            modal.style.opacity = '0';
-            modal.style.transformOrigin = 'center center';
+            modal.style.transform = 'translateX(0)';
+            modal.style.opacity = '1';
             modalOverlay.style.opacity = '0';
-            const cardCenter = getCardCenterRect(sourceCard) || {
-                x: window.innerWidth / 2,
-                y: window.innerHeight / 2
-            };
 
             requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    const modalRect = modal.getBoundingClientRect();
-                    const originX = cardCenter.x - modalRect.left;
-                    const originY = cardCenter.y - modalRect.top;
-                    modal.style.transformOrigin = `${originX}px ${originY}px`;
+                modalOverlay.animate(
+                    [{ opacity: 0 }, { opacity: 1 }],
+                    { duration: 320, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+                );
 
-                    const overlayAnimation = modalOverlay.animate(
-                        [{ opacity: 0 }, { opacity: 1 }],
-                        { duration: 350, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
-                    );
+                modal.animate(
+                    [
+                        { transform: 'translateX(100%)' },
+                        { transform: 'translateX(0)' }
+                    ],
+                    { duration: 420, easing: 'cubic-bezier(0.32, 0.72, 0, 1)', fill: 'both' }
+                );
 
-                    const modalAnimation = modal.animate(
-                        [
-                            {
-                                transform: 'translateZ(0) scale(0.08)',
-                                opacity: 0
-                            },
-                            {
-                                transform: 'translateZ(0) scale(1)',
-                                opacity: 1
-                            }
-                        ],
-                        {
-                            duration: 350,
-                            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                            fill: 'both'
-                        }
-                    );
-
-                    Promise.allSettled([overlayAnimation.finished, modalAnimation.finished]).then(() => {
-                        modal.style.transform = 'translateZ(0) scale(1)';
-                        modal.style.opacity = '1';
-                        modalOverlay.style.opacity = '1';
-                        showModalContent();
-                        if (!hasApplyLink) {
-                            bindApplyDisclosure();
-                        }
-                        isModalTransitioning = false;
-                    });
-                });
+                setTimeout(() => {
+                    modal.style.transform = 'translateX(0)';
+                    modal.style.opacity = '1';
+                    modalOverlay.style.opacity = '1';
+                    showModalContent();
+                    if (!hasApplyLink) {
+                        bindApplyDisclosure();
+                    }
+                    isModalTransitioning = false;
+                }, 440);
             });
         }
 
@@ -4452,50 +4675,31 @@
             isModalTransitioning = true;
             hideModalContent();
             cancelModalAnimations();
-            modal.style.transform = 'translateZ(0) scale(1)';
+            modal.style.transform = 'translateX(0)';
             modal.style.opacity = '1';
             modalOverlay.style.opacity = '1';
 
-            const cardCenter = getCardCenterRect(currentOpenCard) || {
-                x: window.innerWidth / 2,
-                y: window.innerHeight / 2
-            };
-            const modalRect = modal.getBoundingClientRect();
-            const originX = cardCenter.x - modalRect.left;
-            const originY = cardCenter.y - modalRect.top;
-            modal.style.transformOrigin = `${originX}px ${originY}px`;
-
             requestAnimationFrame(() => {
-                const overlayAnimation = modalOverlay.animate(
+                modalOverlay.animate(
                     [{ opacity: 1 }, { opacity: 0 }],
-                    { duration: 250, easing: 'ease-in', fill: 'forwards' }
+                    { duration: 280, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' }
                 );
 
-                const modalAnimation = modal.animate(
+                modal.animate(
                     [
-                        {
-                            transform: 'translateZ(0) scale(1)',
-                            opacity: 1
-                        },
-                        {
-                            transform: 'translateZ(0) scale(0.08)',
-                            opacity: 0
-                        }
+                        { transform: 'translateX(0)' },
+                        { transform: 'translateX(100%)' }
                     ],
-                    {
-                        duration: 250,
-                        easing: 'ease-in',
-                        fill: 'both'
-                    }
+                    { duration: 320, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'both' }
                 );
 
-                Promise.allSettled([overlayAnimation.finished, modalAnimation.finished]).then(() => {
+                setTimeout(() => {
                     resetModalAnimationState();
                     modalOverlay.classList.remove('active');
                     currentOpenCard = null;
                     document.body.style.overflow = '';
                     isModalTransitioning = false;
-                });
+                }, 340);
             });
         }
 
