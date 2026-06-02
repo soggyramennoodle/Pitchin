@@ -1028,23 +1028,23 @@
     </nav>
 
     <!-- ── HERO ──────────────────────────────────────────────────────────────── -->
-    <section class="hero" aria-labelledby="hero-headline">
+    <section class="hero" id="heroSection" aria-labelledby="hero-headline">
         <div class="hero-aura" aria-hidden="true"></div>
         <div class="hero-grid-bg" aria-hidden="true"></div>
 
         <div class="hero-inner shell">
             <div class="hero-text">
-                <p class="hero-eyebrow">The Dispatch &nbsp;·&nbsp; May 20, 2026</p>
+                <p class="hero-eyebrow" id="heroEyebrow">The Dispatch &nbsp;·&nbsp; May 20, 2026</p>
                 <h1 class="hero-title" id="hero-headline">
-                    <span class="hero-label" aria-hidden="true">Calgary is</span>
+                    <span class="hero-label" aria-hidden="true" id="heroLabel">Calgary is</span>
                     <span class="hero-drama" aria-hidden="true">live<span class="hero-drama-dot">.</span></span>
                     <span class="sr-only">Calgary is live.</span>
                 </h1>
-                <p class="hero-copy">
+                <p class="hero-copy" id="heroCopy">
                     Calgary just joined Pitchin with a fresh stack of verified opportunities across community support, food programs, youth work, healthcare, and events. The prairie is moving.
                 </p>
-                <div class="hero-actions">
-                    <a class="btn btn--clay" href="/directory/">
+                <div class="hero-actions" id="heroActions">
+                    <a class="btn btn--clay" id="heroBrowseBtn" href="/directory/">
                         Browse Calgary
                         <span class="btn-icon" aria-hidden="true">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1069,8 +1069,8 @@
                     <span class="hero-card-coords">51.05° N<br>114.07° W</span>
                 </div>
                 <div class="hero-card-bottom">
-                    <p class="hero-card-city">Calgary</p>
-                    <p class="hero-card-sub">Alberta · 4th city on the network</p>
+                    <p class="hero-card-city" id="heroCardCity">Calgary</p>
+                    <p class="hero-card-sub" id="heroCardSub">Alberta · 4th city on the network</p>
                 </div>
             </div>
         </div>
@@ -1101,7 +1101,7 @@
             <span class="section-count" aria-hidden="true">3 launches</span>
         </header>
 
-        <div class="dispatch-grid">
+        <div class="dispatch-grid" id="dispatchGrid">
             <!-- Lead: Vancouver -->
             <a class="dispatch dispatch--lead gsap-reveal" href="/directory/" aria-label="Vancouver launch — browse opportunities">
                 <img class="dispatch-img"
@@ -1438,6 +1438,84 @@
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape' && screen.classList.contains('open')) closeScreen();
         });
+    })();
+    </script>
+
+    <!-- ── Dynamic newsroom from admin localStorage ──────────────────────────── -->
+    <script>
+    (function () {
+        const STORAGE_KEY = 'pitchin_dispatch_posts';
+        let posts;
+        try { posts = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { posts = null; }
+        if (!posts || !posts.length) return; // fall back to hardcoded content
+
+        const hero = posts[0];
+        const grid = posts.slice(1);
+
+        /* ── Update hero ── */
+        const eyebrow = document.getElementById('heroEyebrow');
+        if (eyebrow) eyebrow.innerHTML = 'The Dispatch &nbsp;·&nbsp; ' + hero.dateLabel;
+
+        const heroLabel = document.getElementById('heroLabel');
+        if (heroLabel) heroLabel.textContent = hero.city + ' is';
+
+        const heroCopy = document.getElementById('heroCopy');
+        if (heroCopy) heroCopy.textContent = hero.excerpt;
+
+        const heroBrowseBtn = document.getElementById('heroBrowseBtn');
+        if (heroBrowseBtn) {
+            heroBrowseBtn.textContent = '';
+            heroBrowseBtn.href = hero.link || '/directory/';
+            heroBrowseBtn.innerHTML = 'Browse ' + hero.city +
+                '<span class="btn-icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+        }
+
+        const heroCardImg = document.getElementById('heroCardImg');
+        if (heroCardImg) heroCardImg.src = hero.img;
+
+        const heroCardCity = document.getElementById('heroCardCity');
+        if (heroCardCity) heroCardCity.textContent = hero.city;
+
+        const heroCardSub = document.getElementById('heroCardSub');
+        if (heroCardSub) heroCardSub.textContent = hero.province;
+
+        const heroCoords = document.querySelector('.hero-card-coords');
+        if (heroCoords && hero.lat && hero.lng) heroCoords.innerHTML = hero.lat + '<br>' + hero.lng;
+
+        /* ── Rebuild dispatch grid ── */
+        const dispatchGrid = document.getElementById('dispatchGrid');
+        if (!dispatchGrid) return;
+
+        if (!grid.length) {
+            dispatchGrid.closest('main').style.display = 'none';
+            return;
+        }
+
+        const sectionCount = document.querySelector('.section-count');
+        if (sectionCount) sectionCount.textContent = grid.length + (grid.length === 1 ? ' launch' : ' launches');
+
+        const arrowSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+        dispatchGrid.innerHTML = grid.map((p, i) => {
+            const isLead = i === 0;
+            const coordStr = (p.lat && p.lng) ? p.lat + ' · ' + p.lng : '';
+            return `<a class="dispatch${isLead ? ' dispatch--lead' : ''} gsap-reveal" href="${p.link || '/directory/'}" aria-label="${p.city} — browse opportunities">
+                <img class="dispatch-img" src="${p.img}" alt="${p.city}" loading="lazy">
+                <div class="dispatch-overlay"></div>
+                <div class="dispatch-top">
+                    <div class="dispatch-meta">
+                        <span class="dispatch-tag">${p.tag}</span>
+                        <time class="dispatch-date" datetime="${p.date}">${p.dateLabel}</time>
+                    </div>
+                    ${coordStr ? `<span class="dispatch-coords">${coordStr}</span>` : ''}
+                </div>
+                <div class="dispatch-body">
+                    <h3 class="dispatch-city">${p.city}</h3>
+                    <p class="dispatch-excerpt">${p.excerpt}</p>
+                    <span class="dispatch-link">Browse ${p.city} <span class="link-icon" aria-hidden="true">${arrowSvg}</span></span>
+                </div>
+            </a>`;
+        }).join('');
     })();
     </script>
 </body>
