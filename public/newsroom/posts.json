@@ -1,21 +1,5 @@
 [
   {
-    "id": "legacy-calgary",
-    "city": "Calgary",
-    "province": "Alberta Â· 4th city on the network",
-    "heroVerb": "live",
-    "buttonLabel": "",
-    "tag": "City Launch",
-    "date": "2026-05-20",
-    "dateLabel": "May 20, 2026",
-    "excerpt": "Calgary just joined Pitchin with a fresh stack of verified opportunities across community support, food programs, youth work, healthcare, and events. The prairie is moving.",
-    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Downtown_Calgary_2020-4.jpg/1280px-Downtown_Calgary_2020-4.jpg",
-    "lat": "51.05Â° N",
-    "lng": "114.07Â° W",
-    "coords": "51.05Â° N · 114.07Â° W",
-    "link": "/directory/"
-  },
-  {
     "id": "1780420958008",
     "city": "Hamilton",
     "province": "Ontario · 5th city on our network",
@@ -29,6 +13,22 @@
     "lat": "",
     "lng": "",
     "coords": "",
+    "link": "/directory/"
+  },
+  {
+    "id": "legacy-calgary",
+    "city": "Calgary",
+    "province": "Alberta Â· 4th city on the network",
+    "heroVerb": "live",
+    "buttonLabel": "",
+    "tag": "City Launch",
+    "date": "2026-05-20",
+    "dateLabel": "May 20, 2026",
+    "excerpt": "Calgary just joined Pitchin with a fresh stack of verified opportunities across community support, food programs, youth work, healthcare, and events. The prairie is moving.",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Downtown_Calgary_2020-4.jpg/1280px-Downtown_Calgary_2020-4.jpg",
+    "lat": "51.05Â° N",
+    "lng": "114.07Â° W",
+    "coords": "51.05Â° N · 114.07Â° W",
     "link": "/directory/"
   },
   {
