@@ -156,58 +156,72 @@ function Navbar({ onSubmit }) {
 }
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
-function Hero() {
+function Hero({ onSubmit }) {
   const ref = useRef(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.15 })
-      tl.from('.hero-kicker',    { y: 16, opacity: 0, duration: 0.7, ease: 'power3.out' })
-        .from('.hero-line-1 .word', { y: 40, opacity: 0, duration: 0.9, stagger: 0.07, ease: 'power3.out' }, '-=0.3')
-        .from('.hero-drama',    { y: 60, opacity: 0, duration: 1.0, ease: 'power3.out' }, '-=0.55')
-        .from('.hero-copy',     { y: 20, opacity: 0, duration: 0.8, ease: 'power3.out' }, '-=0.55')
-        .from('.hero-actions > *', { y: 16, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, '-=0.45')
+      const tl = gsap.timeline({ delay: 0.1 })
+      tl.from('.hero-pill',      { y: 14, opacity: 0, duration: 0.6, ease: 'power3.out' })
+        .from('.hero-line-1 .word', { y: 44, opacity: 0, duration: 0.85, stagger: 0.06, ease: 'power3.out' }, '-=0.25')
+        .from('.hero-drama',     { y: 56, opacity: 0, duration: 0.95, ease: 'power3.out' }, '-=0.5')
+        .from('.hero-copy',      { y: 18, opacity: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
+        .from('.hero-actions > *', { y: 14, opacity: 0, duration: 0.55, stagger: 0.09, ease: 'power3.out' }, '-=0.4')
+        .from('.hero-trust',     { y: 12, opacity: 0, duration: 0.6, ease: 'power3.out' }, '-=0.35')
+        .from('.hero-shot',      { y: 60, opacity: 0, duration: 1.1, ease: 'power3.out' }, '-=0.5')
     }, ref)
     return () => ctx.revert()
   }, [])
 
   return (
     <section className="hero" ref={ref} aria-label="Hero">
-      <div className="hero-bg" aria-hidden="true">
-        <img
-          src="/assets/landing/framer/framer-11.jpg"
-          alt=""
-          className="hero-bg-img"
-          fetchpriority="high"
-        />
-        <div className="hero-bg-gradient"/>
-      </div>
+      <div className="hero-aura" aria-hidden="true"/>
+      <div className="hero-grid-bg" aria-hidden="true"/>
       <div className="hero-body shell">
-        <div className="hero-kicker" aria-hidden="true">
-          <span className="hero-kicker-dot"/>
-          BETA — Website in active development
-        </div>
+        <button className="hero-pill" onClick={onSubmit} aria-label="Now in beta — submit a listing">
+          <span className="hero-pill-dot" aria-hidden="true"/>
+          Now in beta
+          <span className="hero-pill-sep" aria-hidden="true"/>
+          200+ verified roles across Canada
+        </button>
         <h1 className="hero-title">
           <span className="hero-line-1" aria-hidden="true">
             <span className="word">Do</span>{' '}
             <span className="word">something</span>{' '}
             <span className="word">that</span>
           </span>
-          <span className="hero-drama">lasts.</span>
+          <span className="hero-drama">lasts<span className="hero-drama-dot">.</span></span>
           <span className="sr-only">Do something that lasts.</span>
         </h1>
         <p className="hero-copy">
-          Pitchin is a free, searchable directory of 200+ verified volunteer opportunities across Canada — for students, newcomers, and everyone in between.
+          A free, searchable directory of verified volunteer opportunities across Canada — manually reviewed, always current, built for students, newcomers, and everyone in between.
         </p>
         <div className="hero-actions">
           <a href="/directory/" className="btn btn--clay">
             Browse Opportunities
             <span className="btn-icon"><ArrowRight/></span>
           </a>
-          <a href="/newsroom/" className="btn btn--ghost">
+          <a href="/newsroom/" className="btn btn--outline-dark">
             The Newsroom
             <span className="btn-icon"><ArrowRight/></span>
           </a>
+        </div>
+        <p className="hero-trust">
+          <span className="hero-trust-dots" aria-hidden="true"><span/><span/><span/></span>
+          Trusted by students at <strong>20+ universities</strong> across Canada
+        </p>
+      </div>
+
+      <div className="hero-shot shell" aria-hidden="true">
+        <div className="hero-shot-glow"/>
+        <div className="hero-shot-frame">
+          <div className="hero-shot-bar">
+            <span className="hero-shot-traffic"><span/><span/><span/></span>
+            <span className="hero-shot-url">pitchin.live/directory</span>
+          </div>
+          <div className="hero-shot-img-wrap">
+            <img src="/assets/landing/directory-board.png" alt="" loading="eager"/>
+          </div>
         </div>
       </div>
     </section>
@@ -432,7 +446,7 @@ function Features() {
         duration: 0.9,
         stagger: 0.15,
         ease: 'power3.out',
-        scrollTrigger: { trigger: '.features-grid', start: 'top 78%' },
+        scrollTrigger: { trigger: '.features-bento', start: 'top 78%' },
       })
     }, ref)
     return () => ctx.revert()
@@ -443,7 +457,7 @@ function Features() {
       <div className="shell">
         <p className="section-eyebrow">What you get</p>
         <h2 className="section-heading">Tools built for the<br/><em>way you actually volunteer.</em></h2>
-        <div className="features-grid">
+        <div className="features-bento">
           <ShufflerCard/>
           <TypewriterCard/>
           <SchedulerCard/>
@@ -863,7 +877,7 @@ export default function App() {
       <NoiseSVG/>
       <Navbar onSubmit={openSubmit}/>
       <main id="main-content">
-        <Hero/>
+        <Hero onSubmit={openSubmit}/>
         <LogoStrip/>
         <Features/>
         <Why/>
