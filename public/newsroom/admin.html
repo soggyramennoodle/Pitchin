@@ -367,6 +367,11 @@
                     </div>
                     <span class="post-count" id="postCount">0</span>
                 </div>
+                <div style="padding:12px 16px 0;border-bottom:1px solid var(--line-soft);">
+                    <button class="btn btn--ghost" style="width:100%;justify-content:center;font-size:13px;margin-bottom:12px;" onclick="importLegacyPosts()">
+                        ↓ Import original 4 city posts
+                    </button>
+                </div>
                 <div class="post-list" id="postList"></div>
             </div>
         </div>
@@ -548,6 +553,56 @@ function renderPostList() {
             </div>
         </div>`;
     }).join('');
+}
+
+/* ── Import legacy posts ── */
+function importLegacyPosts() {
+    const LEGACY = [
+        {
+            id: 'legacy-calgary',
+            city: 'Calgary', province: 'Alberta · 4th city on the network',
+            tag: 'City Launch', date: '2026-05-20', dateLabel: 'May 20, 2026',
+            excerpt: 'Calgary just joined Pitchin with a fresh stack of verified opportunities across community support, food programs, youth work, healthcare, and events. The prairie is moving.',
+            img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Downtown_Calgary_2020-4.jpg/1280px-Downtown_Calgary_2020-4.jpg',
+            lat: '51.05° N', lng: '114.07° W', coords: '51.05° N · 114.07° W',
+            link: '/directory/'
+        },
+        {
+            id: 'legacy-vancouver',
+            city: 'Vancouver', province: 'British Columbia · 3rd city on the network',
+            tag: 'City Launch', date: '2026-05-05', dateLabel: 'May 5, 2026',
+            excerpt: 'Pitchin expanded to Vancouver with 40+ verified volunteer opportunities — community support, food programs, youth work, healthcare, and more. Rain jacket optional. Good intentions strongly encouraged.',
+            img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Skyline_of_Vancouver%2C_Canada.jpg/1280px-Skyline_of_Vancouver%2C_Canada.jpg',
+            lat: '49.28° N', lng: '123.12° W', coords: '49.28° N · 123.12° W',
+            link: '/directory/'
+        },
+        {
+            id: 'legacy-toronto',
+            city: 'Toronto', province: 'Ontario · 2nd city on the network',
+            tag: 'City Launch', date: '2026-05-03', dateLabel: 'May 3, 2026',
+            excerpt: 'Our second city went live with verified roles across healthcare, community support, tutoring, food banks, and more. We\'re growing fast.',
+            img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Toronto_Skyline_from_Snake_Island%2C_February_28_2026_%2808%29.jpg/1280px-Toronto_Skyline_from_Snake_Island%2C_February_28_2026_%2808%29.jpg',
+            lat: '43.65° N', lng: '79.38° W', coords: '43.65° N · 79.38° W',
+            link: '/directory/'
+        },
+        {
+            id: 'legacy-saskatoon',
+            city: 'Saskatoon', province: 'Saskatchewan · First city on the network',
+            tag: 'First City', date: '2026-05-03', dateLabel: 'May 3, 2026',
+            excerpt: 'Where it all started. Verified opportunities across healthcare, food banks, tutoring, seniors support, and more — the first city on the network.',
+            img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Saskatoon%2C_Saskatchewan.jpg/1280px-Saskatoon%2C_Saskatchewan.jpg',
+            lat: '52.13° N', lng: '106.67° W', coords: '52.13° N · 106.67° W',
+            link: '/directory/'
+        }
+    ];
+
+    const posts = getPosts();
+    const existingIds = new Set(posts.map(p => p.id));
+    const toAdd = LEGACY.filter(p => !existingIds.has(p.id));
+    if (!toAdd.length) { toast('Legacy posts already imported.'); return; }
+    savePosts([...posts, ...toAdd]);
+    renderPostList();
+    toast(toAdd.length + ' legacy post' + (toAdd.length > 1 ? 's' : '') + ' imported.');
 }
 
 function escHtml(s) {
