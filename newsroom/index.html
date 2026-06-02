@@ -1080,7 +1080,7 @@
 
     <!-- ── CITIES TICKER ─────────────────────────────────────────────────────── -->
     <div class="ticker" aria-label="Live cities on Pitchin">
-        <div class="ticker-track" aria-hidden="true">
+        <div class="ticker-track" id="tickerTrack" aria-hidden="true">
             <span class="ticker-item"><span class="ticker-city"><span class="ticker-live"></span>Calgary, AB</span><span class="ticker-date">— May 20, 2026</span><span class="ticker-dot"></span></span>
             <span class="ticker-item"><span class="ticker-city"><span class="ticker-live"></span>Vancouver, BC</span><span class="ticker-date">— May 5, 2026</span><span class="ticker-dot"></span></span>
             <span class="ticker-item"><span class="ticker-city"><span class="ticker-live"></span>Toronto, ON</span><span class="ticker-date">— May 3, 2026</span><span class="ticker-dot"></span></span>
@@ -1502,6 +1502,23 @@
 
         const heroCoords = document.querySelector('.hero-card-coords');
         if (heroCoords && hero.lat && hero.lng) heroCoords.innerHTML = hero.lat + '<br>' + hero.lng;
+
+        /* ── Rebuild ticker ── */
+        const tickerTrack = document.getElementById('tickerTrack');
+        if (tickerTrack) {
+            const ABBR = { 'Alberta':'AB','British Columbia':'BC','Ontario':'ON','Saskatchewan':'SK','Manitoba':'MB','Quebec':'QC','Nova Scotia':'NS','New Brunswick':'NB','Newfoundland':'NL','Prince Edward Island':'PE','Northwest Territories':'NT','Nunavut':'NU','Yukon':'YT' };
+            function provinceAbbr(province) {
+                const first = (province || '').split('·')[0].trim();
+                return ABBR[first] || '';
+            }
+            function tickerItem(p) {
+                const abbr  = provinceAbbr(p.province);
+                const label = p.city + (abbr ? ', ' + abbr : '');
+                return `<span class="ticker-item"><span class="ticker-city"><span class="ticker-live"></span>${label}</span><span class="ticker-date">— ${p.dateLabel}</span><span class="ticker-dot"></span></span>`;
+            }
+            const items = posts.map(tickerItem).join('');
+            tickerTrack.innerHTML = items + items; // duplicate for seamless loop
+        }
 
         /* ── Rebuild dispatch grid ── */
         const dispatchGrid = document.getElementById('dispatchGrid');
