@@ -1445,12 +1445,14 @@
     })();
     </script>
 
-    <!-- ── Dynamic newsroom from admin localStorage ──────────────────────────── -->
+    <!-- ── Dynamic newsroom from posts.json ─────────────────────────────────── -->
     <script>
-    (function () {
-        const STORAGE_KEY = 'pitchin_dispatch_posts';
+    (async function () {
         let posts;
-        try { posts = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { posts = null; }
+        try {
+            const res = await fetch('/newsroom/posts.json?v=' + Date.now());
+            if (res.ok) posts = await res.json();
+        } catch {}
         if (!posts || !posts.length) return; // fall back to hardcoded content
 
         const hero = posts[0];

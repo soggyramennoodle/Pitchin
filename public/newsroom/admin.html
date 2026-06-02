@@ -255,7 +255,7 @@
             </div>
 
             <!-- Posts list -->
-            <div>
+            <div style="display:flex;flex-direction:column;gap:16px;">
                 <div class="panel">
                     <div class="panel-head">
                         <div class="panel-head-text">
@@ -268,6 +268,29 @@
                         <button class="btn btn--ghost" style="width:100%;margin-bottom:12px;font-size:12px;" onclick="importLegacyPosts()">↓ Import original 4 city posts</button>
                     </div>
                     <div class="post-list" id="postList"></div>
+                </div>
+
+                <!-- GitHub publishing -->
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="panel-head-text">
+                            <h2>Publishing</h2>
+                            <p id="ghStatusText">Checking…</p>
+                        </div>
+                        <span id="ghStatusDot" style="width:10px;height:10px;border-radius:50%;background:#ccc;flex-shrink:0;margin-top:4px;"></span>
+                    </div>
+                    <div class="panel-body" id="ghSetupBody">
+                        <p style="font-size:13px;color:var(--ink-2);line-height:1.6;margin-bottom:14px;">Add a GitHub Personal Access Token so posts are saved to <code style="font-size:12px;background:var(--line-soft);padding:2px 5px;border-radius:4px;">posts.json</code> and visible to all visitors.</p>
+                        <div class="field">
+                            <label for="ghToken">GitHub PAT <span class="hint"><a href="https://github.com/settings/tokens/new?scopes=repo&description=Pitchin+Admin" target="_blank" style="color:var(--clay);">Generate one ↗</a></span></label>
+                            <input type="password" id="ghToken" placeholder="ghp_…" autocomplete="off">
+                        </div>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn btn--primary" style="flex:1;" onclick="saveGhToken()">Save Token</button>
+                            <button class="btn btn--ghost" id="ghRevokeBtn" onclick="revokeGhToken()" style="display:none;">Revoke</button>
+                        </div>
+                        <p id="ghTokenError" style="font-size:12px;color:#c0392b;margin-top:8px;display:none;"></p>
+                    </div>
                 </div>
             </div>
 
@@ -422,6 +445,7 @@ function checkPassword() {
     if (document.getElementById('pw').value === PASSWORD) {
         document.getElementById('gate').style.display = 'none';
         document.getElementById('app').style.display  = 'block';
+        updateGhStatus();
         renderPostList();
         scheduleDraw();
     } else {
@@ -448,6 +472,124 @@ function switchTab(name) {
 
 
 /* ══════════════════════════════════════════════════════════
+   GITHUB PUBLISHING
+══════════════════════════════════════════════════════════ */
+const GH_REPO      = 'soggyramennoodle/Pitchin';
+const GH_FILE      = 'public/newsroom/posts.json';
+const GH_TOKEN_KEY = 'pitchin_gh_pat';
+let ghSha          = null; // current SHA of posts.json on GitHub
+
+function getToken() { return localStorage.getItem(GH_TOKEN_KEY) || ''; }
+
+function updateGhStatus() {
+    const token   = getToken();
+    const dot     = document.getElementById('ghStatusDot');
+    const text    = document.getElementById('ghStatusText');
+    const revoke  = document.getElementById('ghRevokeBtn');
+    const tokenEl = document.getElementById('ghToken');
+    if (token) {
+        dot.style.background   = '#27ae60';
+        text.textContent       = 'Publishing to GitHub — visible to all visitors';
+        revoke.style.display   = 'inline-flex';
+        if (tokenEl) tokenEl.value = '';
+    } else {
+        dot.style.background   = '#e67e22';
+        text.textContent       = 'Browser storage only — posts not visible to visitors';
+        revoke.style.display   = 'none';
+    }
+}
+
+async function saveGhToken() {
+    const val = document.getElementById('ghToken').value.trim();
+    const err = document.getElementById('ghTokenError');
+    err.style.display = 'none';
+    if (!val) { err.textContent = 'Paste your GitHub PAT first.'; err.style.display = 'block'; return; }
+
+    // Verify token works by fetching the file
+    try {
+        const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, {
+            headers: { Authorization: 'Bearer ' + val, Accept: 'application/vnd.github+json' }
+        });
+        if (res.status === 401) throw new Error('Token invalid or expired.');
+        if (res.status === 404) throw new Error('posts.json not found in repo — make sure it was committed.');
+        if (!res.ok) throw new Error('GitHub returned ' + res.status);
+        const data = await res.json();
+        ghSha = data.sha;
+
+        // Merge any local-only posts into the GitHub version
+        const ghPosts    = JSON.parse(atob(data.content.replace(/\s/g, '')));
+        const localPosts = getPosts();
+        const ghIds      = new Set(ghPosts.map(p => p.id));
+        const merged     = [...ghPosts, ...localPosts.filter(p => !ghIds.has(p.id))];
+
+        localStorage.setItem(GH_TOKEN_KEY, val);
+        savePosts(merged);
+
+        if (merged.length > ghPosts.length) {
+            await pushToGitHub(merged);
+            toast('Token saved — ' + (merged.length - ghPosts.length) + ' local post(s) merged and published.');
+        } else {
+            toast('Token saved — GitHub publishing active.');
+        }
+    } catch (e) {
+        err.textContent = e.message;
+        err.style.display = 'block';
+        return;
+    }
+    updateGhStatus();
+    renderPostList();
+}
+
+function revokeGhToken() {
+    if (!confirm('Remove GitHub token? Posts will only save locally until you add it back.')) return;
+    localStorage.removeItem(GH_TOKEN_KEY);
+    ghSha = null;
+    updateGhStatus();
+    toast('Token removed.');
+}
+
+async function pushToGitHub(posts) {
+    const token = getToken();
+    if (!token) return; // no token = no-op, savePosts already handled localStorage
+
+    // If we don't have the SHA yet, fetch it first
+    if (!ghSha) {
+        const check = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, {
+            headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' }
+        });
+        if (check.ok) { const d = await check.json(); ghSha = d.sha; }
+    }
+
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(posts, null, 2))));
+    const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, {
+        method: 'PUT',
+        headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Update newsroom posts via admin', content, sha: ghSha })
+    });
+    if (!res.ok) throw new Error('GitHub push failed: ' + res.status);
+    const data = await res.json();
+    ghSha = data.content.sha;
+}
+
+async function persistPosts(posts) {
+    savePosts(posts); // always update localStorage as cache
+    const token = getToken();
+    if (!token) return; // localStorage only
+
+    const saveBtn = document.getElementById('saveBtnLabel');
+    const orig    = saveBtn ? saveBtn.textContent : '';
+    if (saveBtn) saveBtn.textContent = 'Publishing…';
+    try {
+        await pushToGitHub(posts);
+        toast('Published — live in ~1 min after GitHub deploys.');
+    } catch (e) {
+        toast('Saved locally but GitHub push failed: ' + e.message, true);
+    } finally {
+        if (saveBtn) saveBtn.textContent = orig;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════
    NEWSROOM STORAGE
 ══════════════════════════════════════════════════════════ */
 const STORAGE_KEY = 'pitchin_dispatch_posts';
@@ -461,7 +603,7 @@ function previewImg(url) {
     else { wrap.style.display = 'none'; }
 }
 
-function savePost() {
+async function savePost() {
     const city        = document.getElementById('fCity').value.trim();
     const province    = document.getElementById('fProvince').value.trim();
     const heroVerb    = document.getElementById('fHeroVerb').value.trim();
@@ -484,10 +626,9 @@ function savePost() {
     let posts = getPosts();
     if (editId) { const i = posts.findIndex(p => p.id === editId); if (i !== -1) posts[i] = post; else posts.unshift(post); }
     else posts.unshift(post);
-    savePosts(posts);
     renderPostList();
     resetForm();
-    toast(editId ? 'Post updated.' : 'Post published — now the hero!');
+    await persistPosts(posts);
 }
 
 function editPost(id) {
@@ -512,21 +653,21 @@ function editPost(id) {
     document.getElementById('formPanel').scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
-function deletePost(id) {
+async function deletePost(id) {
     if (!confirm('Delete this post?')) return;
-    savePosts(getPosts().filter(p => p.id !== id));
+    const posts = getPosts().filter(p => p.id !== id);
     renderPostList();
-    toast('Post deleted.');
+    await persistPosts(posts);
 }
 
-function movePost(id, dir) {
+async function movePost(id, dir) {
     const posts = getPosts();
     const idx   = posts.findIndex(p => p.id === id);
     const swap  = idx + dir;
     if (swap < 0 || swap >= posts.length) return;
     [posts[idx], posts[swap]] = [posts[swap], posts[idx]];
-    savePosts(posts);
     renderPostList();
+    await persistPosts(posts);
 }
 
 function resetForm() {
@@ -572,7 +713,7 @@ function renderPostList() {
     }).join('');
 }
 
-function importLegacyPosts() {
+async function importLegacyPosts() {
     const LEGACY = [
         { id:'legacy-calgary', city:'Calgary', province:'Alberta · 4th city on the network', tag:'City Launch', date:'2026-05-20', dateLabel:'May 20, 2026', excerpt:'Calgary just joined Pitchin with a fresh stack of verified opportunities across community support, food programs, youth work, healthcare, and events. The prairie is moving.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Downtown_Calgary_2020-4.jpg/1280px-Downtown_Calgary_2020-4.jpg', lat:'51.05° N', lng:'114.07° W', coords:'51.05° N · 114.07° W', link:'/directory/' },
         { id:'legacy-vancouver', city:'Vancouver', province:'British Columbia · 3rd city on the network', tag:'City Launch', date:'2026-05-05', dateLabel:'May 5, 2026', excerpt:'Pitchin expanded to Vancouver with 40+ verified volunteer opportunities — community support, food programs, youth work, healthcare, and more. Rain jacket optional. Good intentions strongly encouraged.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Skyline_of_Vancouver%2C_Canada.jpg/1280px-Skyline_of_Vancouver%2C_Canada.jpg', lat:'49.28° N', lng:'123.12° W', coords:'49.28° N · 123.12° W', link:'/directory/' },
@@ -583,9 +724,9 @@ function importLegacyPosts() {
     const ids   = new Set(posts.map(p => p.id));
     const toAdd = LEGACY.filter(p => !ids.has(p.id));
     if (!toAdd.length) { toast('Legacy posts already imported.'); return; }
-    savePosts([...posts, ...toAdd]);
+    const merged = [...posts, ...toAdd];
     renderPostList();
-    toast(toAdd.length + ' legacy post' + (toAdd.length > 1 ? 's' : '') + ' imported.');
+    await persistPosts(merged);
 }
 
 function e(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
