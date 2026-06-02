@@ -3,6 +3,8 @@
     "id": "1780420958008",
     "city": "Hamilton",
     "province": "Ontario · 5th city on our network",
+    "heroVerb": "live",
+    "buttonLabel": "",
     "tag": "City Launch",
     "date": "2026-06-02",
     "dateLabel": "June 2, 2026",
@@ -11,7 +13,6 @@
     "lat": "",
     "lng": "",
     "coords": "",
-    "heroCoords": "",
     "link": "/directory/"
   },
   {
