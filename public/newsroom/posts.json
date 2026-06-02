@@ -48,6 +48,21 @@
     "link": "/directory/"
   },
   {
+    "id": "1780420958008",
+    "city": "Hamilton",
+    "province": "Ontario · 5th city on our network",
+    "tag": "City Launch",
+    "date": "2026-06-02",
+    "dateLabel": "June 2, 2026",
+    "excerpt": "Hamilton, we're finally here, and we've brought many volunteer opportunities with us! Start browsing to see what your next commitment will be.",
+    "img": "https://martindaledental.com/wp-content/uploads/elementor/thumbs/Hamilton-Ontario-city-shot-qxs8bp663fnwmdhh4j6nl7l1rq8p7483dcyud19i14.jpg",
+    "lat": "",
+    "lng": "",
+    "coords": "",
+    "heroCoords": "",
+    "link": "/directory/"
+  },
+  {
     "id": "legacy-saskatoon",
     "city": "Saskatoon",
     "province": "Saskatchewan Â· First city on the network",
@@ -61,21 +76,6 @@
     "lat": "52.13Â° N",
     "lng": "106.67Â° W",
     "coords": "52.13Â° N Â· 106.67Â° W",
-    "link": "/directory/"
-  },
-  {
-    "id": "1780420958008",
-    "city": "Hamilton",
-    "province": "Ontario · 5th city on our network",
-    "tag": "City Launch",
-    "date": "2026-06-02",
-    "dateLabel": "June 2, 2026",
-    "excerpt": "Hamilton, we're finally here, and we've brought many volunteer opportunities with us! Start browsing to see what your next commitment will be.",
-    "img": "https://martindaledental.com/wp-content/uploads/elementor/thumbs/Hamilton-Ontario-city-shot-qxs8bp663fnwmdhh4j6nl7l1rq8p7483dcyud19i14.jpg",
-    "lat": "",
-    "lng": "",
-    "coords": "",
-    "heroCoords": "",
     "link": "/directory/"
   }
 ]
