@@ -194,18 +194,28 @@
                     <input type="hidden" id="editId">
                     <div class="field-row">
                         <div class="field">
-                            <label for="fCity">City Name <span class="req">*</span></label>
-                            <input type="text" id="fCity" placeholder="e.g. Edmonton">
+                            <label for="fCity">Title / Headline <span class="req">*</span><span class="hint">e.g. "Hamilton" or "We hit 200+"</span></label>
+                            <input type="text" id="fCity" placeholder="e.g. Hamilton">
                         </div>
                         <div class="field">
-                            <label for="fProvince">Province / Subtitle <span class="req">*</span></label>
-                            <input type="text" id="fProvince" placeholder="e.g. Alberta · 5th city">
+                            <label for="fProvince">Subtitle <span class="hint">province, tagline, etc.</span></label>
+                            <input type="text" id="fProvince" placeholder="e.g. Ontario · 5th city">
+                        </div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="fHeroVerb">Hero accent word <span class="hint">big word on hero — default "live"</span></label>
+                            <input type="text" id="fHeroVerb" placeholder='live   (leave blank to hide split)'>
+                        </div>
+                        <div class="field">
+                            <label for="fButtonLabel">CTA button label <span class="hint">default: "Browse [title]"</span></label>
+                            <input type="text" id="fButtonLabel" placeholder="e.g. See the milestone">
                         </div>
                     </div>
                     <div class="field-row">
                         <div class="field">
                             <label for="fTag">Tag <span class="req">*</span></label>
-                            <input type="text" id="fTag" placeholder="e.g. City Launch">
+                            <input type="text" id="fTag" placeholder="e.g. City Launch, Update, Milestone…">
                         </div>
                         <div class="field">
                             <label for="fDate">Date <span class="req">*</span></label>
@@ -214,17 +224,17 @@
                     </div>
                     <div class="field-row">
                         <div class="field">
-                            <label for="fLat">Latitude</label>
-                            <input type="text" id="fLat" placeholder="e.g. 53.55° N">
+                            <label for="fLat">Latitude <span class="hint">optional</span></label>
+                            <input type="text" id="fLat" placeholder="e.g. 43.25° N">
                         </div>
                         <div class="field">
-                            <label for="fLng">Longitude</label>
-                            <input type="text" id="fLng" placeholder="e.g. 113.49° W">
+                            <label for="fLng">Longitude <span class="hint">optional</span></label>
+                            <input type="text" id="fLng" placeholder="e.g. 79.87° W">
                         </div>
                     </div>
                     <div class="field">
                         <label for="fExcerpt">Description <span class="req">*</span></label>
-                        <textarea id="fExcerpt" placeholder="2–3 sentences about this city launch or post…"></textarea>
+                        <textarea id="fExcerpt" placeholder="A few sentences — shown on the hero and in the grid card…"></textarea>
                     </div>
                     <div class="field">
                         <label for="fImg">Image URL <span class="req">*</span></label>
@@ -232,7 +242,7 @@
                         <div class="img-preview-wrap" id="imgPreviewWrap"><img id="imgPreview" src="" alt=""></div>
                     </div>
                     <div class="field">
-                        <label for="fLink">Browse link <span class="hint">(default: /directory/)</span></label>
+                        <label for="fLink">Link URL <span class="hint">(default: /directory/)</span></label>
                         <input type="text" id="fLink" placeholder="/directory/">
                     </div>
                     <div class="form-actions">
@@ -452,22 +462,24 @@ function previewImg(url) {
 }
 
 function savePost() {
-    const city     = document.getElementById('fCity').value.trim();
-    const province = document.getElementById('fProvince').value.trim();
-    const tag      = document.getElementById('fTag').value.trim();
-    const dateVal  = document.getElementById('fDate').value;
-    const excerpt  = document.getElementById('fExcerpt').value.trim();
-    const img      = document.getElementById('fImg').value.trim();
-    const lat      = document.getElementById('fLat').value.trim();
-    const lng      = document.getElementById('fLng').value.trim();
-    const link     = document.getElementById('fLink').value.trim() || '/directory/';
-    const editId   = document.getElementById('editId').value;
+    const city        = document.getElementById('fCity').value.trim();
+    const province    = document.getElementById('fProvince').value.trim();
+    const heroVerb    = document.getElementById('fHeroVerb').value.trim();
+    const buttonLabel = document.getElementById('fButtonLabel').value.trim();
+    const tag         = document.getElementById('fTag').value.trim();
+    const dateVal     = document.getElementById('fDate').value;
+    const excerpt     = document.getElementById('fExcerpt').value.trim();
+    const img         = document.getElementById('fImg').value.trim();
+    const lat         = document.getElementById('fLat').value.trim();
+    const lng         = document.getElementById('fLng').value.trim();
+    const link        = document.getElementById('fLink').value.trim() || '/directory/';
+    const editId      = document.getElementById('editId').value;
 
-    if (!city || !province || !tag || !dateVal || !excerpt || !img) { toast('Fill in all required fields.', true); return; }
+    if (!city || !tag || !dateVal || !excerpt || !img) { toast('Fill in all required fields.', true); return; }
 
     const dateObj   = new Date(dateVal + 'T12:00:00');
     const dateLabel = dateObj.toLocaleDateString('en-CA', { month:'long', day:'numeric', year:'numeric' });
-    const post = { id: editId || Date.now().toString(), city, province, tag, date: dateVal, dateLabel, excerpt, img, lat, lng, coords: lat && lng ? `${lat} · ${lng}` : '', link };
+    const post = { id: editId || Date.now().toString(), city, province, heroVerb, buttonLabel, tag, date: dateVal, dateLabel, excerpt, img, lat, lng, coords: lat && lng ? `${lat} · ${lng}` : '', link };
 
     let posts = getPosts();
     if (editId) { const i = posts.findIndex(p => p.id === editId); if (i !== -1) posts[i] = post; else posts.unshift(post); }
@@ -481,16 +493,18 @@ function savePost() {
 function editPost(id) {
     const post = getPosts().find(p => p.id === id);
     if (!post) return;
-    document.getElementById('editId').value    = id;
-    document.getElementById('fCity').value     = post.city;
-    document.getElementById('fProvince').value = post.province;
-    document.getElementById('fTag').value      = post.tag;
-    document.getElementById('fDate').value     = post.date;
-    document.getElementById('fExcerpt').value  = post.excerpt;
-    document.getElementById('fImg').value      = post.img;
-    document.getElementById('fLat').value      = post.lat || '';
-    document.getElementById('fLng').value      = post.lng || '';
-    document.getElementById('fLink').value     = post.link || '/directory/';
+    document.getElementById('editId').value       = id;
+    document.getElementById('fCity').value        = post.city;
+    document.getElementById('fProvince').value    = post.province    || '';
+    document.getElementById('fHeroVerb').value    = post.heroVerb    !== undefined ? post.heroVerb : 'live';
+    document.getElementById('fButtonLabel').value = post.buttonLabel || '';
+    document.getElementById('fTag').value         = post.tag;
+    document.getElementById('fDate').value        = post.date;
+    document.getElementById('fExcerpt').value     = post.excerpt;
+    document.getElementById('fImg').value         = post.img;
+    document.getElementById('fLat').value         = post.lat  || '';
+    document.getElementById('fLng').value         = post.lng  || '';
+    document.getElementById('fLink').value        = post.link || '/directory/';
     previewImg(post.img);
     document.getElementById('formTitle').textContent    = 'Edit Post';
     document.getElementById('formSubtitle').textContent = 'Changes save in place.';
@@ -516,7 +530,7 @@ function movePost(id, dir) {
 }
 
 function resetForm() {
-    ['fCity','fProvince','fTag','fDate','fExcerpt','fImg','fLat','fLng','fLink','editId'].forEach(id => { document.getElementById(id).value = ''; });
+    ['fCity','fProvince','fHeroVerb','fButtonLabel','fTag','fDate','fExcerpt','fImg','fLat','fLng','fLink','editId'].forEach(id => { document.getElementById(id).value = ''; });
     document.getElementById('imgPreviewWrap').style.display = 'none';
     document.getElementById('formTitle').textContent    = 'Add New Dispatch Post';
     document.getElementById('formSubtitle').textContent = 'New posts become the featured hero. Previous hero moves to the grid.';

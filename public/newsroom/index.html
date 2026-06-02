@@ -1039,8 +1039,8 @@
                 <p class="hero-eyebrow" id="heroEyebrow">The Dispatch &nbsp;·&nbsp; May 20, 2026</p>
                 <h1 class="hero-title" id="hero-headline">
                     <span class="hero-label" aria-hidden="true" id="heroLabel">Calgary is</span>
-                    <span class="hero-drama" aria-hidden="true">live<span class="hero-drama-dot">.</span></span>
-                    <span class="sr-only">Calgary is live.</span>
+                    <span class="hero-drama" aria-hidden="true" id="heroDrama">live<span class="hero-drama-dot">.</span></span>
+                    <span class="sr-only" id="heroSrOnly">Calgary is live.</span>
                 </h1>
                 <p class="hero-copy" id="heroCopy">
                     Calgary just joined Pitchin with a fresh stack of verified opportunities across community support, food programs, youth work, healthcare, and events. The prairie is moving.
@@ -1460,18 +1460,35 @@
         const eyebrow = document.getElementById('heroEyebrow');
         if (eyebrow) eyebrow.innerHTML = 'The Dispatch &nbsp;·&nbsp; ' + hero.dateLabel;
 
-        const heroLabel = document.getElementById('heroLabel');
-        if (heroLabel) heroLabel.textContent = hero.city + ' is';
+        // heroVerb: the big accent word ("live.", "growing.", etc.)
+        // If blank, the full title goes in the drama slot — no split layout
+        const heroVerb = (hero.heroVerb !== undefined) ? hero.heroVerb : 'live';
+        const arrowIcon = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+        const heroLabelEl = document.getElementById('heroLabel');
+        const heroDramaEl = document.getElementById('heroDrama');
+        const heroSrOnly  = document.getElementById('heroSrOnly');
+
+        if (heroVerb) {
+            // Standard split: "[title] is" + "[heroVerb]."
+            if (heroLabelEl) heroLabelEl.textContent = hero.city + ' is';
+            if (heroDramaEl) heroDramaEl.innerHTML   = heroVerb + '<span class="hero-drama-dot">.</span>';
+            if (heroSrOnly)  heroSrOnly.textContent  = hero.city + ' is ' + heroVerb + '.';
+        } else {
+            // No split: just the title big, no label prefix
+            if (heroLabelEl) heroLabelEl.textContent = '';
+            if (heroDramaEl) heroDramaEl.innerHTML   = hero.city + '<span class="hero-drama-dot"></span>';
+            if (heroSrOnly)  heroSrOnly.textContent  = hero.city;
+        }
 
         const heroCopy = document.getElementById('heroCopy');
         if (heroCopy) heroCopy.textContent = hero.excerpt;
 
         const heroBrowseBtn = document.getElementById('heroBrowseBtn');
         if (heroBrowseBtn) {
-            heroBrowseBtn.textContent = '';
-            heroBrowseBtn.href = hero.link || '/directory/';
-            heroBrowseBtn.innerHTML = 'Browse ' + hero.city +
-                '<span class="btn-icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+            const btnLabel = hero.buttonLabel || (hero.city ? 'Browse ' + hero.city : 'Learn more');
+            heroBrowseBtn.href      = hero.link || '/directory/';
+            heroBrowseBtn.innerHTML = btnLabel + '<span class="btn-icon" aria-hidden="true">' + arrowIcon + '</span>';
         }
 
         const heroCardImg = document.getElementById('heroCardImg');
@@ -1481,7 +1498,7 @@
         if (heroCardCity) heroCardCity.textContent = hero.city;
 
         const heroCardSub = document.getElementById('heroCardSub');
-        if (heroCardSub) heroCardSub.textContent = hero.province;
+        if (heroCardSub) heroCardSub.textContent = hero.province || hero.subtitle || '';
 
         const heroCoords = document.querySelector('.hero-card-coords');
         if (heroCoords && hero.lat && hero.lng) heroCoords.innerHTML = hero.lat + '<br>' + hero.lng;
@@ -1516,7 +1533,7 @@
                 <div class="dispatch-body">
                     <h3 class="dispatch-city">${p.city}</h3>
                     <p class="dispatch-excerpt">${p.excerpt}</p>
-                    <span class="dispatch-link">Browse ${p.city} <span class="link-icon" aria-hidden="true">${arrowSvg}</span></span>
+                    <span class="dispatch-link">${p.buttonLabel || (p.city ? 'Browse ' + p.city : 'Read more')} <span class="link-icon" aria-hidden="true">${arrowSvg}</span></span>
                 </div>
             </a>`;
         }).join('');
