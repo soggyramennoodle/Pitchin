@@ -34,17 +34,17 @@
   {
     "id": "legacy-vancouver",
     "city": "Vancouver",
-    "province": "British Columbia Â· 3rd city on the network",
+    "province": "British Columbia  · 3rd city on the network",
     "heroVerb": "live",
     "buttonLabel": "",
     "tag": "City Launch",
     "date": "2026-05-05",
     "dateLabel": "May 5, 2026",
-    "excerpt": "Pitchin expanded to Vancouver with 40+ verified volunteer opportunities â community support, food programs, youth work, healthcare, and more. Rain jacket optional. Good intentions strongly encouraged.",
+    "excerpt": "Pitchin expanded to Vancouver with 40+ verified volunteer opportunities, community support, food programs, youth work, healthcare, and more. Rain jacket optional.",
     "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Skyline_of_Vancouver%2C_Canada.jpg/1280px-Skyline_of_Vancouver%2C_Canada.jpg",
-    "lat": "49.28Â° N",
-    "lng": "123.12Â° W",
-    "coords": "49.28Â° N Â· 123.12Â° W",
+    "lat": "",
+    "lng": "",
+    "coords": "",
     "link": "/directory/"
   },
   {
