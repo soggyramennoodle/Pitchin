@@ -15,22 +15,6 @@
     "link": "/directory/"
   },
   {
-    "id": "legacy-calgary",
-    "city": "Calgary",
-    "province": "Alberta Â· 4th city on the network",
-    "heroVerb": "live",
-    "buttonLabel": "",
-    "tag": "City Launch",
-    "date": "2026-05-20",
-    "dateLabel": "May 20, 2026",
-    "excerpt": "Calgary just joined Pitchin with a fresh stack of verified opportunities across community support, food programs, youth work, healthcare, and events. The prairie is moving.",
-    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Downtown_Calgary_2020-4.jpg/1280px-Downtown_Calgary_2020-4.jpg",
-    "lat": "51.05Â° N",
-    "lng": "114.07Â° W",
-    "coords": "51.05Â° N Â· 114.07Â° W",
-    "link": "/directory/"
-  },
-  {
     "id": "legacy-vancouver",
     "city": "Vancouver",
     "province": "British Columbia Â· 3rd city on the network",
@@ -44,6 +28,22 @@
     "lat": "49.28Â° N",
     "lng": "123.12Â° W",
     "coords": "49.28Â° N Â· 123.12Â° W",
+    "link": "/directory/"
+  },
+  {
+    "id": "legacy-calgary",
+    "city": "Calgary",
+    "province": "Alberta Â· 4th city on the network",
+    "heroVerb": "live",
+    "buttonLabel": "",
+    "tag": "City Launch",
+    "date": "2026-05-20",
+    "dateLabel": "May 20, 2026",
+    "excerpt": "Calgary just joined Pitchin with a fresh stack of verified opportunities across community support, food programs, youth work, healthcare, and events. The prairie is moving.",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Downtown_Calgary_2020-4.jpg/1280px-Downtown_Calgary_2020-4.jpg",
+    "lat": "51.05Â° N",
+    "lng": "114.07Â° W",
+    "coords": "51.05Â° N Â· 114.07Â° W",
     "link": "/directory/"
   },
   {
